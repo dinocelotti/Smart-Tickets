@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import SimpleStorageContract from "../build/contracts/SimpleStorage.json";
 import Web3 from "web3";
+import { connect } from "react-redux";
 
 import "./css/oswald.css";
 import "./css/open-sans.css";
@@ -29,12 +30,10 @@ class App extends Component {
 
     // Get the RPC provider and setup our SimpleStorage contract.
     const provider = new Web3.providers.HttpProvider("http://localhost:8545");
-    const contract = require("truffle-contract");
-    const simpleStorage = contract(SimpleStorageContract);
-    simpleStorage.setProvider(provider);
-
+    const simpleStorage = this.props.simpleStorage;
+    console.log(simpleStorage);
     // Get Web3 so we can get our accounts.
-    const web3RPC = new Web3(provider);
+    const web3RPC = this.props.web3;
 
     // Declaring this for later so we can chain functions on SimpleStorage.
     var simpleStorageInstance;
@@ -116,5 +115,11 @@ class App extends Component {
     );
   }
 }
+const mapStateToProps = function(store) {
+  return {
+    web3: store.web3State.web3,
+    simpleStorage: store.web3State.simpleStorage
+  };
+};
 
-export default App;
+export default connect(mapStateToProps)(App);
