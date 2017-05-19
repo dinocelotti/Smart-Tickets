@@ -1,0 +1,2 @@
+//accounts
+export const GET_ACCOUNTS_SUCCESS = "GET_ACCOUNTS_SUCCESS";

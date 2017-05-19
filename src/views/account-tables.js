@@ -6,22 +6,27 @@ function theadElement(element) {
 function tdElement(element) {
   return <td>{element}</td>;
 }
-export class accountTableEth extends React.Component {
+//{this.props.accounts.map(acc => theadElement(acc.address))}
+export class AccountTableEth extends React.Component {
   render() {
     const thead = (
       <thead>
         <tr>
           {theadElement("Account addresses")}
-          {this.props.accounts.map(acc => theadElement(acc.address))}
+          {theadElement("Ether Balance")}
         </tr>
       </thead>
     );
+    let id = 0;
     const tbody = (
       <tbody>
-        <tr>
-          {tdElement("ETH balance")}
-          {this.props.accounts.map(acc => tdElement(acc.ethBalance))}
-        </tr>
+        {this.props.accounts.map(acc => (
+          <tr key={acc.address}>
+            {tdElement(acc.address)}
+            {tdElement(acc.ethBalance)}
+          </tr>
+        ))}
+
       </tbody>
     );
     return (

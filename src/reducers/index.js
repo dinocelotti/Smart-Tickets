@@ -1,10 +1,12 @@
 import { combineReducers } from "redux";
-import web3Reducer from "./web3-reducer";
+import accountReducer from "./account-reducer";
 import promoterReducer from "./promoter-reducer";
 import consumerReducer from "./consumer-reducer";
+import web3Reducer from "./web3-reducer";
 
 export default combineReducers({
-  web3State: web3Reducer,
+  accountState: accountReducer,
   promoterState: promoterReducer,
-  consumerState: consumerReducer
+  consumerState: consumerReducer,
+  web3State: web3Reducer
 });
