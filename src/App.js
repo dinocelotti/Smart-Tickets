@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { EthTable } from "./containers/account-tables-container";
+import PromoterSection from "./containers/promoter-section-container";
+import "./css/grids-responsive-min.css";
 import "./css/oswald.css";
 import "./css/open-sans.css";
 import "./css/pure-min.css";
@@ -16,21 +18,27 @@ export default class App extends Component {
 
   render() {
     return (
-      <div className="App">
+      <div className="App ">
         <nav className="navbar pure-menu pure-menu-horizontal">
 
           <a href="#" className="pure-menu-heading pure-menu-link">
             Truffle Box
           </a>
         </nav>
-
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
               <h1> Good to Go! </h1>
               <p> Your Truffle Box is installed and ready. </p>
               <h2> Smart Contract Example </h2>
+            </div>
+            <div className="pure-u-1-1">
               <EthTable />
+            </div>
+            <div className="pure-u-1-1">
+              <PromoterSection />
+            </div>
+            <div className="pure-u-1-1">
               <p>
                 The below will show a stored value of 5 by
                 default
