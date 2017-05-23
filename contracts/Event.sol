@@ -1,5 +1,7 @@
 pragma solidity ^0.4.2;
 
+//16 is the upper limit for Solidity
+//Because it treats locals as stack elements
 contract Event {
 
     //name of the event to be created

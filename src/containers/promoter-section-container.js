@@ -7,27 +7,39 @@ import * as eventApi from "../api/event-api";
 class PromoterSectionContainer extends React.Component {
   constructor(props) {
     super(props);
-    this.setEventDetails.bind(this);
+
     this.state = {
       eventName: "",
       totalTickets: "",
       consumerMaxTickets: ""
     };
+    this.setEventDetails = this.setEventDetails.bind(this);
+    this.createEvent = this.createEvent.bind(this);
   }
   setEventDetails(name, event) {
+    console.log(this.state);
     this.setState({
       [name]: event.target.value
     });
   }
-  createEvent() {
+  createEvent(event) {
+    event.preventDefault();
+    console.log("state", this.state);
+
     const eventDetails = this.state;
-    eventApi.createEvent(...eventDetails);
+    eventApi.createEvent(eventDetails);
   }
   render() {
-    return <PromoterSection setEventDetails={this.setEventDetails} />;
+    return (
+      <PromoterSection
+        setEventDetails={this.setEventDetails}
+        createEvent={this.createEvent}
+        createdEvent={this.props.events}
+      />
+    );
   }
 }
 function mapStateToProps(state) {
-  return {};
+  return { events: state.eventState.events };
 }
 export default connect(mapStateToProps)(PromoterSectionContainer);

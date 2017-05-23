@@ -7,6 +7,7 @@ event.setProvider(provider);
 const web3RPC = new Web3(provider);
 
 const initialState = {
+  contract,
   web3RPC,
   event,
   provider

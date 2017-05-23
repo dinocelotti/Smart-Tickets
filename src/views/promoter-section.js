@@ -5,7 +5,7 @@ export class PromoterSection extends React.Component {
     return (
       <form
         className="pure-form pure-form-stacked"
-        onSubmit={this.props.setEventDetails}
+        onSubmit={this.props.createEvent}
       >
         <fieldset>
           <legend> An Event Creation Form</legend>
@@ -42,6 +42,9 @@ export class PromoterSection extends React.Component {
             {" "}Create Event{" "}
           </button>
         </fieldset>
+        <p>
+          {this.props.createdEvent}
+        </p>
       </form>
     );
   }
