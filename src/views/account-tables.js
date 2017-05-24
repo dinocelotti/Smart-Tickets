@@ -37,34 +37,3 @@ export class AccountTableEth extends React.Component {
     );
   }
 }
-export class accountTableEvents extends React.Component {
-  render() {
-    const thead = (
-      <thead>
-        <tr>
-          {theadElement("Events")}
-          {this.props.events.map(event => theadElement(event.name))}
-        </tr>
-      </thead>
-    );
-    /**
-         *[acc1: {events: [1, 2, 3]}]
-         */
-    const tbody = (
-      <tbody>
-        {this.props.accounts.map(acc => (
-          <tr>
-            {tdElement(`Address: ${acc.address}`)}
-            {this.props.acc.events.map(numOfTickets => tdElement(numOfTickets))}
-          </tr>
-        ))}
-      </tbody>
-    );
-    return (
-      <table className="pure-table">
-        {thead}
-        {tbody}
-      </table>
-    );
-  }
-}

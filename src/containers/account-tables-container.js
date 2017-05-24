@@ -1,4 +1,4 @@
-import { AccountTableEth, accountTableEvents } from "./../views/account-tables";
+import { AccountTableEth } from "./../views/account-tables";
 import React from "react";
 import { connect } from "react-redux";
 import * as accountApi from "../api/account-api";

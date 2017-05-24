@@ -37,13 +37,23 @@ export class PromoterSection extends React.Component {
               "consumerMaxTickets"
             )}
           />
+
+          <label htmlFor="promoterAddress"> Your wallet address </label>
+          <select
+            id="promoterAddress"
+            onChange={this.props.setEventDetails.bind(this, "promoterAddress")}
+          >
+            {this.props.accountAddresses.map(acc => (
+              <option key={acc}>{acc}</option>
+            ))}
+          </select>
           <br />
           <button type="submit" className="pure-button pure-button-primary">
             {" "}Create Event{" "}
           </button>
         </fieldset>
         <p>
-          {this.props.createdEvent}
+          {console.log(this.props.createdEvent)}
         </p>
       </form>
     );

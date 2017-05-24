@@ -146,7 +146,7 @@ contract Event {
      Staging Phase 
      **************************/
 
-    function setTicketPriceAndQuantity(uint8 _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
+    function setTicketPrice(uint8 _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
         require(_priceInWei >= 0);
         tickets[_typeOfTicket].price = _priceInWei;
     }

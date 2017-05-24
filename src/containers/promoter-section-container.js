@@ -11,13 +11,15 @@ class PromoterSectionContainer extends React.Component {
     this.state = {
       eventName: "",
       totalTickets: "",
-      consumerMaxTickets: ""
+      consumerMaxTickets: "",
+      promoterAddress: ""
     };
     this.setEventDetails = this.setEventDetails.bind(this);
     this.createEvent = this.createEvent.bind(this);
   }
   setEventDetails(name, event) {
     console.log(this.state);
+    console.log(event);
     this.setState({
       [name]: event.target.value
     });
@@ -27,19 +29,28 @@ class PromoterSectionContainer extends React.Component {
     console.log("state", this.state);
 
     const eventDetails = this.state;
+    if (!eventDetails.promoterAddress) {
+      eventDetails.promoterAddress = this.props.accountAddresses[0];
+    }
     eventApi.createEvent(eventDetails);
   }
   render() {
+    console.log("render", this.props.events);
     return (
       <PromoterSection
         setEventDetails={this.setEventDetails}
         createEvent={this.createEvent}
         createdEvent={this.props.events}
+        accountAddresses={this.props.accountAddresses}
       />
     );
   }
 }
 function mapStateToProps(state) {
-  return { events: state.eventState.events };
+  console.log("map state to props", state.eventState.events);
+  return {
+    events: state.eventState.events,
+    accountAddresses: state.accountState.accounts.map(acc => acc.address)
+  };
 }
 export default connect(mapStateToProps)(PromoterSectionContainer);
