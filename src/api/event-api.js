@@ -1,5 +1,4 @@
 import store from "../store";
-import Event from "../../build/contracts/Event.json";
 import { getAccounts } from "./account-api";
 import { createEventSuccess } from "./../actions/event-actions";
 const web3RPC = store.getState().web3State.web3RPC;
@@ -30,7 +29,6 @@ export async function createEvent({
       gas: 4306940
     }
   );
-  console.log(newEvent);
   const newEventEntry = {
     eventName,
     totalTickets,
@@ -40,14 +38,12 @@ export async function createEvent({
   };
   const currentEvents = store.getState().eventState.events;
 
-  let e = [newEventEntry, ...currentEvents];
-  console.log(e);
-  store.dispatch(createEventSuccess(e));
+  store.dispatch(createEventSuccess([newEventEntry, ...currentEvents]));
   getAccounts();
   return newEventEntry;
 }
 
-class Promoter {
+export class Promoter {
   /**************************
      Phase Setters
      **************************/
@@ -57,15 +53,15 @@ class Promoter {
      Staging Phase 
      **************************/
   //function setTicketPriceAndQuantity(uint8 _typeOfTicket, uint _priceInWei)
-  setTicketPrice() {}
+  setTicketPrice(ticketType, ticketPrice) {}
 
-  setTicketQuantity() {}
-  approveBuyer() {}
-  setBuyerAllottedQuantities() {}
-  setApprovedBuyerFee() {}
+  setTicketQuantity(ticketType, quantity) {}
+  approveBuyer(buyer) {}
+  setBuyerAllottedQuantities(buyer, ticketType, quantity) {}
+  setApprovedBuyerFee(buyer, promotersFee) {}
 }
 
-class Buyer {
+export class Buyer {
   /**************************
      Staging Phase 
      **************************/

@@ -1,9 +1,9 @@
 import { PromoterSection } from "./../views/promoter-section";
 import React from "react";
 import { connect } from "react-redux";
-import * as accountApi from "../api/account-api";
 import * as eventApi from "../api/event-api";
-
+import ApprovedBuyer from "./promoter-buyer-container";
+import TicketForm from "./promoter-ticket-form-container";
 class PromoterSectionContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -18,15 +18,12 @@ class PromoterSectionContainer extends React.Component {
     this.createEvent = this.createEvent.bind(this);
   }
   setEventDetails(name, event) {
-    console.log(this.state);
-    console.log(event);
     this.setState({
       [name]: event.target.value
     });
   }
   createEvent(event) {
     event.preventDefault();
-    console.log("state", this.state);
 
     const eventDetails = this.state;
     if (!eventDetails.promoterAddress) {
@@ -35,19 +32,28 @@ class PromoterSectionContainer extends React.Component {
     eventApi.createEvent(eventDetails);
   }
   render() {
-    console.log("render", this.props.events);
     return (
-      <PromoterSection
-        setEventDetails={this.setEventDetails}
-        createEvent={this.createEvent}
-        createdEvent={this.props.events}
-        accountAddresses={this.props.accountAddresses}
-      />
+      <div>
+        <PromoterSection
+          setEventDetails={this.setEventDetails}
+          createEvent={this.createEvent}
+          createdEvent={this.props.events}
+          accountAddresses={this.props.accountAddresses}
+        />
+        <form className="pure-form">
+          <legend> Promoter Contract Interaction </legend>
+        </form>
+        <div className="pure-u-1-2">
+          <ApprovedBuyer />
+        </div>
+        <div className="pure-u-1-2">
+          <TicketForm />
+        </div>
+      </div>
     );
   }
 }
 function mapStateToProps(state) {
-  console.log("map state to props", state.eventState.events);
   return {
     events: state.eventState.events,
     accountAddresses: state.accountState.accounts.map(acc => acc.address)

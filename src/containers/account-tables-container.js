@@ -13,21 +13,9 @@ class accountTableEthContainer extends React.Component {
   }
 }
 function mapEthStateToProps(store) {
-  console.log(store);
   return {
     accounts: store.accountState.accounts
   };
 }
 
-class accountTableEventsContainer extends React.Component {
-  componentDidMount() {}
-  render() {}
-}
-function mapEventStateToProps(store) {
-  return {};
-}
-
 export const EthTable = connect(mapEthStateToProps)(accountTableEthContainer);
-export const eventTable = connect(mapEventStateToProps)(
-  accountTableEventsContainer
-);

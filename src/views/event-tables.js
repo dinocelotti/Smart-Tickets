@@ -20,7 +20,6 @@ export default class EventTable extends React.Component {
         </tr>
       </thead>
     );
-    let id = 0;
     const tbody = (
       <tbody>
         <tr>

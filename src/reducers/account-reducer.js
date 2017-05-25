@@ -10,6 +10,7 @@ export default (state = initialState, action) => {
       return Object.assign({}, state, {
         accounts: action.accounts
       });
+    default:
   }
   return state;
 };

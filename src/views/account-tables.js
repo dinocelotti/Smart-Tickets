@@ -17,7 +17,6 @@ export class AccountTableEth extends React.Component {
         </tr>
       </thead>
     );
-    let id = 0;
     const tbody = (
       <tbody>
         {this.props.accounts.map(acc => (
