@@ -1,4 +1,4 @@
-let Event = artifacts.require("./Event.sol");
+let EventResolver = artifacts.require("./EventResolver.sol");
 module.exports = function(deployer) {
-  deployer.deploy(Event, "GREAT EVENT", 5, 150, 3);
+  deployer.deploy(EventResolver, "Default_Event_Resolver");
 };

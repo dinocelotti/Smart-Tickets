@@ -29,6 +29,7 @@ export async function createEvent({
       gas: 4306940
     }
   );
+  console.log(newEvent, newEvent.logs);
   const newEventEntry = {
     eventName,
     totalTickets,
@@ -42,7 +43,15 @@ export async function createEvent({
   getAccounts();
   return newEventEntry;
 }
-
+web3RPC.eth.filter("latest", (err, res) => (!err ? console.log(res) : null));
+// scan through the accounts the person owns and see if they match an event
+export async function pollForEvents(pollTime) {}
+export function watchForEvents() {}
+function asyncSetTimeout(timeToWaitInMili) {
+  return new Promise(resolve => {
+    setTimeout(resolve, timeToWaitInMili);
+  });
+}
 export class Promoter {
   /**************************
      Phase Setters

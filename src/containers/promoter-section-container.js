@@ -40,13 +40,28 @@ class PromoterSectionContainer extends React.Component {
           createdEvent={this.props.events}
           accountAddresses={this.props.accountAddresses}
         />
-        <form className="pure-form">
+        <form className="pure-form pure-form-stacked">
           <legend> Promoter Contract Interaction </legend>
+          <label htmlFor="promoterAddress"> Promoter Address to use</label>
+          <select id="promoterAddress">
+            {this.props.accountAddresses.map(acc => (
+              <option key={acc}>{acc}</option>
+            ))}
+          </select>
+          <label htmlFor="contractAddress">
+            {" "}Contract Address to interact with
+          </label>
+          <select id="contractAddress">
+            {this.props.events.map(({ contractAddress: ev }) => (
+              <option key={ev}>{ev}</option>
+            ))}
+          </select>
+          <br />
         </form>
-        <div className="pure-u-1-2">
+        <div className="pure-u-1-3">
           <ApprovedBuyer />
         </div>
-        <div className="pure-u-1-2">
+        <div className="pure-u-1-3">
           <TicketForm />
         </div>
       </div>

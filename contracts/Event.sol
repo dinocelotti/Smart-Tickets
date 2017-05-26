@@ -75,11 +75,14 @@ contract Event {
             consumerMaxTickets = _consumerMaxTickets;
             promoter = msg.sender;  
             currentState = State.Staging;
+            Created(promoter, eventName);
         }
 
     /**************************
      Event Firers  
      **************************/
+     event Created(address indexed promoter, string eventName);
+
      event Purchased(address indexed to, bool indexed approvedBuyer, uint8 typeOfTicket, uint pricePerTicket, uint quantity, uint weiSent);
 
     /**************************
