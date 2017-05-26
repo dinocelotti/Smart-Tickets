@@ -2,7 +2,7 @@ import store from "../store";
 import { getAccounts } from "./account-api";
 import { createEventSuccess } from "./../actions/event-actions";
 const web3RPC = store.getState().web3State.web3RPC;
-const event = store.getState().web3State.event;
+const event = store.getState().web3State.Event;
 
 export async function createEvent({
   eventName,
