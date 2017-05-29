@@ -1,8 +1,7 @@
 import store from "../store";
 import { getAccounts } from "./account-api";
 import { createEventSuccess } from "./../actions/event-actions";
-const web3RPC = store.getState().web3State.web3RPC;
-const event = store.getState().web3State.Event;
+const { web3RPC, Event, EventResolver } = store.getState().web3;
 
 export async function createEvent({
   eventName,
@@ -17,7 +16,7 @@ export async function createEvent({
   if (!accountAddresses.includes(promoterAddress)) {
     throw `Address ${promoterAddress} does not exist on this wallet`;
   }
-  const newEvent = await event.new(
+  const newEvent = await Event.new(
     eventName,
     "10",
     totalTickets,
@@ -29,7 +28,6 @@ export async function createEvent({
       gas: 4306940
     }
   );
-  console.log(newEvent, newEvent.logs);
   const newEventEntry = {
     eventName,
     totalTickets,
@@ -38,15 +36,61 @@ export async function createEvent({
     contractAddress: newEvent.address
   };
   const currentEvents = store.getState().eventState.events;
-
+  //assign promoter to event resolver
+  await assignAddressToContract(promoterAddress, newEvent.address);
   store.dispatch(createEventSuccess([newEventEntry, ...currentEvents]));
   getAccounts();
   return newEventEntry;
+}
+
+async function assignAddressToContract(from, addressToAssign) {
+  const result = await EventResolver.assignAddressToContract(addressToAssign, {
+    from
+  });
+  console.log(result);
+  return result;
+}
+async function mapAddressesToEvents(addresses) {
+  const numEventsArrPromise = addresses.map(addr =>
+    EventResolver.getNumEventsOf.call({ from: addr })
+  );
+  const numEventsArr = await Promise.all(numEventsArrPromise);
+  return addresses.map(async (addr, index) => {
+    let eventArrPromise = [];
+    for (let i = 0; i < numEventsArr[index]; i++) {
+      eventArrPromise.push(
+        EventResolver.getEventsAssociated.call(i, { from: addr })
+      );
+    }
+    const eventArr = await Promise.all(eventArrPromise);
+    return Promise.all(eventArr.map(eventAddr => makeEvent(eventAddr)));
+  });
+}
+async function addressType(from, event) {
+  if (await isPromoter(from, event)) {
+    return "promoter";
+  } else if (await isApprovedBuyer(from, event)) {
+    return "approvedBuyer";
+  } else {
+    return "endConsumer";
+  }
+}
+async function isPromoter(from, event) {
+  const promoterAddress = await event.promoter.call();
+  return promoterAddress === from;
+}
+async function isApprovedBuyer(from, event) {
+  const isApproved = await event.isApprovedBuyer.call({ from });
+  return isApproved;
+}
+async function makeEvent(contractAddress) {
+  return await Event.at(contractAddress);
 }
 web3RPC.eth.filter("latest", (err, res) => (!err ? console.log(res) : null));
 // scan through the accounts the person owns and see if they match an event
 export async function pollForEvents(pollTime) {}
 export function watchForEvents() {}
+
 function asyncSetTimeout(timeToWaitInMili) {
   return new Promise(resolve => {
     setTimeout(resolve, timeToWaitInMili);

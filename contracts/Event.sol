@@ -8,13 +8,13 @@ contract Event {
     string public eventName;
 
     //address of a trusted 3rd party to approve this event as authentic
-    address approver = 0x2222222222222222222222222222222222222222;
+    address public approver = 0x2222222222222222222222222222222222222222;
 
     //wallet of the promoter
-    address promoter;
+    address public promoter;
 
     //wallet of membran, hardcoded
-    address membran = 0x1111111111111111111111111111111111111111;
+    address public membran = 0x1111111111111111111111111111111111111111;
 
     //the fee that membran takes for this event
     uint membranFeePercent;
@@ -78,6 +78,22 @@ contract Event {
             Created(promoter, eventName);
         }
 
+
+    /**************************
+     Getters
+     **************************/
+/**
+    struct Buyer {
+        bool isApproved;
+        mapping(uint8 => uint) allottedQuantities;
+        mapping(uint8 => uint) markupPercent;
+        uint promotersFeePercent;
+    }
+     mapping(address => Buyer) buyers;
+*/
+    function isApprovedBuyer() constant returns(bool){
+        return buyers[msg.sender].isApproved;
+    }   
     /**************************
      Event Firers  
      **************************/

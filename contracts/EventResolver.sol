@@ -9,7 +9,7 @@ contract EventResolver {
     // address => # of events they're associated with
     mapping  (address => uint256) public numEventsOf;
 
-    event addressAssignedToContract(address indexed _addr, address _contract );
+    event AddressAssignedToContract(address indexed _addr, address _contract );
 
     function EventResolver(string _name) {
         resolverName = _name;
@@ -18,6 +18,12 @@ contract EventResolver {
     function assignAddressToContract(address _contractAddress) {
         uint256 newEventId = numEventsOf[msg.sender]++;
         eventsAssociatedOf[msg.sender][newEventId] = _contractAddress;
-        addressAssignedToContract(msg.sender, _contractAddress);
+        AddressAssignedToContract(msg.sender, _contractAddress);
+    }
+    function getEventsAssociated(uint index) constant returns (address){
+        return eventsAssociatedOf[msg.sender][index];
+    }
+    function getNumEventsOf() constant returns (uint){
+        return numEventsOf[msg.sender];
     }
 }
