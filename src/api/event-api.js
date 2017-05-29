@@ -21,13 +21,13 @@ export async function createEvent({
     "10",
     totalTickets,
     consumerMaxTickets,
-    //
     {
       //test address of the promoter for now
       from: promoterAddress,
       gas: 4306940
     }
   );
+
   const newEventEntry = {
     eventName,
     totalTickets,
@@ -35,6 +35,7 @@ export async function createEvent({
     promoterAddress,
     contractAddress: newEvent.address
   };
+
   const currentEvents = store.getState().eventState.events;
   //assign promoter to event resolver
   await assignAddressToContract(promoterAddress, newEvent.address);
@@ -51,9 +52,11 @@ async function assignAddressToContract(from, addressToAssign) {
   return result;
 }
 async function mapAddressesToEvents(addresses) {
+  //map addresses to the number of events they have
   const numEventsArrPromise = addresses.map(addr =>
     EventResolver.getNumEventsOf.call({ from: addr })
   );
+  //map addresses to all of the event addresses theyre associated with
   const numEventsArr = await Promise.all(numEventsArrPromise);
   return addresses.map(async (addr, index) => {
     let eventArrPromise = [];
@@ -62,6 +65,7 @@ async function mapAddressesToEvents(addresses) {
         EventResolver.getEventsAssociated.call(i, { from: addr })
       );
     }
+    //map events to event objects
     const eventArr = await Promise.all(eventArrPromise);
     return Promise.all(eventArr.map(eventAddr => makeEvent(eventAddr)));
   });
