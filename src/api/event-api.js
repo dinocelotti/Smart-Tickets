@@ -1,7 +1,12 @@
 import store from "../store";
-import { getAccounts } from "./account-api";
-import { createEventSuccess } from "./../actions/event-actions";
-const { web3RPC, Event, EventResolver } = store.getState().web3;
+import { getAccountsAndBalances, getAccountsAsync } from "./account-api";
+import {
+  createEventSuccess,
+  loadEventsSuccess,
+  getMapAccountsToEventsSuccess,
+  eventResolverDeploySuccess
+} from "./../actions/event-actions";
+let { web3RPC, Event, EventResolver } = store.getState().web3State;
 
 export async function createEvent({
   eventName,
@@ -37,13 +42,24 @@ export async function createEvent({
   };
 
   const currentEvents = store.getState().eventState.events;
+
+  //add the contract
+  await addEventContract(newEvent.address, promoterAddress);
   //assign promoter to event resolver
+
   await assignAddressToContract(promoterAddress, newEvent.address);
-  store.dispatch(createEventSuccess([newEventEntry, ...currentEvents]));
-  getAccounts();
+  //store.dispatch(createEventSuccess([newEventEntry, ...currentEvents]));
+  getAccountsAndBalances();
+  loadEvents();
   return newEventEntry;
 }
 
+async function addEventContract(contractAddress, promoterAddress) {
+  console.log(contractAddress);
+  return await EventResolver.addEventContract(contractAddress, {
+    from: promoterAddress
+  });
+}
 async function assignAddressToContract(from, addressToAssign) {
   const result = await EventResolver.assignAddressToContract(addressToAssign, {
     from
@@ -51,26 +67,72 @@ async function assignAddressToContract(from, addressToAssign) {
   console.log(result);
   return result;
 }
-async function mapAddressesToEvents(addresses) {
+export async function deployEventResolver() {
+  EventResolver = await EventResolver.deployed();
+  store.dispatch(eventResolverDeploySuccess(true));
+}
+export async function mapAddressesToEvents() {
+  const addresses = await getAccountsAsync();
   //map addresses to the number of events they have
   const numEventsArrPromise = addresses.map(addr =>
     EventResolver.getNumEventsOf.call({ from: addr })
   );
   //map addresses to all of the event addresses theyre associated with
   const numEventsArr = await Promise.all(numEventsArrPromise);
-  return addresses.map(async (addr, index) => {
-    let eventArrPromise = [];
-    for (let i = 0; i < numEventsArr[index]; i++) {
-      eventArrPromise.push(
-        EventResolver.getEventsAssociated.call(i, { from: addr })
+  const mappedAtoE = await Promise.all(
+    addresses.map(async (addr, index) => {
+      let eventArrPromise = [];
+      for (let i = 0; i < numEventsArr[index]; i++) {
+        eventArrPromise.push(
+          EventResolver.getEventsAssociated.call(i, { from: addr })
+        );
+      }
+      //map events to event objects
+      const eventArr = await Promise.all(eventArrPromise);
+      //console.log("eventArr", eventArr);
+      /*
+      //map hydrated events to objects we're going to use for display
+      let instantiatedEvents = await Promise.all(
+        eventArr.map(eventAddr => makeEvent(eventAddr))
       );
-    }
-    //map events to event objects
-    const eventArr = await Promise.all(eventArrPromise);
-    return Promise.all(eventArr.map(eventAddr => makeEvent(eventAddr)));
-  });
+      return Promise.all(instantiatedEvents.map(event => mapEventToObj(event)));
+      */
+      return eventArr;
+    })
+  );
+  store.dispatch(getMapAccountsToEventsSuccess(mappedAtoE));
 }
-async function addressType(from, event) {
+
+export async function mapEventToObj(event) {
+  const obj = {
+    eventName: await event.eventName.call(),
+    totalTickets: (await event.totalTickets.call()).toString(),
+    consumerMaxTickets: (await event.consumerMaxTickets.call()).toString(),
+    promoterAddress: await event.promoter.call(),
+    contractAddress: event.address
+  };
+  return obj;
+}
+
+export async function loadEvents() {
+  const arrLen = parseInt(await EventResolver.getAllEventsLength.call(), 10);
+
+  let eventArrPromise = [];
+  for (var i = 0; i < arrLen; i++) {
+    eventArrPromise.push(EventResolver.eventContracts(i));
+  }
+  const eventArrResult = await Promise.all(eventArrPromise);
+  const result = await Promise.all(
+    eventArrResult.map(eventAddr => makeEvent(eventAddr))
+  );
+
+  let mappedResults = await Promise.all(result.map(res => mapEventToObj(res)));
+  store.dispatch(loadEventsSuccess(mappedResults));
+  mapAddressesToEvents();
+  return eventArrResult;
+}
+
+export async function addressType(from, event) {
   if (await isPromoter(from, event)) {
     return "promoter";
   } else if (await isApprovedBuyer(from, event)) {
@@ -80,7 +142,7 @@ async function addressType(from, event) {
   }
 }
 async function isPromoter(from, event) {
-  const promoterAddress = await event.promoter.call();
+  const promoterAddress = await event.promoter.call({ from });
   return promoterAddress === from;
 }
 async function isApprovedBuyer(from, event) {
@@ -90,7 +152,7 @@ async function isApprovedBuyer(from, event) {
 async function makeEvent(contractAddress) {
   return await Event.at(contractAddress);
 }
-web3RPC.eth.filter("latest", (err, res) => (!err ? console.log(res) : null));
+
 // scan through the accounts the person owns and see if they match an event
 export async function pollForEvents(pollTime) {}
 export function watchForEvents() {}

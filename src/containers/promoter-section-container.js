@@ -12,15 +12,23 @@ class PromoterSectionContainer extends React.Component {
       eventName: "",
       totalTickets: "",
       consumerMaxTickets: "",
-      promoterAddress: ""
+      promoterAddress: "",
+      currentContractChosen: ""
     };
     this.setEventDetails = this.setEventDetails.bind(this);
     this.createEvent = this.createEvent.bind(this);
+    this.setCurrentContract = this.setCurrentContract.bind(this);
   }
   setEventDetails(name, event) {
     this.setState({
       [name]: event.target.value
     });
+  }
+  setCurrentContract(event) {
+    this.setState({
+      currentContractChosen: event.target.value
+    });
+    console.log(event.target.value);
   }
   createEvent(event) {
     event.preventDefault();
@@ -44,14 +52,24 @@ class PromoterSectionContainer extends React.Component {
           <legend> Promoter Contract Interaction </legend>
           <label htmlFor="promoterAddress"> Promoter Address to use</label>
           <select id="promoterAddress">
-            {this.props.accountAddresses.map(acc => (
-              <option key={acc}>{acc}</option>
-            ))}
+            {this.props.accountAddresses.map((acc, index) => {
+              return this.props.events.map(({
+                promoterAddress,
+                contractAddress
+              }) => {
+                if (
+                  acc === promoterAddress &&
+                  this.state.currentContractChosen === contractAddress
+                ) {
+                  return <option key={acc}>{acc}</option>;
+                }
+              });
+            })}
           </select>
           <label htmlFor="contractAddress">
             {" "}Contract Address to interact with
           </label>
-          <select id="contractAddress">
+          <select id="contractAddress" onChange={this.setCurrentContract}>
             {this.props.events.map(({ contractAddress: ev }) => (
               <option key={ev}>{ev}</option>
             ))}
@@ -71,7 +89,8 @@ class PromoterSectionContainer extends React.Component {
 function mapStateToProps(state) {
   return {
     events: state.eventState.events,
-    accountAddresses: state.accountState.accounts.map(acc => acc.address)
+    accountAddresses: state.accountState.accounts.map(acc => acc.address),
+    accountAssociatedEvents: state.accountState.associatedEvents
   };
 }
 export default connect(mapStateToProps)(PromoterSectionContainer);

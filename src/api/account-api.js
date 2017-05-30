@@ -2,7 +2,7 @@ import store from "../store";
 import { getAccountsSuccess } from "./../actions/account-actions";
 const web3RPC = store.getState().web3State.web3RPC;
 
-export async function getAccounts() {
+export async function getAccountsAndBalances() {
   let accs = await getAccountsAsync();
   let balances = (await Promise.all(
     accs.map(acc => getAccountBalanceAsync(acc))
@@ -20,7 +20,7 @@ export async function getAccounts() {
 }
 
 //wrapper around web3 getAccounts
-function getAccountsAsync() {
+export function getAccountsAsync() {
   return new Promise((resolve, reject) => {
     web3RPC.eth.getAccounts((err, accounts) => {
       if (err) {

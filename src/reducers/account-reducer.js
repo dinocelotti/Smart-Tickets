@@ -1,15 +1,21 @@
 import * as types from "./../actions/action-types";
 
 const initialState = {
-  accounts: []
+  accounts: [],
+  associatedEvents: []
 };
-
 export default (state = initialState, action) => {
   switch (action.type) {
     case types.GET_ACCOUNTS_SUCCESS:
       return Object.assign({}, state, {
         accounts: action.accounts
       });
+    case types.GET_MAP_ACCOUNTS_TO_EVENTS_SUCCESS:
+      console.log(
+        "account-reducer",
+        Object.assign({}, state, { associatedEvents: action.events })
+      );
+      return Object.assign({}, state, { associatedEvents: action.events });
     default:
   }
   return state;

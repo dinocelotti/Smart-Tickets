@@ -1,8 +1,12 @@
 import EventTable from "./../views/event-tables";
 import React from "react";
+import * as eventApi from "./../api/event-api";
 import { connect } from "react-redux";
 
 class EventTableContainer extends React.Component {
+  componentDidMount() {
+    eventApi.loadEvents();
+  }
   render() {
     if (this.props.events[0])
       return (

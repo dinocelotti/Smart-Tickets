@@ -42,7 +42,7 @@ contract Event {
     //number of tickets to be sold at this event 
     //this should be set to 0 before staging phase ends as they will be assigned non-generic types in tickets
     uint ticketsLeft;
-    
+    uint public totalTickets;
     struct Ticket {
         uint price;
         uint remainingQuantity;
@@ -52,7 +52,7 @@ contract Event {
     mapping(uint8 => Ticket) tickets;
 
     //limit of the number of tickets a non-approved buyer can own 
-    uint consumerMaxTickets;
+    uint public consumerMaxTickets;
     
     struct Buyer {
         bool isApproved;
@@ -72,6 +72,7 @@ contract Event {
             eventName = _name;
             membranFeePercent = _membranFee;
             ticketsLeft = _totalTickets;
+            totalTickets= _totalTickets;
             consumerMaxTickets = _consumerMaxTickets;
             promoter = msg.sender;  
             currentState = State.Staging;

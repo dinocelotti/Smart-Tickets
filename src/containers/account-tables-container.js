@@ -6,7 +6,7 @@ import * as accountApi from "../api/account-api";
 class accountTableEthContainer extends React.Component {
   componentDidMount() {
     //get account addresses
-    accountApi.getAccounts();
+    accountApi.getAccountsAndBalances();
   }
   render() {
     return <AccountTableEth accounts={this.props.accounts} />;
