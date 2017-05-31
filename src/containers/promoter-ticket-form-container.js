@@ -1,6 +1,6 @@
 import PromoterTicketForm from "./../views/promoter-ticket-form";
 import React, { Component } from "react";
-
+import * as eventApi from "../api/event-api";
 export default class PromoterTicketFormContainer extends Component {
   constructor(props) {
     super(props);
@@ -11,19 +11,24 @@ export default class PromoterTicketFormContainer extends Component {
          */
       ticketQuantity: "",
       ticketPrice: "",
-      tickeType: ""
+      ticketType: "",
+      promoterObj: {}
     };
 
     this.setTicketDetails = this.setTicketDetails.bind(this);
     this.createTickets = this.createTickets.bind(this);
+  }
+  componentWillReceiveProps({ promoterAddress }) {
+    console.log("ticketform", promoterAddress);
   }
   setTicketDetails(name, event) {
     this.setState({
       [name]: event.target.value
     });
   }
-  createTickets() {
-    this.props.createTickets(this.state);
+  createTickets(event) {
+    event.preventDefault();
+    eventApi;
   }
   render() {
     return (

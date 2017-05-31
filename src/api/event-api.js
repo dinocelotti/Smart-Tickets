@@ -163,6 +163,26 @@ function asyncSetTimeout(timeToWaitInMili) {
   });
 }
 export class Promoter {
+  constructor(promoterAddress, eventDetails) {
+    this.address = promoterAddress;
+    this.eventDetails = eventDetails;
+    this.eventResolver = EventResolver;
+    this.eventInstance = {};
+    this.web3 = web3RPC;
+  }
+  async init() {
+    this.eventInstance = await makeEvent(this.eventDetails.contractAddress);
+    return this.eventInstance;
+  }
+  /**************************
+   Conversion functions
+   **************************/
+  encodeString(str) {
+    return this.web3.toHex(str);
+  }
+  decodeString(hex) {
+    return this.web3.toAscii(hex);
+  }
   /**************************
      Phase Setters
      **************************/
@@ -172,9 +192,38 @@ export class Promoter {
      Staging Phase 
      **************************/
   //function setTicketPriceAndQuantity(uint8 _typeOfTicket, uint _priceInWei)
-  setTicketPrice(ticketType, ticketPrice) {}
-
-  setTicketQuantity(ticketType, quantity) {}
+  async setTicketPrice(ticketType, ticketPrice) {
+    return await this.eventInstance.setTicketPrice(ticketType, ticketPrice, {
+      from: this.address
+    });
+  }
+  async setTicketQuantity(ticketType, ticketQuantity) {
+    return await this.eventInstance.setTicketQuantity(
+      ticketType,
+      ticketQuantity,
+      { from: this.address }
+    );
+  }
+  async handleTicketForm({ ticketType, ticketPrice, ticketQuantity }) {
+    ticketType = this.encodeString(ticketType);
+    return await Promise.all([
+      this.setTicketPrice(ticketType, ticketPrice),
+      this.setTicketQuantity(ticketType, ticketQuantity)
+    ]);
+  }
+  async getNumOfTicketsLeft() {
+    return await this.eventInstance.ticketsLeft.call({ from: this.address });
+  }
+  async getTicketDetails(ticketType) {
+    let res = await this.eventInstance.getTicketDetails.call(
+      this.encodeString(ticketType),
+      {
+        from: this.address
+      }
+    );
+    console.log("getTicketDetails", res);
+    return res;
+  }
   approveBuyer(buyer) {}
   setBuyerAllottedQuantities(buyer, ticketType, quantity) {}
   setApprovedBuyerFee(buyer, promotersFee) {}

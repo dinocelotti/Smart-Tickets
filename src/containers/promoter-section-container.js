@@ -13,11 +13,13 @@ class PromoterSectionContainer extends React.Component {
       totalTickets: "",
       consumerMaxTickets: "",
       promoterAddress: "",
-      currentContractChosen: ""
+      currentContractChosen: "",
+      promoterInstance: {}
     };
     this.setEventDetails = this.setEventDetails.bind(this);
     this.createEvent = this.createEvent.bind(this);
     this.setCurrentContract = this.setCurrentContract.bind(this);
+    this.setCurrentPromoterAddress = this.setCurrentPromoterAddress.bind(this);
   }
   setEventDetails(name, event) {
     this.setState({
@@ -28,7 +30,11 @@ class PromoterSectionContainer extends React.Component {
     this.setState({
       currentContractChosen: event.target.value
     });
-    console.log(event.target.value);
+  }
+  setCurrentPromoterAddress(event) {
+    this.setState({
+      promoterAddress: event.target.value
+    });
   }
   createEvent(event) {
     event.preventDefault();
@@ -38,6 +44,15 @@ class PromoterSectionContainer extends React.Component {
       eventDetails.promoterAddress = this.props.accountAddresses[0];
     }
     eventApi.createEvent(eventDetails);
+  }
+  componentWillReceiveProps({ events, accountAddresses }) {
+    if (events.length > 0) {
+      const defaultContract = events[0];
+      this.setState({ currentContractChosen: defaultContract.contractAddress });
+      if (accountAddresses.includes(defaultContract.promoterAddress)) {
+        this.setState({ promoterAddress: defaultContract.promoterAddress });
+      }
+    }
   }
   render() {
     return (
@@ -51,7 +66,10 @@ class PromoterSectionContainer extends React.Component {
         <form className="pure-form pure-form-stacked">
           <legend> Promoter Contract Interaction </legend>
           <label htmlFor="promoterAddress"> Promoter Address to use</label>
-          <select id="promoterAddress">
+          <select
+            id="promoterAddress"
+            onChange={this.setCurrentPromoterAddress}
+          >
             {this.props.accountAddresses.map((acc, index) => {
               return this.props.events.map(({
                 promoterAddress,
@@ -80,7 +98,7 @@ class PromoterSectionContainer extends React.Component {
           <ApprovedBuyer />
         </div>
         <div className="pure-u-1-3">
-          <TicketForm />
+          <TicketForm promoterAddress={this.state.promoterAddress} />
         </div>
       </div>
     );

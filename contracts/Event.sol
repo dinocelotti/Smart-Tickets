@@ -33,15 +33,15 @@ contract Event {
     State currentState;
     
     //the number of ticket types we have, with 0 being a general ticket
-    uint8 ticketTypes = 0;
+    uint ticketTypes = 0;
 
-    // address => ticket type (uint8) => number of tickets
-    // we can use an off-chain solution to map a uint8 to a location/ticket type
-    mapping(address => mapping(uint8 => uint)) ticketsOf;
+    // address => ticket type (uint) => number of tickets
+    // we can use an off-chain solution to map a uint to a location/ticket type
+    mapping(address => mapping(uint => uint)) ticketsOf;
 
     //number of tickets to be sold at this event 
     //this should be set to 0 before staging phase ends as they will be assigned non-generic types in tickets
-    uint ticketsLeft;
+    uint public ticketsLeft;
     uint public totalTickets;
     struct Ticket {
         uint price;
@@ -49,15 +49,15 @@ contract Event {
     }
 
     // type of ticket => {price, quantity}
-    mapping(uint8 => Ticket) tickets;
+    mapping(uint => Ticket) tickets;
 
     //limit of the number of tickets a non-approved buyer can own 
     uint public consumerMaxTickets;
     
     struct Buyer {
         bool isApproved;
-        mapping(uint8 => uint) allottedQuantities;
-        mapping(uint8 => uint) markupPercent;
+        mapping(uint => uint) allottedQuantities;
+        mapping(uint => uint) markupPercent;
         uint promotersFeePercent;
     }
 
@@ -83,24 +83,19 @@ contract Event {
     /**************************
      Getters
      **************************/
-/**
-    struct Buyer {
-        bool isApproved;
-        mapping(uint8 => uint) allottedQuantities;
-        mapping(uint8 => uint) markupPercent;
-        uint promotersFeePercent;
-    }
-     mapping(address => Buyer) buyers;
-*/
     function isApprovedBuyer() constant returns(bool){
         return buyers[msg.sender].isApproved;
+    }
+    function getTicketDetails(uint _ticketType) returns (uint, uint, uint){
+        Ticket _t = tickets[_ticketType];
+        return (_ticketType, _t.price, _t.remainingQuantity);
     }   
     /**************************
      Event Firers  
      **************************/
      event Created(address indexed promoter, string eventName);
 
-     event Purchased(address indexed to, bool indexed approvedBuyer, uint8 typeOfTicket, uint pricePerTicket, uint quantity, uint weiSent);
+     event Purchased(address indexed to, bool indexed approvedBuyer, uint typeOfTicket, uint pricePerTicket, uint quantity, uint weiSent);
 
     /**************************
      Phase Modifiers  
@@ -166,11 +161,11 @@ contract Event {
      Staging Phase 
      **************************/
 
-    function setTicketPrice(uint8 _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
+    function setTicketPrice(uint _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
         require(_priceInWei >= 0);
         tickets[_typeOfTicket].price = _priceInWei;
     }
-    function setTicketQuantity(uint8 _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
+    function setTicketQuantity(uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         //make sure we dont go over allotted tickets for entire event
         require(ticketsLeft >= _quantity);
 
@@ -183,7 +178,7 @@ contract Event {
     function approveBuyer(address _buyer) onlyPromoter() stagingPhase() {
         buyers[_buyer].isApproved = true;
     }
-    function setBuyerAllottedQuantities(address _buyer, uint8 _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
+    function setBuyerAllottedQuantities(address _buyer, uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         //check for sufficient tickets of that type
         require(tickets[_typeOfTicket].remainingQuantity >= _quantity);
 
@@ -199,7 +194,7 @@ contract Event {
 
         buyers[_buyer].promotersFeePercent = _promotersFee;
     }
-    function setMarkup(uint _markupPercent, uint8 _typeOfTicket) onlyApprovedBuyer() {
+    function setMarkup(uint _markupPercent, uint _typeOfTicket) onlyApprovedBuyer() {
         buyers[msg.sender].markupPercent[_typeOfTicket] = _markupPercent;
     }
 
@@ -219,7 +214,7 @@ contract Event {
     }
 
 
-    function purchaseTicketFromPromoter(uint8 _typeOfTicket, uint _quantity) payable 
+    function purchaseTicketFromPromoter(uint _typeOfTicket, uint _quantity) payable 
     validBuyer() fundingPhase()  {
 
         //CONDITION CHECKS
@@ -229,7 +224,7 @@ contract Event {
         uint _ticketsOfSender = 0;
 
         //add up the total number of tickets the address has
-        for (uint8 ticketType = 0; ticketType <= ticketTypes; ticketType++) {
+        for (uint ticketType = 0; ticketType <= ticketTypes; ticketType++) {
             _ticketsOfSender += ticketsOf[msg.sender][ticketType];
         }
         
@@ -266,7 +261,7 @@ contract Event {
         _;
     }
 
-    function purchaseTicketFromApprovedSeller(address _approvedSeller, uint8 _typeOfTicket, uint _quantity) payable 
+    function purchaseTicketFromApprovedSeller(address _approvedSeller, uint _typeOfTicket, uint _quantity) payable 
     validApprovedSeller(_approvedSeller) publicFundingPhase() {
 
         //CONDITION CHECKS
@@ -282,7 +277,7 @@ contract Event {
         uint _ticketsOfSender = 0;
 
         //add up the total number of tickets the address has
-        for (uint8 ticketType = 0; ticketType <= ticketTypes; ticketType++) {
+        for (uint ticketType = 0; ticketType <= ticketTypes; ticketType++) {
             _ticketsOfSender += ticketsOf[msg.sender][ticketType];
         }
         
