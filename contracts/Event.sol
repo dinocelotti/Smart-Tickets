@@ -221,9 +221,9 @@ contract Event {
         require(_quantity > 0);
         require(_typeOfTicket >= 0 && _typeOfTicket <= ticketTypes );
         require(tickets[_typeOfTicket].remainingQuantity >= _quantity);
-        uint _ticketsOfSender = 0;
-
+        
         //add up the total number of tickets the address has
+        uint _ticketsOfSender = 0;
         for (uint ticketType = 0; ticketType <= ticketTypes; ticketType++) {
             _ticketsOfSender += ticketsOf[msg.sender][ticketType];
         }
@@ -237,18 +237,22 @@ contract Event {
             && (ticketsOf[msg.sender][_typeOfTicket] + _quantity  
             > buyers[msg.sender].allottedQuantities[_typeOfTicket])) throw;
 
-
-        //EFFECTS
         uint _total = tickets[_typeOfTicket].price * _quantity;
         uint _netValue = msg.value  - _total;
+        uint _membranFee  = calcPercent(_total, membranFeePercent);
+
+        //make sure buyer paid enough
         require(_netValue >= 0);
     
+        //EFFECTS
+        //add the tickets bought to the buyer
         ticketsOf[msg.sender][_typeOfTicket] += _quantity;
+
+        //subtract remaining quantity from pool of that ticket type
         tickets[_typeOfTicket].remainingQuantity -= _quantity;
 
-        //allow buyer to withdraw their extra funds if they sent too much
+        //split payment
         pendingReturns[msg.sender] += _netValue; 
-        uint _membranFee  = calcPercent(_total, membranFeePercent);
         pendingReturns[membran] += _membranFee;
         pendingReturns[promoter] += _total - _membranFee;
 
@@ -265,18 +269,24 @@ contract Event {
     validApprovedSeller(_approvedSeller) publicFundingPhase() {
 
         //CONDITION CHECKS
-        //check that they are indeed a end consumer
+        //check that they are indeed an end consumer
         require(msg.sender != membran
                 && msg.sender != approver 
                 && msg.sender != promoter 
                 && !buyers[msg.sender].isApproved);
+            
         require(_quantity > 0);
+
+        //make sure its a valid ticket type, may need to check off-chain too
         require(_typeOfTicket >= 0 && _typeOfTicket <= ticketTypes );
+
+        //make sure the approved seller has enough allotted quantities to sell to the buyer
         require(buyers[_approvedSeller].allottedQuantities[_typeOfTicket] >= _quantity);
 
-        uint _ticketsOfSender = 0;
+       
 
         //add up the total number of tickets the address has
+        uint _ticketsOfSender = 0;
         for (uint ticketType = 0; ticketType <= ticketTypes; ticketType++) {
             _ticketsOfSender += ticketsOf[msg.sender][ticketType];
         }
@@ -284,17 +294,24 @@ contract Event {
         //if theyre not an approved seller, check if they will go over the consumer limit
         require ( _ticketsOfSender + _quantity <= consumerMaxTickets);
         
-
-
-        //EFFECTS
         uint _faceValue = tickets[_typeOfTicket].price * _quantity;
         uint _markup =  calcPercent(_faceValue, buyers[_approvedSeller].markupPercent[_typeOfTicket]);
         uint _total = _faceValue + _markup;
         uint _netValue = msg.value - _total;
+        uint _promotersFee = calcPercent(_markup, buyers[_approvedSeller].promotersFeePercent);
+
+        //make sure buyer paid enough
         require(_netValue >= 0);
 
-        uint _promotersFee = calcPercent(_markup, buyers[_approvedSeller].promotersFeePercent);
+        //EFFECTS
+
+        //add the tickets bought to the buyer
+        ticketsOf[msg.sender][_typeOfTicket] += _quantity;
+
+        //subtract tickets bought from approved seller
         buyers[_approvedSeller].allottedQuantities[_typeOfTicket] -= _quantity;
+
+        //split payment
         pendingReturns[msg.sender] += _netValue;
         pendingReturns[promoter] +=  _promotersFee;
         pendingReturns[_approvedSeller]  += _total - _promotersFee; 
