@@ -42,11 +42,11 @@ export class PromoterSection extends React.Component {
             )}
           />
 
-          <label htmlFor="promoterAddress"> Your wallet address </label>
+          <label htmlFor="promoterAddr"> Your wallet address </label>
           <select
-            id="promoterAddress"
+            id="promoterAddr"
             className="pure-input-3-4"
-            onChange={this.props.setEventDetails.bind(this, "promoterAddress")}
+            onChange={this.props.setEventDetails.bind(this, "promoterAddr")}
           >
             {this.props.accountAddresses.map(acc => (
               <option key={acc}>{acc}</option>

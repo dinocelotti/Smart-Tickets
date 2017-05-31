@@ -25,3 +25,11 @@ export function eventResolverDeploySuccess(eventResolverDeployed) {
     eventResolverDeployed
   };
 }
+
+export function updateCurrentPromoterSuccess(currentPromoter) {
+  console.log("updateCurrentPromoterSuccess", currentPromoter);
+  return {
+    type: types.UPDATE_CURRENT_PROMOTER_SUCCESS,
+    currentPromoter
+  };
+}

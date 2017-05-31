@@ -14,7 +14,7 @@ class EventTableContainer extends React.Component {
           <h1>Newly Created Events</h1>
           {" "}
           {this.props.events.map(event => (
-            <EventTable key={event.contractAddress} eventDetails={event} />
+            <EventTable key={event.eventAddr} eventDetails={event} />
           ))}
         </div>
       );

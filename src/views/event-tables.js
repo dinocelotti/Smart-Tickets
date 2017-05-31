@@ -26,8 +26,8 @@ export default class EventTable extends React.Component {
           {tdElement(this.props.eventDetails.eventName)}
           {tdElement(this.props.eventDetails.totalTickets)}
           {tdElement(this.props.eventDetails.consumerMaxTickets)}
-          {tdElement(this.props.eventDetails.promoterAddress)}
-          {tdElement(this.props.eventDetails.contractAddress)}
+          {tdElement(this.props.eventDetails.promoterAddr)}
+          {tdElement(this.props.eventDetails.eventAddr)}
         </tr>
       </tbody>
     );

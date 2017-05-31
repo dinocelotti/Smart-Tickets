@@ -4,7 +4,8 @@ import {
   createEventSuccess,
   loadEventsSuccess,
   getMapAccountsToEventsSuccess,
-  eventResolverDeploySuccess
+  eventResolverDeploySuccess,
+  updateCurrentPromoterSuccess
 } from "./../actions/event-actions";
 let { web3RPC, Event, EventResolver } = store.getState().web3State;
 
@@ -12,14 +13,14 @@ export async function createEvent({
   eventName,
   totalTickets,
   consumerMaxTickets,
-  promoterAddress
+  promoterAddr
 }) {
   //check that the account exists
   const accountAddresses = store
     .getState()
     .accountState.accounts.map(acc => acc.address);
-  if (!accountAddresses.includes(promoterAddress)) {
-    throw `Address ${promoterAddress} does not exist on this wallet`;
+  if (!accountAddresses.includes(promoterAddr)) {
+    throw `Address ${promoterAddr} does not exist on this wallet`;
   }
   const newEvent = await Event.new(
     eventName,
@@ -28,7 +29,7 @@ export async function createEvent({
     consumerMaxTickets,
     {
       //test address of the promoter for now
-      from: promoterAddress,
+      from: promoterAddr,
       gas: 4306940
     }
   );
@@ -37,27 +38,27 @@ export async function createEvent({
     eventName,
     totalTickets,
     consumerMaxTickets,
-    promoterAddress,
-    contractAddress: newEvent.address
+    promoterAddr,
+    eventAddr: newEvent.address
   };
 
   const currentEvents = store.getState().eventState.events;
 
   //add the contract
-  await addEventContract(newEvent.address, promoterAddress);
+  await addEventContract(newEvent.address, promoterAddr);
   //assign promoter to event resolver
 
-  await assignAddressToContract(promoterAddress, newEvent.address);
+  await assignAddressToContract(promoterAddr, newEvent.address);
   //store.dispatch(createEventSuccess([newEventEntry, ...currentEvents]));
   getAccountsAndBalances();
   loadEvents();
   return newEventEntry;
 }
 
-async function addEventContract(contractAddress, promoterAddress) {
-  console.log(contractAddress);
-  return await EventResolver.addEventContract(contractAddress, {
-    from: promoterAddress
+async function addEventContract(eventAddr, promoterAddr) {
+  console.log(eventAddr);
+  return await EventResolver.addEventContract(eventAddr, {
+    from: promoterAddr
   });
 }
 async function assignAddressToContract(from, addressToAssign) {
@@ -108,8 +109,8 @@ export async function mapEventToObj(event) {
     eventName: await event.eventName.call(),
     totalTickets: (await event.totalTickets.call()).toString(),
     consumerMaxTickets: (await event.consumerMaxTickets.call()).toString(),
-    promoterAddress: await event.promoter.call(),
-    contractAddress: event.address
+    promoterAddr: await event.promoter.call(),
+    eventAddr: event.address
   };
   return obj;
 }
@@ -142,15 +143,15 @@ export async function addressType(from, event) {
   }
 }
 async function isPromoter(from, event) {
-  const promoterAddress = await event.promoter.call({ from });
-  return promoterAddress === from;
+  const promoterAddr = await event.promoter.call({ from });
+  return promoterAddr === from;
 }
 async function isApprovedBuyer(from, event) {
   const isApproved = await event.isApprovedBuyer.call({ from });
   return isApproved;
 }
-async function makeEvent(contractAddress) {
-  return await Event.at(contractAddress);
+async function makeEvent(eventAddr) {
+  return await Event.at(eventAddr);
 }
 
 // scan through the accounts the person owns and see if they match an event
@@ -162,16 +163,17 @@ function asyncSetTimeout(timeToWaitInMili) {
     setTimeout(resolve, timeToWaitInMili);
   });
 }
+
 export class Promoter {
-  constructor(promoterAddress, eventDetails) {
-    this.address = promoterAddress;
-    this.eventDetails = eventDetails;
+  constructor(promoterAddr, eventAddr) {
+    this.promoterAddr = promoterAddr;
+    this.eventAddr = eventAddr;
     this.eventResolver = EventResolver;
     this.eventInstance = {};
     this.web3 = web3RPC;
   }
   async init() {
-    this.eventInstance = await makeEvent(this.eventDetails.contractAddress);
+    this.eventInstance = await makeEvent(this.eventAddr);
     return this.eventInstance;
   }
   /**************************
@@ -212,7 +214,12 @@ export class Promoter {
     ]);
   }
   async getNumOfTicketsLeft() {
-    return await this.eventInstance.ticketsLeft.call({ from: this.address });
+    const res = await this.eventInstance.ticketsLeft.call({
+      from: this.address
+    });
+
+    //convert to number string
+    return res.toString(10);
   }
   async getTicketDetails(ticketType) {
     let res = await this.eventInstance.getTicketDetails.call(
@@ -228,7 +235,21 @@ export class Promoter {
   setBuyerAllottedQuantities(buyer, ticketType, quantity) {}
   setApprovedBuyerFee(buyer, promotersFee) {}
 }
+let counter = 0;
+//call this whenever we want to change the new current promoter
+export async function updateCurrentPromoter(promoterAddr, eventAddr) {
+  const prevInstance = store.getState().promoterState;
 
+  if (promoterAddr && eventAddr) {
+    const newPromoter = new Promoter(promoterAddr, eventAddr);
+    console.log(newPromoter, "newPromoter");
+    await newPromoter.init();
+
+    if (counter++ < 3) {
+      store.dispatch(updateCurrentPromoterSuccess(newPromoter));
+    }
+  }
+}
 export class Buyer {
   /**************************
      Staging Phase 

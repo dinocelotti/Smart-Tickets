@@ -11,10 +11,6 @@ export default (state = initialState, action) => {
         accounts: action.accounts
       });
     case types.GET_MAP_ACCOUNTS_TO_EVENTS_SUCCESS:
-      console.log(
-        "account-reducer",
-        Object.assign({}, state, { associatedEvents: action.events })
-      );
       return Object.assign({}, state, { associatedEvents: action.events });
     default:
   }
