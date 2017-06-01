@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import * as eventApi from "../api/event-api";
 import ApprovedBuyer from "./promoter-buyer-container";
 import TicketForm from "./promoter-ticket-form-container";
+import TicketQuery from "./ticket-query-container";
 class PromoterSectionContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -130,8 +131,8 @@ class PromoterSectionContainer extends React.Component {
             {" "}Contract Address to interact with
           </label>
           <select id="eventAddr" onChange={this.setEventAddr}>
-            {this.props.events.map(({ eventAddr: ev }) => (
-              <option key={ev}>{ev}</option>
+            {this.props.events.map(({ eventAddr }) => (
+              <option key={eventAddr}>{eventAddr}</option>
             ))}
           </select>
           <br />
@@ -141,6 +142,9 @@ class PromoterSectionContainer extends React.Component {
         </div>
         <div className="pure-u-1-3">
           <TicketForm promoterInstance={this.state.promoterInstance} />
+        </div>
+        <div className="pure-u-1-3">
+          <TicketQuery promoterInstance={this.state.promoterInstance} />
         </div>
       </div>
     );

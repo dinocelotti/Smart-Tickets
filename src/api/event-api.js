@@ -1,11 +1,9 @@
 import store from "../store";
 import { getAccountsAndBalances, getAccountsAsync } from "./account-api";
 import {
-  createEventSuccess,
   loadEventsSuccess,
   getMapAccountsToEventsSuccess,
-  eventResolverDeploySuccess,
-  updateCurrentPromoterSuccess
+  eventResolverDeploySuccess
 } from "./../actions/event-actions";
 let { web3RPC, Event, EventResolver } = store.getState().web3State;
 
@@ -20,7 +18,7 @@ export async function createEvent({
     .getState()
     .accountState.accounts.map(acc => acc.address);
   if (!accountAddresses.includes(promoterAddr)) {
-    throw `Address ${promoterAddr} does not exist on this wallet`;
+    throw new Error(`Address ${promoterAddr} does not exist on this wallet`);
   }
   const newEvent = await Event.new(
     eventName,
@@ -41,8 +39,6 @@ export async function createEvent({
     promoterAddr,
     eventAddr: newEvent.address
   };
-
-  const currentEvents = store.getState().eventState.events;
 
   //add the contract
   await addEventContract(newEvent.address, promoterAddr);
@@ -156,7 +152,6 @@ async function makeEvent(eventAddr) {
 
 // scan through the accounts the person owns and see if they match an event
 export async function pollForEvents(pollTime) {}
-export function watchForEvents() {}
 
 function asyncSetTimeout(timeToWaitInMili) {
   return new Promise(resolve => {
@@ -196,14 +191,14 @@ export class Promoter {
   //function setTicketPriceAndQuantity(uint8 _typeOfTicket, uint _priceInWei)
   async setTicketPrice(ticketType, ticketPrice) {
     return await this.eventInstance.setTicketPrice(ticketType, ticketPrice, {
-      from: this.address
+      from: this.promoterAddr
     });
   }
   async setTicketQuantity(ticketType, ticketQuantity) {
     return await this.eventInstance.setTicketQuantity(
       ticketType,
       ticketQuantity,
-      { from: this.address }
+      { from: this.promoterAddr }
     );
   }
   async handleTicketForm({ ticketType, ticketPrice, ticketQuantity }) {
@@ -213,9 +208,10 @@ export class Promoter {
       this.setTicketQuantity(ticketType, ticketQuantity)
     ]);
   }
+
   async getNumOfTicketsLeft() {
     const res = await this.eventInstance.ticketsLeft.call({
-      from: this.address
+      from: this.promoterAddr
     });
 
     //convert to number string
@@ -225,31 +221,22 @@ export class Promoter {
     let res = await this.eventInstance.getTicketDetails.call(
       this.encodeString(ticketType),
       {
-        from: this.address
+        from: this.promoterAddr
       }
     );
     console.log("getTicketDetails", res);
-    return res;
+    res = res.map(x => x.toString(10));
+    return {
+      ticketType: res[0],
+      ticketPrice: res[1],
+      ticketQuantity: res[2]
+    };
   }
   approveBuyer(buyer) {}
   setBuyerAllottedQuantities(buyer, ticketType, quantity) {}
   setApprovedBuyerFee(buyer, promotersFee) {}
 }
-let counter = 0;
-//call this whenever we want to change the new current promoter
-export async function updateCurrentPromoter(promoterAddr, eventAddr) {
-  const prevInstance = store.getState().promoterState;
 
-  if (promoterAddr && eventAddr) {
-    const newPromoter = new Promoter(promoterAddr, eventAddr);
-    console.log(newPromoter, "newPromoter");
-    await newPromoter.init();
-
-    if (counter++ < 3) {
-      store.dispatch(updateCurrentPromoterSuccess(newPromoter));
-    }
-  }
-}
 export class Buyer {
   /**************************
      Staging Phase 

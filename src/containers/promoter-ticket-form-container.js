@@ -1,8 +1,7 @@
 import PromoterTicketForm from "./../views/promoter-ticket-form";
 import React, { Component } from "react";
-import * as eventApi from "../api/event-api";
-import { connect } from "react-redux";
-class PromoterTicketFormContainer extends Component {
+
+export default class PromoterTicketFormContainer extends Component {
   constructor(props) {
     super(props);
 
@@ -21,6 +20,10 @@ class PromoterTicketFormContainer extends Component {
     this.createTickets = this.createTickets.bind(this);
   }
 
+  isEmptyObject(obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  }
+
   //takes an obj
   setStateAsync(state) {
     return new Promise(res => {
@@ -29,22 +32,28 @@ class PromoterTicketFormContainer extends Component {
   }
 
   async componentWillReceiveProps({ promoterInstance }) {
+    if (this.isEmptyObject(promoterInstance)) return;
+
     const ticketsLeft = await promoterInstance.getNumOfTicketsLeft();
     await this.setTicketsLeft(ticketsLeft);
   }
   async setTicketsLeft(ticketsLeft) {
     await this.setStateAsync({ ticketsLeft });
   }
+
   setTicketDetails(name, event) {
     this.setState({
       [name]: event.target.value
     });
   }
-  createTickets(event) {
-    //update the promoter object  here
 
+  async createTickets(event) {
     event.preventDefault();
+    await this.props.promoterInstance.handleTicketForm(this.state);
+    const ticketsLeft = await this.props.promoterInstance.getNumOfTicketsLeft();
+    await this.setTicketsLeft(ticketsLeft);
   }
+
   render() {
     return (
       <PromoterTicketForm
@@ -55,19 +64,3 @@ class PromoterTicketFormContainer extends Component {
     );
   }
 }
-function mapStateToProps(state) {
-  const currentPromoter = state.promoterState;
-  if (!currentPromoter.getNumOfTicketsLeft) {
-    return {
-      ticketsLeft: 0
-    };
-  }
-
-  currentPromoter.getNumOfTicketsLeft().then(numTix => {
-    return {
-      ticketsLeft: numTix
-    };
-  });
-}
-
-export default connect(mapStateToProps)(PromoterTicketFormContainer);
