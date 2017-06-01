@@ -14,13 +14,26 @@ export default class PromoterApprovedBuyerContainer extends Component {
     this.setBuyerDetails = this.setBuyerDetails.bind(this);
     this.createApprovedBuyer = this.createApprovedBuyer.bind(this);
   }
+
+  isEmptyObject(obj) {
+    return Object.keys(obj).length === 0 && obj.constructor === Object;
+  }
+
+  //takes an obj
+  setStateAsync(state) {
+    return new Promise(res => {
+      this.setState(state, res);
+    });
+  }
+
   setBuyerDetails(name, event) {
     this.setState({
       [name]: event.target.value
     });
   }
-  createApprovedBuyer() {
-    this.props.createApprovedBuyer(this.state);
+
+  createApprovedBuyer(event) {
+    event.preventDefault();
   }
   render() {
     return (
