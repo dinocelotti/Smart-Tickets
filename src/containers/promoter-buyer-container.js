@@ -8,7 +8,8 @@ export default class PromoterApprovedBuyerContainer extends Component {
     this.state = {
       approvedBuyerAddress: "",
       buyerAllottedQuantities: "",
-      approvedBuyerFee: ""
+      approvedBuyerFee: "",
+      ticketType: ""
     };
 
     this.setBuyerDetails = this.setBuyerDetails.bind(this);
@@ -34,6 +35,8 @@ export default class PromoterApprovedBuyerContainer extends Component {
 
   createApprovedBuyer(event) {
     event.preventDefault();
+    if (this.isEmptyObject(this.props.promoterInstance)) return;
+    this.props.promoterInstance.handleBuyerForm(this.state);
   }
   render() {
     return (

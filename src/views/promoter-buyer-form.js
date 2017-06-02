@@ -29,6 +29,13 @@ export default class PromoterBuyerForm extends Component {
           className="pure-input-3-4"
           placeholder="Allotted Quantities"
         />
+        <label htmlFor="ticketType"> Ticket Type</label>
+        <input
+          type="text"
+          id="ticketType"
+          className="pure-input-3-4"
+          onChange={this.props.setBuyerDetails.bind(this, "ticketType")}
+        />
         <label htmlFor="approvedBuyerFee"> Fee for Approved Buyer </label>
         <input
           type="text"

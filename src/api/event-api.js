@@ -180,6 +180,19 @@ export class Promoter {
   decodeString(hex) {
     return this.web3.toAscii(hex);
   }
+  async wrapTx(method, ...params) {
+    if (params.length === 0) {
+      {
+        return await this.eventInstance[method]({
+          from: this.promoterAddr
+        });
+      }
+    } else {
+      return await this.eventInstance[method](...params, {
+        from: this.promoterAddr
+      });
+    }
+  }
   /**************************
      Phase Setters
      **************************/
@@ -195,6 +208,7 @@ export class Promoter {
     });
   }
   async setTicketQuantity(ticketType, ticketQuantity) {
+    await this.wrapTx("setTicketQuantity", ticketType, ticketQuantity);
     return await this.eventInstance.setTicketQuantity(
       ticketType,
       ticketQuantity,
@@ -210,20 +224,17 @@ export class Promoter {
   }
 
   async getNumOfTicketsLeft() {
-    const res = await this.eventInstance.ticketsLeft.call({
-      from: this.promoterAddr
-    });
+    const res = await this.wrapTx("ticketsLeft");
 
     //convert to number string
     return res.toString(10);
   }
   async getTicketDetails(ticketType) {
-    let res = await this.eventInstance.getTicketDetails.call(
-      this.encodeString(ticketType),
-      {
-        from: this.promoterAddr
-      }
+    let res = await this.wrapTx(
+      "getTicketDetails",
+      this.encodeString(ticketType)
     );
+
     console.log("getTicketDetails", res);
     res = res.map(x => x.toString(10));
     return {
@@ -232,9 +243,41 @@ export class Promoter {
       ticketQuantity: res[2]
     };
   }
-  approveBuyer(buyer) {}
-  setBuyerAllottedQuantities(buyer, ticketType, quantity) {}
-  setApprovedBuyerFee(buyer, promotersFee) {}
+  async approveBuyer(buyer) {
+    await this.wrapTx("approveBuyer", buyer);
+  }
+  async setBuyerAllottedQuantities(buyer, ticketType, quantity) {
+    await this.wrapTx(
+      "setBuyerAllottedQuantities",
+      buyer,
+      this.encodeString(ticketType),
+      quantity
+    );
+  }
+  async setApprovedBuyerFee(buyer, promotersFee) {
+    await this.wrapTx("setApprovedBuyerFee", buyer, promotersFee);
+  }
+
+  async handleBuyerForm({
+    approvedBuyerAddress,
+    ticketType,
+    buyerAllottedQuantities,
+    approvedBuyerFee
+  }) {
+    let txArr = [];
+    txArr.push(this.approveBuyer(approvedBuyerAddress));
+    txArr.push(
+      this.setBuyerAllottedQuantities(
+        approvedBuyerAddress,
+        ticketType,
+        buyerAllottedQuantities
+      )
+    );
+    txArr.push(
+      this.setApprovedBuyerFee(approvedBuyerAddress, approvedBuyerFee)
+    );
+    return await Promise.all(txArr);
+  }
 }
 
 export class Buyer {

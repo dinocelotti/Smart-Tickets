@@ -86,7 +86,7 @@ contract Event {
     function isApprovedBuyer() constant returns(bool){
         return buyers[msg.sender].isApproved;
     }
-    function getTicketDetails(uint _ticketType) returns (uint, uint, uint){
+    function getTicketDetails(uint _ticketType) constant returns (uint, uint, uint){
         Ticket _t = tickets[_ticketType];
         return (_ticketType, _t.price, _t.remainingQuantity);
     }   

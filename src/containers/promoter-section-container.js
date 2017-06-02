@@ -138,7 +138,7 @@ class PromoterSectionContainer extends React.Component {
           <br />
         </form>
         <div className="pure-u-1-3">
-          <ApprovedBuyer />
+          <ApprovedBuyer promoterInstance={this.state.promoterInstance} />
         </div>
         <div className="pure-u-1-3">
           <TicketForm promoterInstance={this.state.promoterInstance} />
