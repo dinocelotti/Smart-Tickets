@@ -5,7 +5,7 @@ import {
   getMapAccountsToEventsSuccess,
   eventResolverDeploySuccess
 } from "./../actions/event-actions";
-let { web3RPC, Event, EventResolver } = store.getState().web3State;
+const { web3RPC, Event, EventResolver } = store.getState().web3State;
 
 export async function createEvent({
   eventName,
@@ -105,10 +105,23 @@ export async function mapEventToObj(event) {
     eventName: await event.eventName.call(),
     totalTickets: (await event.totalTickets.call()).toString(),
     consumerMaxTickets: (await event.consumerMaxTickets.call()).toString(),
+    state: await getState(event),
     promoterAddr: await event.promoter.call(),
     eventAddr: event.address
   };
   return obj;
+}
+export async function getState(event) {
+  const stateMap = {
+    0: "Staging",
+    1: "AwaitingApproval",
+    2: "PrivateFunding",
+    3: "PublicFunding",
+    4: "Done"
+  };
+
+  const state = await event.currentState();
+  return stateMap[state];
 }
 
 export async function loadEvents() {
@@ -182,11 +195,9 @@ export class Promoter {
   }
   async wrapTx(method, ...params) {
     if (params.length === 0) {
-      {
-        return await this.eventInstance[method]({
-          from: this.promoterAddr
-        });
-      }
+      return await this.eventInstance[method]({
+        from: this.promoterAddr
+      });
     } else {
       return await this.eventInstance[method](...params, {
         from: this.promoterAddr
@@ -201,18 +212,17 @@ export class Promoter {
   /**************************
      Staging Phase 
      **************************/
-  //function setTicketPriceAndQuantity(uint8 _typeOfTicket, uint _priceInWei)
+
   async setTicketPrice(ticketType, ticketPrice) {
     return await this.eventInstance.setTicketPrice(ticketType, ticketPrice, {
       from: this.promoterAddr
     });
   }
   async setTicketQuantity(ticketType, ticketQuantity) {
-    await this.wrapTx("setTicketQuantity", ticketType, ticketQuantity);
-    return await this.eventInstance.setTicketQuantity(
+    return await await this.wrapTx(
+      "setTicketQuantity",
       ticketType,
-      ticketQuantity,
-      { from: this.promoterAddr }
+      ticketQuantity
     );
   }
   async handleTicketForm({ ticketType, ticketPrice, ticketQuantity }) {
@@ -277,6 +287,15 @@ export class Promoter {
       this.setApprovedBuyerFee(approvedBuyerAddress, approvedBuyerFee)
     );
     return await Promise.all(txArr);
+  }
+
+  async queryBuyer({ buyerAddr, ticketType }) {
+    const res = await this.wrapTx(
+      "queryBuyer",
+      buyerAddr,
+      this.encodeString(ticketType)
+    );
+    return [res[0], ...res.slice(1).map(x => x.toString(10))];
   }
 }
 

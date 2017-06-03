@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-export default class PromoterBuyerForm extends Component {
+export default class BuyerQueryForm extends Component {
   render() {
     return (
       <form
@@ -21,7 +21,6 @@ export default class PromoterBuyerForm extends Component {
             id="buyerAddr"
             className="pure-input-3-4"
             onChange={this.props.setBuyerDetails.bind(this, "buyerAddr")}
-            readOnly
           />
           <label htmlFor="buyerFee"> Buyer Fee </label>
           <input
@@ -31,7 +30,14 @@ export default class PromoterBuyerForm extends Component {
             value={this.props.buyerFee}
             readOnly
           />
-
+          <label htmlFor="promoterFee"> Promoter Fee </label>
+          <input
+            type="text"
+            id="promoterFee"
+            className="pure-input-3-4"
+            value={this.props.promoterFee}
+            readOnly
+          />
           <label htmlFor="buyerAllottedQuantities"> Allotted Quantity </label>
           <input
             type="text"

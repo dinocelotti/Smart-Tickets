@@ -17,6 +17,7 @@ export default class EventTable extends React.Component {
           {theadElement("Max Transfers")}
           {theadElement("Promoter Address")}
           {theadElement("Contract Address")}
+          {theadElement("State")}
         </tr>
       </thead>
     );
@@ -28,6 +29,7 @@ export default class EventTable extends React.Component {
           {tdElement(this.props.eventDetails.consumerMaxTickets)}
           {tdElement(this.props.eventDetails.promoterAddr)}
           {tdElement(this.props.eventDetails.eventAddr)}
+          {tdElement(this.props.eventDetails.state)}
         </tr>
       </tbody>
     );

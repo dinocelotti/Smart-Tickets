@@ -30,7 +30,7 @@ contract Event {
     * Done -> Sale has finished and is finalized, ticket transfers enabled for public 
     */
     enum State {Staging, AwaitingApproval, PrivateFunding, PublicFunding, Done}
-    State currentState;
+    State public currentState;
     
     //the number of ticket types we have, with 0 being a general ticket
     uint ticketTypes = 0;
@@ -174,6 +174,12 @@ contract Event {
         }
         tickets[_typeOfTicket].remainingQuantity = _quantity;
         ticketsLeft -= _quantity;
+    }
+
+    function queryBuyer(address _buyer, uint _ticketType)constant returns (bool isApp, uint alotQuant, uint mrkUp, uint promoFee){
+        Buyer b = buyers[_buyer];
+        return (b.isApproved, b.allottedQuantities[_ticketType], b.markupPercent[_ticketType], b.promotersFeePercent);
+        
     }
     function approveBuyer(address _buyer) onlyPromoter() stagingPhase() {
         buyers[_buyer].isApproved = true;

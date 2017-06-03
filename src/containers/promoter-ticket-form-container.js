@@ -49,6 +49,7 @@ export default class PromoterTicketFormContainer extends Component {
 
   async createTickets(event) {
     event.preventDefault();
+    console.log("create tickets called");
     await this.props.promoterInstance.handleTicketForm(this.state);
     const ticketsLeft = await this.props.promoterInstance.getNumOfTicketsLeft();
     await this.setTicketsLeft(ticketsLeft);

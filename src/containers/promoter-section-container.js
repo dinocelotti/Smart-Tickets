@@ -5,6 +5,7 @@ import * as eventApi from "../api/event-api";
 import ApprovedBuyer from "./promoter-buyer-container";
 import TicketForm from "./promoter-ticket-form-container";
 import TicketQuery from "./ticket-query-container";
+import BuyerQuery from "./buyer-query-container";
 class PromoterSectionContainer extends React.Component {
   constructor(props) {
     super(props);
@@ -36,7 +37,7 @@ class PromoterSectionContainer extends React.Component {
   }
   async setEventAddr(event) {
     const eventAddr = event.target.value;
-    await this.setState({ eventAddr });
+    await this.setStateAsync({ eventAddr });
     await this.setPromoterInstance();
   }
 
@@ -137,13 +138,16 @@ class PromoterSectionContainer extends React.Component {
           </select>
           <br />
         </form>
-        <div className="pure-u-1-3">
+        <div className="pure-u-1-4">
           <ApprovedBuyer promoterInstance={this.state.promoterInstance} />
         </div>
-        <div className="pure-u-1-3">
+        <div className="pure-u-1-4">
+          <BuyerQuery promoterInstance={this.state.promoterInstance} />
+        </div>
+        <div className="pure-u-1-4">
           <TicketForm promoterInstance={this.state.promoterInstance} />
         </div>
-        <div className="pure-u-1-3">
+        <div className="pure-u-1-4">
           <TicketQuery promoterInstance={this.state.promoterInstance} />
         </div>
       </div>
