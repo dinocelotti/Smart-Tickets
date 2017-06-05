@@ -7,6 +7,7 @@ import {
 } from './../actions/event-actions';
 import utils from './api-helpers';
 import ApiErrs from './api-errors';
+import { BuyerTypes, EntityTypes, PromoterTypes } from './event-types';
 
 let { web3RPC, Event, EventResolver } = store.getState().web3State;
 
@@ -158,15 +159,6 @@ async function makeEvent(eventAddr) {
 	return await Event.at(eventAddr);
 }
 
-// scan through the accounts the person owns and see if they match an event
-export async function pollForEvents(pollTime) {}
-
-function asyncSetTimeout(timeToWaitInMili) {
-	return new Promise(resolve => {
-		setTimeout(resolve, timeToWaitInMili);
-	});
-}
-
 class Entity {
 	constructor(addr, eventAddr) {
 		this.addr = addr;
@@ -183,19 +175,14 @@ class Entity {
 	/**************************
    Conversion functions
    **************************/
-	encodeString(str) {
-		return this.web3.toHex(str);
-	}
-	decodeString(hex) {
-		return this.web3.toAscii(hex);
-	}
-	async wrapTx(method, ...params) {
+
+	async wrapTx({ methodName, params }) {
 		if (params.length === 0) {
-			return await this.eventInstance[method]({
+			return await this.eventInstance[methodName]({
 				from: this.addr
 			});
 		} else {
-			return await this.eventInstance[method](...params, {
+			return await this.eventInstance[methodName](...params, {
 				from: this.addr
 			});
 		}
@@ -207,26 +194,21 @@ class Entity {
 
 	async queryBuyer({ buyerAddr, ticketType }) {
 		const res = await this.wrapTx(
-			'queryBuyer',
-			buyerAddr,
-			this.encodeString(ticketType)
+			EntityTypes.queryBuyer(buyerAddr, ticketType)
 		);
+
 		return utils.maptoBN(res);
 	}
 	async getNumOfTicketsLeft() {
-		const res = await this.wrapTx('ticketsLeft');
-
+		const res = await this.wrapTx(EntityTypes.ticketsLeft());
 		//convert to number string
 		return utils.BNtoStr(res);
 	}
 
 	async getTicketDetails(ticketType) {
-		let res = await this.wrapTx(
-			'getTicketDetails',
-			this.encodeString(ticketType)
+		const res = utils.maptoBN(
+			await this.wrapTx(EntityTypes.getTicketDetails(ticketType))
 		);
-
-		res = utils.maptoBN(res);
 
 		return {
 			ticketType: res[0],
@@ -239,8 +221,10 @@ export class Promoter extends Entity {
 	/**************************
      Phase Setters
      **************************/
-	finishStaging() {}
-	startPublicFunding() {}
+	async finishStaging() {
+		return await this.wrapTx(PromoterTypes.finishStaging());
+	}
+	async startPublicFunding() {}
 
 	/**************************
      Staging Phase 
@@ -250,17 +234,16 @@ export class Promoter extends Entity {
      Tickets 
      ***************/
 	async setTicketPrice(ticketType, ticketPrice) {
-		return await this.wrapTx('setTicketPrice', ticketType, ticketPrice);
+		return await this.wrapTx(
+			PromoterTypes.setTicketPrice(ticketType, ticketPrice)
+		);
 	}
 	async setTicketQuantity(ticketType, ticketQuantity) {
-		return await await this.wrapTx(
-			'setTicketQuantity',
-			ticketType,
-			ticketQuantity
+		return await this.wrapTx(
+			PromoterTypes.setTicketQuantity(ticketType, ticketQuantity)
 		);
 	}
 	async handleTicketForm({ ticketType, ticketPrice, ticketQuantity }) {
-		ticketType = this.encodeString(ticketType);
 		return await Promise.all([
 			this.setTicketPrice(ticketType, ticketPrice),
 			this.setTicketQuantity(ticketType, ticketQuantity)
@@ -270,18 +253,15 @@ export class Promoter extends Entity {
      Approved Buyers 
      ***************/
 	async approveBuyer(buyer) {
-		await this.wrapTx('approveBuyer', buyer);
+		await this.wrapTx(PromoterTypes.approveBuyer(buyer));
 	}
 	async setBuyerAllottedQuantities(buyer, ticketType, quantity) {
 		await this.wrapTx(
-			'setBuyerAllottedQuantities',
-			buyer,
-			this.encodeString(ticketType),
-			quantity
+			PromoterTypes.setBuyerAllottedQuantities(buyer, ticketType, quantity)
 		);
 	}
 	async setApprovedBuyerFee(buyer, promotersFee) {
-		await this.wrapTx('setApprovedBuyerFee', buyer, promotersFee);
+		await this.wrapTx(PromoterTypes.setApprovedBuyerFee(buyer, promotersFee));
 	}
 
 	async handleBuyerForm({
@@ -317,7 +297,7 @@ export class Buyer extends Entity {
      **************************/
 	async setMarkup(markupPercent, ticketType) {
 		return this.isApproved
-			? await this.wrapTx('setMarkup', markupPercent, ticketType)
+			? await this.wrapTx(BuyerTypes.setMarkup(markupPercent, ticketType))
 			: ApiErrs.UNAPRVED_BUYER;
 	}
 
@@ -327,9 +307,7 @@ export class Buyer extends Entity {
 	async purchaseTicketFromPromoter(ticketType, quantity) {
 		//get phase to check to see if its valid
 		return await this.wrapTx(
-			'purchaseTicketFromPromoter',
-			ticketType,
-			quantity
+			BuyerTypes.purchaseTicketFromPromoter(ticketType, quantity)
 		);
 	}
 
@@ -339,10 +317,11 @@ export class Buyer extends Entity {
 		quantity
 	) {
 		return await this.wrapTx(
-			'purchaseTicketFromApprovedSeller',
-			approvedSellerAddr,
-			ticketType,
-			quantity
+			BuyerTypes.purchaseTicketFromApprovedSeller(
+				approvedSellerAddr,
+				ticketType,
+				quantity
+			)
 		);
 	}
 }
