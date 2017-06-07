@@ -163,9 +163,7 @@ class Entity {
 	constructor(addr, eventAddr) {
 		this.addr = addr;
 		this.eventAddr = eventAddr;
-		this.eventResolver = EventResolver;
 		this.eventInstance = {};
-		this.web3 = web3RPC;
 	}
 	async init() {
 		this.eventInstance = await makeEvent(this.eventAddr);
@@ -224,7 +222,10 @@ export class Promoter extends Entity {
 	async finishStaging() {
 		return await this.wrapTx(PromoterTypes.finishStaging());
 	}
-	async startPublicFunding() {}
+
+	async startPublicFunding() {
+		return await this.wrapTx(PromoterTypes.startPublicFunding());
+	}
 
 	/**************************
      Staging Phase 

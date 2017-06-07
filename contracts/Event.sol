@@ -4,24 +4,6 @@ pragma solidity ^0.4.2;
 //Because it treats locals as stack elements
 contract Event {
 
-    //name of the event to be created
-    string public eventName;
-
-    //address of a trusted 3rd party to approve this event as authentic
-    address public approver = 0x2222222222222222222222222222222222222222;
-
-    //wallet of the promoter
-    address public promoter;
-
-    //wallet of membran, hardcoded
-    address public membran = 0x1111111111111111111111111111111111111111;
-
-    //the fee that membran takes for this event
-    uint membranFeePercent;
-
-
-    mapping(address => uint) pendingReturns;
-
     /*
     * Staging -> The promoter is still setting up the event details
     * AwaitingApproval -> Contract is awaiting to be authenticated by a 3rd party as legitimate
@@ -31,38 +13,34 @@ contract Event {
     */
     enum State {Staging, AwaitingApproval, PrivateFunding, PublicFunding, Done}
     State public currentState;
-    
-    //the number of ticket types we have, with 0 being a general ticket
-    uint ticketTypes = 0;
 
-    // address => ticket type (uint) => number of tickets
-    // we can use an off-chain solution to map a uint to a location/ticket type
-    mapping(address => mapping(uint => uint)) ticketsOf;
+    string public eventName; //name of the event to be created
 
-    //number of tickets to be sold at this event 
-    //this should be set to 0 before staging phase ends as they will be assigned non-generic types in tickets
-    uint public ticketsLeft;
+    address public approver = 0x2222222222222222222222222222222222222222; //trusted 3rd party to approve this event
+    address public promoter; //wallet of the promoter
+    address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, hardcoded
+
+    uint public ticketsLeft; //number of tickets to be sold at this event 
     uint public totalTickets;
+    uint public consumerMaxTickets; //limit of the number of tickets a non-approved buyer can own 
+    uint membranFeePercent; //the fee that membran takes for this event
+    uint ticketTypes = 0; //the number of ticket types we have
+    
+    mapping(address => Buyer) buyers; // address of the buyer => {isApproved, quantity allowed to buy}
+    mapping(uint => Ticket) tickets; // type of ticket => {price, quantity}
+    mapping(address => mapping(uint => uint)) ticketsOf;
+    mapping(address => uint) pendingReturns;
+
     struct Ticket {
         uint price;
         uint remainingQuantity;
-    }
-
-    // type of ticket => {price, quantity}
-    mapping(uint => Ticket) tickets;
-
-    //limit of the number of tickets a non-approved buyer can own 
-    uint public consumerMaxTickets;
-    
+    } 
     struct Buyer {
         bool isApproved;
         mapping(uint => uint) allottedQuantities;
         mapping(uint => uint) markupPercent;
         uint promotersFeePercent;
     }
-
-    // address of the buyer => {isApproved, quantity allowed to buy}
-    mapping(address => Buyer) buyers;
 
     function Event(
         string _name,
@@ -80,26 +58,46 @@ contract Event {
         }
 
 
-    /**************************
-     Getters
-     **************************/
+/**************************
+        Getters
+**************************/
     function isApprovedBuyer() constant returns(bool){
         return buyers[msg.sender].isApproved;
     }
     function getTicketDetails(uint _ticketType) constant returns (uint, uint, uint){
         Ticket _t = tickets[_ticketType];
         return (_ticketType, _t.price, _t.remainingQuantity);
-    }   
-    /**************************
-     Event Firers  
-     **************************/
+    }
+    function queryBuyer(address _buyer, uint _ticketType) constant returns (bool isApp, uint alotQuant, uint mrkUp, uint promoFee){
+        Buyer b = buyers[_buyer];
+        return (b.isApproved, b.allottedQuantities[_ticketType], b.markupPercent[_ticketType], b.promotersFeePercent);
+    }
+
+/**************************
+        Event Firers  
+**************************/
      event Created(address indexed promoter, string eventName);
 
-     event Purchased(address indexed to, bool indexed approvedBuyer, uint typeOfTicket, uint pricePerTicket, uint quantity, uint weiSent);
+     event FinishStaging();
+     event StartPrivateFunding();
+     event StartPublicFunding();
+     
+     event SetTicketPrice (address indexed from, uint typeOfTicket, uint priceInWei);
+     event SetTicketQuantity (address indexed from, uint typeOfTicket, uint quantity);
 
-    /**************************
-     Phase Modifiers  
-     **************************/
+     event ApproveBuyer (address indexed from, address buyer);
+     event SetBuyerAllottedQuantities (address indexed from, address _buyer, uint _typeOfTicket, uint _quantity);
+     event SetApprovedBuyerFee (address indexed from, address _buyer, uint _promotersFee);
+
+     event SetMarkup (address indexed from, uint _markupPercent, uint _typeOfTicket);
+
+     event PurchaseTicketFromPromoter(address indexed from, address indexed to, bool indexed isApprovedBuyer, uint typeOfTicket, uint quantity, uint weiSent);
+     event PurchaseTicketFromApprovedSeller(address indexed from, address indexed to, bool indexed isApprovedBuyer, uint typeOfTicket,  uint quantity, uint weiSent);
+
+
+/**************************
+    Phase Modifiers  
+**************************/
 
     modifier stagingPhase(){
         require(currentState == State.Staging);
@@ -122,28 +120,31 @@ contract Event {
         _;
     }
 
-    /**************************
-     Phase Setters
-     **************************/
+/**************************
+    Phase Setters
+**************************/
      function finishStaging() onlyPromoter() {
          //make sure the promoter properly allocated all tickets into their respective types
          require(ticketsLeft == 0);
          require(currentState == State.Staging);
          currentState = State.AwaitingApproval;
+         FinishStaging();
      }
      function startPrivateFunding() onlyApprover() {
         require(currentState == State.AwaitingApproval);
         currentState = State.PrivateFunding;
+        StartPrivateFunding();
      }
      function startPublicFunding() onlyPromoter() {
          require(currentState == State.PrivateFunding);
          currentState = State.PublicFunding;
+         StartPublicFunding();
      }
 
 
-    /**************************
-     Access Modifiers  
-     **************************/
+/**************************
+    Access Modifiers  
+**************************/
     modifier onlyPromoter() {
         require(msg.sender == promoter);
         _;
@@ -157,14 +158,21 @@ contract Event {
         _;
     }
 
+/**************************
+    Staging Phase 
+**************************/
+
     /**************************
-     Staging Phase 
-     **************************/
+        Ticket Setters
+    **************************/
 
     function setTicketPrice(uint _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
         require(_priceInWei >= 0);
         tickets[_typeOfTicket].price = _priceInWei;
+
+        SetTicketPrice(msg.sender, _typeOfTicket, _priceInWei);
     }
+
     function setTicketQuantity(uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         //make sure we dont go over allotted tickets for entire event
         require(ticketsLeft >= _quantity);
@@ -174,16 +182,18 @@ contract Event {
         }
         tickets[_typeOfTicket].remainingQuantity = _quantity;
         ticketsLeft -= _quantity;
+
+        SetTicketQuantity(msg.sender, _typeOfTicket, _quantity);
     }
 
-    function queryBuyer(address _buyer, uint _ticketType)constant returns (bool isApp, uint alotQuant, uint mrkUp, uint promoFee){
-        Buyer b = buyers[_buyer];
-        return (b.isApproved, b.allottedQuantities[_ticketType], b.markupPercent[_ticketType], b.promotersFeePercent);
-        
-    }
+    /**************************
+        Buyer Setters
+    **************************/
     function approveBuyer(address _buyer) onlyPromoter() stagingPhase() {
         buyers[_buyer].isApproved = true;
+        ApproveBuyer(msg.sender, _buyer);
     }
+
     function setBuyerAllottedQuantities(address _buyer, uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         //check for sufficient tickets of that type
         require(tickets[_typeOfTicket].remainingQuantity >= _quantity);
@@ -192,22 +202,34 @@ contract Event {
         require(buyers[_buyer].isApproved);
 
         buyers[_buyer].allottedQuantities[_typeOfTicket] = _quantity;
+
+        SetBuyerAllottedQuantities(msg.sender, _buyer, _typeOfTicket, _quantity);
     }
+
     //set the promoters fee to take from the approved buyer
     function setApprovedBuyerFee(address _buyer, uint _promotersFee) onlyPromoter() stagingPhase() {
         //make sure this buyer is approved first
         require(buyers[_buyer].isApproved);
 
         buyers[_buyer].promotersFeePercent = _promotersFee;
+
+        SetApprovedBuyerFee(msg.sender, _buyer, _promotersFee);
     }
+
     function setMarkup(uint _markupPercent, uint _typeOfTicket) onlyApprovedBuyer() {
         buyers[msg.sender].markupPercent[_typeOfTicket] = _markupPercent;
+
+        SetMarkup(msg.sender, _markupPercent, _typeOfTicket);
     }
 
 
+/**************************
+Funding Phase - Ticketing
+**************************/
+
     /**************************
-     Funding Phase 
-     **************************/
+        Modifiers
+    **************************/
     modifier validBuyer() {
         //we want to check what phase we're in and see if the buyer is valid for that phase 
         if (!buyers[msg.sender].isApproved && currentState != State.PublicFunding) throw;
@@ -219,7 +241,22 @@ contract Event {
         _;
     }
 
+    modifier validApprovedSeller(address _approvedSeller) {
+        require(currentState == State.PublicFunding);
+        require(buyers[_approvedSeller].isApproved);
+        _;
+    }
 
+    /**************************
+        Helper functions
+    **************************/
+     function calcPercent(uint value, uint percentage) returns (uint total) {
+        total = (value * percentage) / 100;
+     }
+
+    /**************************
+        Payable functions
+    **************************/
     function purchaseTicketFromPromoter(uint _typeOfTicket, uint _quantity) payable 
     validBuyer() fundingPhase()  {
 
@@ -262,13 +299,7 @@ contract Event {
         pendingReturns[membran] += _membranFee;
         pendingReturns[promoter] += _total - _membranFee;
 
-        Purchased(msg.sender, buyers[msg.sender].isApproved, _typeOfTicket, tickets[_typeOfTicket].price, _quantity, msg.value);
-    }
-
-    modifier validApprovedSeller(address _approvedSeller) {
-        require(currentState == State.PublicFunding);
-        require(buyers[_approvedSeller].isApproved);
-        _;
+        PurchaseTicketFromPromoter(promoter, msg.sender, buyers[msg.sender].isApproved, _typeOfTicket, _quantity, msg.value);
     }
 
     function purchaseTicketFromApprovedSeller(address _approvedSeller, uint _typeOfTicket, uint _quantity) payable 
@@ -321,13 +352,7 @@ contract Event {
         pendingReturns[msg.sender] += _netValue;
         pendingReturns[promoter] +=  _promotersFee;
         pendingReturns[_approvedSeller]  += _total - _promotersFee; 
+
+        PurchaseTicketFromApprovedSeller(_approvedSeller, msg.sender, buyers[msg.sender].isApproved, _typeOfTicket, _quantity, msg.value);
     }
-
-    /**************************
-     Helper functions
-     **************************/
-     function calcPercent(uint value, uint percentage) returns (uint total) {
-        total = (value * percentage) / 100;
-     }
-
 }
