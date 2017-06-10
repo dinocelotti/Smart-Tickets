@@ -1,4 +1,4 @@
-let EventResolver = artifacts.require("./EventResolver.sol");
+let ProjResolver = artifacts.require('./ProjResolver.sol');
 module.exports = function(deployer) {
-  deployer.deploy(EventResolver, "Default_Event_Resolver");
+	deployer.deploy(ProjResolver, 'Default_Event_Resolver');
 };

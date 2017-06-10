@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-import accountReducer from './account-reducer';
-import consumerReducer from './consumer-reducer';
+import acctReducer from './acct-reducer';
+import consumReducer from './consum-reducer';
 import web3Reducer from './web3-reducer';
-import eventReducer from './event-reducer';
+import projReducer from './proj-reducer';
 
 export default combineReducers({
-	accountState: accountReducer,
-	consumerState: consumerReducer,
+	acctState: acctReducer,
+	consumState: consumReducer,
 	web3State: web3Reducer,
-	eventState: eventReducer
+	projState: projReducer
 });

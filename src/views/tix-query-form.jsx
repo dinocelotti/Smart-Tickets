@@ -1,34 +1,34 @@
 import React, { Component } from "react";
 
-export default class PromoterTicketForm extends Component {
+export default class PromoTixForm extends Component {
   render() {
     return (
       <form
         className="pure-form pure-form-stacked"
-        onSubmit={this.props.queryTicket}
+        onSubmit={this.props.queryTix}
       >
         <fieldset className="pure-group">
-          <label htmlFor="ticketType"> Ticket Type</label>
+          <label htmlFor="tixType"> Tix Type</label>
           <input
             type="text"
-            id="ticketType"
+            id="tixType"
             className="pure-input-3-4"
-            onChange={this.props.setTicketDetails.bind(this, "ticketType")}
+            onChange={this.props.setTixVals.bind(this, "tixType")}
           />
-          <label htmlFor="ticketPrice"> Ticket Price </label>
+          <label htmlFor="tixPrice"> Tix Price </label>
           <input
             type="text"
-            id="ticketPrice"
+            id="tixPrice"
             className="pure-input-3-4"
-            value={this.props.ticketPrice}
+            value={this.props.tixPrice}
             readOnly
           />
-          <label htmlFor="ticketQuantity"> Ticket Quantity </label>
+          <label htmlFor="tixQuantity"> Tix Quantity </label>
           <input
             type="text"
-            id="ticketQuantity"
+            id="tixQuantity"
             className="pure-input-3-4"
-            value={this.props.ticketQuantity}
+            value={this.props.tixQuantity}
             readOnly
           />
           <br />
