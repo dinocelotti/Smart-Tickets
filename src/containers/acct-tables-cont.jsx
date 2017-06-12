@@ -9,11 +9,12 @@ class AcctTableEthCont extends React.Component {
 		acctApi.getAcctsAndBals();
 	}
 	render() {
-		return <AcctTableEth accts={this.props.accts} />;
+		return <AcctTableEth accts={this.props.accts} acctsByAddr={this.props.acctsByAddr} />;
 	}
 }
 function mapEthStateToProps(store) {
 	return {
+		acctsByAddr: store.acctState.acctsByAddr,
 		accts: store.acctState.accts
 	};
 }

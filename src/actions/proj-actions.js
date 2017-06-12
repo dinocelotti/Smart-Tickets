@@ -13,10 +13,10 @@ export function loadProjsSuccess(projs) {
 	};
 }
 
-export function getMapAcctsToProjsSuccess(projs) {
+export function getAssocProjsSuccess(assocProjs) {
 	return {
-		type: types.GET_MAP_ACCTS_TO_PROJS_SUCCESS,
-		projs
+		type: types.GET_ASSOC_PROJS_SUCCESS,
+		assocProjs
 	};
 }
 export function projResolverDeploySuccess(projResolverDeployed) {

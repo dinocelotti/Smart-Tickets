@@ -1,6 +1,6 @@
 import store from '../store';
 import { getAcctsAndBals, getAcctsAsync } from './acct-api';
-import { loadProjsSuccess, getMapAcctsToProjsSuccess, projResolverDeploySuccess } from './../actions/proj-actions';
+import { loadProjsSuccess, getAssocProjsSuccess, projResolverDeploySuccess } from './../actions/proj-actions';
 import Utils from './api-helpers';
 import ApiErrs from './api-errors';
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types';
@@ -9,7 +9,7 @@ let { proj, projResolver } = store.getState().web3State;
 
 export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
 	//check that the acct exists
-	const acctAddrs = store.getState().acctState.accts.map(acc => acc.addr);
+	const acctAddrs = store.getState().acctState.accts;
 	if (!acctAddrs.includes(promoAddr)) {
 		throw new Error(`Addr ${promoAddr} does not exist on this wallet`);
 	}
@@ -55,23 +55,26 @@ export async function deployProjResolver() {
 	projResolver = await projResolver.deployed();
 	store.dispatch(projResolverDeploySuccess(true));
 }
-export async function mapAddrsToProjs() {
+export async function getAssocProjs() {
 	const addrs = await getAcctsAsync();
+
 	//map addrs to the number of projs they have
-	const numProjsArrPromise = addrs.map(addr => projResolver.getNumProjsOf.call({ from: addr }));
-	//map addrs to all of the proj addrs theyre assoc with
-	const numProjsArr = await Promise.all(numProjsArrPromise);
+	const numProjsArr = await Promise.all(addrs.map(addr => projResolver.getNumProjsOf.call({ from: addr })));
+
+	//for each address get all the associated events they have
 	const res = await addrs.map(async (addr, index) => {
 		let projArrPromise = [];
 		for (let i = 0; i < numProjsArr[index]; i++) {
 			projArrPromise.push(projResolver.getProjsAssoc.call(i, { from: addr }));
 		}
+
 		//map projs to proj objects
 		const projArr = await Promise.all(projArrPromise);
 		return projArr;
 	});
-	const mappedAtoE = await Promise.all(res);
-	store.dispatch(getMapAcctsToProjsSuccess(mappedAtoE));
+
+	const assocProjs = await Promise.all(res);
+	store.dispatch(getAssocProjsSuccess(assocProjs));
 }
 async function installWatchers(proj) {
 	proj.allEvents((err, log) => {
@@ -121,7 +124,7 @@ export async function loadProjs() {
 
 	let mappedResults = await Promise.all(result.map(res => mapProjToObj(res)));
 	store.dispatch(loadProjsSuccess(mappedResults));
-	mapAddrsToProjs();
+	getAssocProjs();
 	return projArrResult;
 }
 

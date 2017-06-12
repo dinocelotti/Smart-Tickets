@@ -38,7 +38,7 @@ export class PromoSection extends React.Component {
 
 					<label htmlFor="promoAddr"> Your wallet addr </label>
 					<select id="promoAddr" className="pure-input-3-4" onChange={this.props.setProjVals.bind(this, 'promoAddr')}>
-						{this.props.acctAddrs.map(acc => <option key={acc}>{acc}</option>)}
+						{this.props.accts.map(acc => <option key={acc}>{acc}</option>)}
 					</select>
 					<br />
 					<button type="submit" className="pure-button pure-button-primary">

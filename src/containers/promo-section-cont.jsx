@@ -68,12 +68,12 @@ class PromoSectionCont extends React.Component {
 		await this.setStateAsync({ promoInstance });
 	}
 
-	async componentWillReceiveProps({ projs, projsByAddr, acctAddrs }) {
+	async componentWillReceiveProps({ projs, projsByAddr, accts }) {
 		if (projs.length > 0) {
 			const defaultProj = projsByAddr[projs[0]];
 			await this.setProjAddr(this.mockTarget(defaultProj.addr));
 			//check if current owners addrs is the promo of the current proj
-			if (acctAddrs.includes(defaultProj.promoAddr)) {
+			if (accts.includes(defaultProj.promoAddr)) {
 				await this.setPromoAddr(this.mockTarget(defaultProj.promoAddr));
 			}
 		}
@@ -84,7 +84,7 @@ class PromoSectionCont extends React.Component {
 		const projVals = this.state;
 
 		if (!projVals.promoAddr) {
-			projVals.promoAddr = this.props.acctAddrs[0];
+			projVals.promoAddr = this.props.accts[0];
 		}
 
 		projApi.createProj(projVals);
@@ -105,17 +105,18 @@ class PromoSectionCont extends React.Component {
 					setProjVals={this.setProjVals}
 					createProj={this.createProj}
 					createdProj={this.props.projs}
-					acctAddrs={this.props.acctAddrs}
+					accts={this.props.accts}
 				/>
 				<form className="pure-form pure-form-stacked">
 					<legend> Promo Contract Interaction </legend>
 					<label htmlFor="promoAddr"> Promo Addr to use</label>
 					<select id="promoAddr" onChange={this.setPromoAddr}>
-						{this.props.acctAddrs.map((addr, index) => {
+						{this.props.accts.map((addr, index) => {
 							return this.props.projs.map(projAddr => {
 								if (addr === this.props.projsByAddr[projAddr].promoAddr && this.state.projAddr === projAddr) {
 									return <option key={addr}>{addr}</option>;
 								}
+								return null;
 							});
 						})}
 					</select>
@@ -147,8 +148,7 @@ function mapStateToProps(state) {
 	return {
 		projs: state.projState.projs,
 		projsByAddr: state.projState.projsByAddr,
-		acctAddrs: state.acctState.accts.map(acc => acc.addr),
-		acctAssocProjs: state.acctState.assocProjs
+		accts: state.acctState.accts
 	};
 }
 export default connect(mapStateToProps)(PromoSectionCont);

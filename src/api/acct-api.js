@@ -10,7 +10,7 @@ export async function getAcctsAndBals() {
 	for (let i = 0; i < accs.length; i++) {
 		l.push({
 			addr: accs[i],
-			ethBalance: balances[i]
+			balance: balances[i]
 		});
 	}
 	store.dispatch(getAcctsSuccess(l));

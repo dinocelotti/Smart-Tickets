@@ -19,10 +19,10 @@ export class AcctTableEth extends React.Component {
 		);
 		const tbody = (
 			<tbody>
-				{this.props.accts.map(acc =>
-					<tr key={acc.addr}>
-						{tdElement(acc.addr)}
-						{tdElement(acc.ethBalance)}
+				{this.props.accts.map(addr =>
+					<tr key={addr}>
+						{tdElement(addr)}
+						{tdElement(this.props.acctsByAddr[addr].balance)}
 					</tr>
 				)}
 
