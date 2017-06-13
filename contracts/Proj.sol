@@ -29,7 +29,7 @@ contract Proj {
     mapping(address => Buyer) buyers; // address of the buyer => {isDistrib, quantity allowed to buy}
     mapping(uint => Tix) tixs; // type of tix => {price, quantity}
     mapping(address => mapping(uint => uint)) tixsOf;
-    mapping(address => uint) pendingReturns;
+    mapping(address => uint) pendingWithdrawls;
 
     struct Tix {
         uint price;
@@ -94,6 +94,7 @@ contract Proj {
      event BuyTixFromPromo(address indexed from, address indexed to, bool indexed isDistrib, uint typeOfTix, uint quantity, uint weiSent);
      event BuyTixFromDistrib(address indexed from, address indexed to, bool indexed isDistrib, uint typeOfTix,  uint quantity, uint weiSent);
 
+     event Withdraw(address indexed from, uint amount);
 
 /**************************
     Phase Modifiers  
@@ -295,9 +296,9 @@ Funding Phase - Tixing
         tixs[_typeOfTix].remaining -= _quantity;
 
         //split payment
-        pendingReturns[msg.sender] += _netValue; 
-        pendingReturns[membran] += _membranFee;
-        pendingReturns[promo] += _total - _membranFee;
+        pendingWithdrawls[msg.sender] += _netValue; 
+        pendingWithdrawls[membran] += _membranFee;
+        pendingWithdrawls[promo] += _total - _membranFee;
 
         BuyTixFromPromo(promo, msg.sender, buyers[msg.sender].isDistrib, _typeOfTix, _quantity, msg.value);
     }
@@ -349,10 +350,19 @@ Funding Phase - Tixing
         buyers[_distrib].allotQuan[_typeOfTix] -= _quantity;
 
         //split payment
-        pendingReturns[msg.sender] += _netValue;
-        pendingReturns[promo] +=  _promosFee;
-        pendingReturns[_distrib]  += _total - _promosFee; 
+        pendingWithdrawls[msg.sender] += _netValue;
+        pendingWithdrawls[promo] +=  _promosFee;
+        pendingWithdrawls[_distrib]  += _total - _promosFee; 
 
         BuyTixFromDistrib(_distrib, msg.sender, buyers[msg.sender].isDistrib, _typeOfTix, _quantity, msg.value);
+    }
+/**************************
+Done Phase - Withdrawls
+**************************/
+    function withdraw() donePhase(){
+        uint amount = pendingWithdrawls[msg.sender];
+        pendingWithdrawls[msg.sender] = 0 ;
+        msg.sender.transfer(amount);
+        Withdraw(msg.sender, amount);
     }
 }

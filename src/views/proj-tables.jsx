@@ -21,7 +21,6 @@ export default class ProjTable extends React.Component {
 				</tr>
 			</thead>
 		);
-		console.log(this.props);
 		const tbody = (
 			<tbody>
 				<tr>

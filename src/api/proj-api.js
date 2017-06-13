@@ -26,7 +26,7 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 		promoAddr,
 		projAddr: newProj.address
 	};
-	console.log(newProj, 'newproj');
+
 	//add the contract
 	await addProj(newProj.address, promoAddr);
 	//assign promo to proj resolver
@@ -48,7 +48,6 @@ async function addAddr(from, addrToAssign) {
 	const result = await projResolver.addAddr(addrToAssign, {
 		from
 	});
-	console.log(result);
 	return result;
 }
 export async function deployProjResolver() {
@@ -78,7 +77,7 @@ export async function getAssocProjs() {
 }
 async function installWatchers(proj) {
 	proj.allEvents((err, log) => {
-		console.log(log.event);
+		console.log(installWatchers.name, log.event, log);
 		//	store.dispatch();
 	});
 }

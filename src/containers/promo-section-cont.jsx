@@ -56,7 +56,6 @@ class PromoSectionCont extends React.Component {
 
 	async setPromoInstance() {
 		const { promoAddr, projAddr } = this.state;
-		console.log(projAddr);
 		//check to see if both fields are set
 		if (promoAddr.length === 0 || projAddr.length === 0) return;
 
