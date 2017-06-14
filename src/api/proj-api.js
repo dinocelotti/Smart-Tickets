@@ -96,7 +96,7 @@ export async function mapProjToObj(proj) {
 	return obj;
 }
 
-export async function watchForProjs(proj) {}
+// export async function watchForProjs(proj) {}
 export async function getState(proj) {
 	const stateMap = {
 		0: 'Staging',
@@ -215,11 +215,11 @@ export class Promo extends Entity {
 	}
 
 	/**************************
-     Staging Phase 
+     Staging Phase
      **************************/
 
 	/***************
-     Tixs 
+     Tixs
      ***************/
 	async setTixPrice(tixType, tixPrice) {
 		return await this.wrapTx(PromoTypes.setTixPrice(tixType, tixPrice));
@@ -261,14 +261,14 @@ export class Buyer extends Entity {
 	}
 
 	/**************************
-     Staging Phase 
+     Staging Phase
      **************************/
 	async setMarkup(markup, tixType) {
 		return this.isDistrib ? await this.wrapTx(BuyerTypes.setMarkup(markup, tixType)) : ApiErrs.NOT_DISTRIB;
 	}
 
 	/**************************
-     Funding Phase 
+     Funding Phase
      **************************/
 	async buyTixFromPromo(tixType, quantity) {
 		//get phase to check to see if its valid
