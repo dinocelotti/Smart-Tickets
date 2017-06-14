@@ -1,4 +1,5 @@
 import React from 'react';
+import projTypes from '../prop-types/projs';
 
 function theadElement(element) {
 	return <th>{element}</th>;
@@ -41,3 +42,6 @@ export default class ProjTable extends React.Component {
 		);
 	}
 }
+ProjTable.propTypes = {
+	projVals: projTypes.proj
+};

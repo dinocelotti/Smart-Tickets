@@ -1,6 +1,6 @@
 import PromoTixForm from './../views/promo-tix-form';
 import React, { Component } from 'react';
-
+import accTypes from '../prop-types/accts';
 export default class PromoTixFormCont extends Component {
 	constructor(props) {
 		super(props);
@@ -60,3 +60,7 @@ export default class PromoTixFormCont extends Component {
 		return <PromoTixForm tixsLeft={this.state.tixsLeft} createTixs={this.createTixs} setTixVals={this.setTixVals} />;
 	}
 }
+
+PromoTixFormCont.propTypes = {
+	promoInstance: accTypes.promoInstance
+};

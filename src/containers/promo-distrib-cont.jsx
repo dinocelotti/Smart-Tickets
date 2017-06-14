@@ -1,5 +1,6 @@
 import PromoDistribForm from './../views/promo-distrib-form';
 import React, { Component } from 'react';
+import types from '../prop-types/accts';
 
 export default class PromoDistribCont extends Component {
 	constructor(props) {
@@ -42,3 +43,6 @@ export default class PromoDistribCont extends Component {
 		return <PromoDistribForm createDistrib={this.createDistrib} setDistribVals={this.setDistribVals} />;
 	}
 }
+PromoDistribCont.propTypes = {
+	promoInstance: types.promoInstance
+};

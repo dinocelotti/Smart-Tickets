@@ -11,8 +11,8 @@ contract ProjResolver {
     mapping  (address => uint256) public numProjsOf;
     //TODO: Attach proj firing for added contracts so we dont need to re-query for new projs
 
-     event AddAddr(address indexed _addr, address _contract );
-     event AddProj(address _proj);
+    event AddAddr(address indexed _addr, address _contract );
+    event AddProj(address _proj);
 
     function ProjResolver(string _name) {
         resolverName = _name;

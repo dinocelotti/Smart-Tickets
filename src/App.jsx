@@ -4,6 +4,7 @@ import { EthTable } from './containers/acct-tables-cont';
 import PromoSection from './containers/promo-section-cont';
 import ProjTables from './containers/proj-tables-cont';
 import { deployProjResolver } from './api/proj-api';
+import PT from 'prop-types';
 import './css/grids-responsive-min.css';
 import './css/oswald.css';
 import './css/open-sans.css';
@@ -44,6 +45,11 @@ class App extends Component {
 		}
 	}
 }
+
+App.propTypes = {
+	projResolverDeployed: PT.bool
+};
+
 function mapStateToProps(state) {
 	return {
 		projResolverDeployed: state.projState.projResolverDeployed

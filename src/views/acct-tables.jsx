@@ -1,5 +1,5 @@
 import React from 'react';
-
+import accTypes from '../prop-types/accts';
 function theadElement(element) {
 	return <th>{element}</th>;
 }
@@ -36,3 +36,7 @@ export class AcctTableEth extends React.Component {
 		);
 	}
 }
+AcctTableEth.propTypes = {
+	acctsByAddr: accTypes.acctsByAddr,
+	accts: accTypes.accts
+};

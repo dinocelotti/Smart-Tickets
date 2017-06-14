@@ -2,6 +2,7 @@ import ProjTable from './../views/proj-tables';
 import React from 'react';
 import * as projApi from './../api/proj-api';
 import { connect } from 'react-redux';
+import projTypes from '../prop-types/projs';
 
 class ProjTableCont extends React.Component {
 	componentDidMount() {
@@ -25,5 +26,10 @@ function mapProjStateToProps(store) {
 		projsByAddr: store.projState.projsByAddr
 	};
 }
+
+ProjTableCont.propTypes = {
+	projs: projTypes.projs,
+	projsByAddr: projTypes.projsByAddr
+};
 
 export default connect(mapProjStateToProps)(ProjTableCont);

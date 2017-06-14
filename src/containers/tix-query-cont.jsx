@@ -1,6 +1,6 @@
 import TixQueryForm from './../views/tix-query-form';
 import React, { Component } from 'react';
-
+import accTypes from '../prop-types/accts';
 export default class TixQueryFormCont extends Component {
 	constructor(props) {
 		super(props);
@@ -51,3 +51,7 @@ export default class TixQueryFormCont extends Component {
 		);
 	}
 }
+
+TixQueryFormCont.propTypes = {
+	promoInstance: accTypes.promoInstance
+};

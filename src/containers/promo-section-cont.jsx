@@ -6,6 +6,9 @@ import Distrib from './promo-distrib-cont';
 import TixForm from './promo-tix-form-cont';
 import TixQuery from './tix-query-cont';
 import BuyerQuery from './buyer-query-cont';
+import accTypes from '../prop-types/accts';
+import projTypes from '../prop-types/projs';
+
 class PromoSectionCont extends React.Component {
 	constructor(props) {
 		super(props);
@@ -110,7 +113,7 @@ class PromoSectionCont extends React.Component {
 					<legend> Promo Contract Interaction </legend>
 					<label htmlFor="promoAddr"> Promo Addr to use</label>
 					<select id="promoAddr" onChange={this.setPromoAddr}>
-						{this.props.accts.map((addr, index) => {
+						{this.props.accts.map(addr => {
 							return this.props.projs.map(projAddr => {
 								if (addr === this.props.projsByAddr[projAddr].promoAddr && this.state.projAddr === projAddr) {
 									return <option key={addr}>{addr}</option>;
@@ -143,6 +146,13 @@ class PromoSectionCont extends React.Component {
 		);
 	}
 }
+
+PromoSectionCont.propTypes = {
+	accts: accTypes.accts,
+	projs: projTypes.projs,
+	projsByAddr: projTypes.projsByAddr
+};
+
 function mapStateToProps(state) {
 	return {
 		projs: state.projState.projs,

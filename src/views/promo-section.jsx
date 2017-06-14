@@ -1,5 +1,6 @@
 import React from 'react';
-
+import PT from 'prop-types';
+import accTypes from '../prop-types/accts';
 export class PromoSection extends React.Component {
 	render() {
 		return (
@@ -38,7 +39,7 @@ export class PromoSection extends React.Component {
 
 					<label htmlFor="promoAddr"> Your wallet addr </label>
 					<select id="promoAddr" className="pure-input-3-4" onChange={this.props.setProjVals.bind(this, 'promoAddr')}>
-						{this.props.accts.map(acc => <option key={acc}>{acc}</option>)}
+						{this.props.accts.map(addr => <option key={addr}>{addr}</option>)}
 					</select>
 					<br />
 					<button type="submit" className="pure-button pure-button-primary">
@@ -49,3 +50,8 @@ export class PromoSection extends React.Component {
 		);
 	}
 }
+PromoSection.propTypes = {
+	createProj: PT.func.isRequired,
+	setProjVals: PT.func.isRequired,
+	accts: accTypes.accts
+};

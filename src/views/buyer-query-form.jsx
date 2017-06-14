@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PT from 'prop-types';
 
 export default class BuyerQueryForm extends Component {
 	render() {
@@ -42,3 +43,12 @@ export default class BuyerQueryForm extends Component {
 		);
 	}
 }
+
+BuyerQueryForm.propTypes = {
+	queryBuyer: PT.func.isRequired,
+	setBuyerVals: PT.func.isRequired,
+	distribFee: PT.string.isRequired,
+	promoFee: PT.string.isRequired,
+	distribAllotQuan: PT.string.isRequired,
+	isDistrib: PT.bool.isRequired
+};

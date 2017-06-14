@@ -1,6 +1,6 @@
 import BuyerQueryForm from './../views/buyer-query-form';
 import React, { Component } from 'react';
-
+import accTypes from '../prop-types/accts';
 export default class BuyerQueryCont extends Component {
 	constructor(props) {
 		super(props);
@@ -59,3 +59,7 @@ export default class BuyerQueryCont extends Component {
 		);
 	}
 }
+
+BuyerQueryCont.propTypes = {
+	promoInstance: accTypes.promoInstance
+};

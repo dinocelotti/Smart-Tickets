@@ -2,6 +2,7 @@ import { AcctTableEth } from './../views/acct-tables';
 import React from 'react';
 import { connect } from 'react-redux';
 import * as acctApi from '../api/acct-api';
+import accTypes from '../prop-types/accts';
 
 class AcctTableEthCont extends React.Component {
 	componentDidMount() {
@@ -12,6 +13,12 @@ class AcctTableEthCont extends React.Component {
 		return <AcctTableEth accts={this.props.accts} acctsByAddr={this.props.acctsByAddr} />;
 	}
 }
+
+AcctTableEthCont.propTypes = {
+	accts: accTypes.accts,
+	acctsByAddr: accTypes.acctsByAddr
+};
+
 function mapEthStateToProps(store) {
 	return {
 		acctsByAddr: store.acctState.acctsByAddr,
