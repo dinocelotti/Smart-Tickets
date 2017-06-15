@@ -1,21 +1,21 @@
-var autoprefixer = require('autoprefixer');
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
-var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin');
-var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin');
-var getClientEnvironment = require('./env');
-var paths = require('./paths');
+var autoprefixer = require('autoprefixer')
+var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin')
+var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
+var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
+var getClientEnvironment = require('./env')
+var paths = require('./paths')
 
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
-var publicPath = '/';
+var publicPath = '/'
 // `publicUrl` is just like `publicPath`, but we will provide it to our app
 // as %PUBLIC_URL% in `index.html` and `process.env.PUBLIC_URL` in JavaScript.
 // Omit trailing slash as %PUBLIC_PATH%/xyz looks better than %PUBLIC_PATH%xyz.
-var publicUrl = '';
+var publicUrl = ''
 // Get environment variables to inject into our app.
-var env = getClientEnvironment(publicUrl);
+var env = getClientEnvironment(publicUrl)
 
 // This is the development configuration.
 // It is focused on developer experience and fast rebuilds.
@@ -42,7 +42,7 @@ module.exports = {
 		// We ship a few polyfills by default:
 		require.resolve('./polyfills'),
 		// Finally, this is your app's code:
-		paths.appIndexJs
+		paths.appIndexJs,
 		// We include the app code last so that if there is a runtime error during
 		// initialization, it doesn't blow up the WebpackDevServer client, and
 		// changing JS code would still trigger a refresh.
@@ -57,7 +57,7 @@ module.exports = {
 		// containing code from all our entry points, and the Webpack runtime.
 		filename: 'static/js/bundle.js',
 		// This is the URL that app is served from. We use "/" in development.
-		publicPath: publicPath
+		publicPath: publicPath,
 	},
 	resolve: {
 		// This allows you to set a fallback for where Webpack should look for modules.
@@ -74,8 +74,8 @@ module.exports = {
 		alias: {
 			// Support React Native Web
 			// https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
-			'react-native': 'react-native-web'
-		}
+			'react-native': 'react-native-web',
+		},
 	},
 
 	module: {
@@ -85,8 +85,8 @@ module.exports = {
 			{
 				test: /\.(js|jsx)$/,
 				loader: 'eslint',
-				include: paths.appSrc
-			}
+				include: paths.appSrc,
+			},
 		],
 		loaders: [
 			// Default loader: load all assets that are not handled
@@ -104,12 +104,20 @@ module.exports = {
 			// smaller than specified limit in bytes as data URLs to avoid requests.
 			// A missing `test` is equivalent to a match.
 			{
-				exclude: [/\.html$/, /\.(js|jsx)$/, /\.css$/, /\.json$/, /\.woff$/, /\.woff2$/, /\.(ttf|svg|eot)$/],
+				exclude: [
+					/\.html$/,
+					/\.(js|jsx)$/,
+					/\.css$/,
+					/\.json$/,
+					/\.woff$/,
+					/\.woff2$/,
+					/\.(ttf|svg|eot)$/,
+				],
 				loader: 'url',
 				query: {
 					limit: 10000,
-					name: 'static/media/[name].[hash:8].[ext]'
-				}
+					name: 'static/media/[name].[hash:8].[ext]',
+				},
 			},
 			// Process JS with Babel.
 			{
@@ -122,8 +130,8 @@ module.exports = {
 					// directory for faster rebuilds.
 					cacheDirectory: true,
 
-					presets: ['es2015', 'react']
-				}
+					presets: ['es2015', 'react'],
+				},
 			},
 			// "postcss" loader applies autoprefixer to our CSS.
 			// "css" loader resolves paths in CSS and adds assets as dependencies.
@@ -132,44 +140,45 @@ module.exports = {
 			// in development "style" loader enables hot editing of CSS.
 			{
 				test: /\.css$/,
-				loader: 'style!css?importLoaders=1!postcss'
+				loader:
+					'style!css?importLoaders=1&modules&localIdentName=[name]__[local]___[hash:base64:5]!postcss',
 			},
 			// JSON is not enabled by default in Webpack but both Node and Browserify
 			// allow it implicitly so we also enable it.
 			{
 				test: /\.json$/,
-				loader: 'json'
+				loader: 'json',
 			},
 			// "file" loader for svg
 			{
 				test: /\.svg$/,
 				loader: 'file',
 				query: {
-					name: 'static/media/[name].[hash:8].[ext]'
-				}
+					name: 'static/media/[name].[hash:8].[ext]',
+				},
 			},
 			// "file" loader for fonts
 			{
 				test: /\.woff$/,
 				loader: 'file',
 				query: {
-					name: 'fonts/[name].[hash].[ext]'
-				}
+					name: 'fonts/[name].[hash].[ext]',
+				},
 			},
 			{
 				test: /\.woff2$/,
 				loader: 'file',
 				query: {
-					name: 'fonts/[name].[hash].[ext]'
-				}
+					name: 'fonts/[name].[hash].[ext]',
+				},
 			},
 			{
 				test: /\.(ttf|eot)$/,
 				loader: 'file',
 				query: {
-					name: 'fonts/[name].[hash].[ext]'
-				}
-			}
+					name: 'fonts/[name].[hash].[ext]',
+				},
+			},
 			// Truffle solidity loader to watch for changes in Solitiy files and hot
 			// reload contracts with webpack.
 			//
@@ -180,7 +189,7 @@ module.exports = {
         test: /\.sol$/,
         loader: 'truffle-solidity?network_id=123'
       }*/
-		]
+		],
 	},
 
 	// We use PostCSS for autoprefixing only.
@@ -191,22 +200,22 @@ module.exports = {
 					'>1%',
 					'last 4 versions',
 					'Firefox ESR',
-					'not ie < 9' // React doesn't support IE8 anyway
-				]
-			})
-		];
+					'not ie < 9', // React doesn't support IE8 anyway
+				],
+			}),
+		]
 	},
 	plugins: [
 		// Makes the public URL available as %PUBLIC_URL% in index.html, e.g.:
 		// <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
 		// In development, this will be an empty string.
 		new InterpolateHtmlPlugin({
-			PUBLIC_URL: publicUrl
+			PUBLIC_URL: publicUrl,
 		}),
 		// Generates an `index.html` file with the <script> injected.
 		new HtmlWebpackPlugin({
 			inject: true,
-			template: paths.appHtml
+			template: paths.appHtml,
 		}),
 		// Makes some environment variables available to the JS code, for example:
 		// if (process.env.NODE_ENV === 'development') { ... }. See `./env.js`.
@@ -221,13 +230,13 @@ module.exports = {
 		// to restart the development server for Webpack to discover it. This plugin
 		// makes the discovery automatic so you don't have to restart.
 		// See https://github.com/facebookincubator/create-react-app/issues/186
-		new WatchMissingNodeModulesPlugin(paths.appNodeModules)
+		new WatchMissingNodeModulesPlugin(paths.appNodeModules),
 	],
 	// Some libraries import Node modules but don't use them in the browser.
 	// Tell Webpack to provide empty mocks for them so importing them works.
 	node: {
 		fs: 'empty',
 		net: 'empty',
-		tls: 'empty'
-	}
-};
+		tls: 'empty',
+	},
+}
