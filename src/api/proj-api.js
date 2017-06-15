@@ -1,9 +1,10 @@
 import store from '../store'
 import { getAcctsAndBals, getAcctsAsync } from './acct-api'
-import { loadProjsSuccess, getAssocProjsSuccess, projResolverDeploySuccess } from './../actions/proj-actions'
+import * as projActions from './../actions/proj-actions'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
+import * as _ from 'lodash'
 
 let { proj, projResolver } = store.getState().web3State
 
@@ -52,7 +53,7 @@ async function addAddr(from, addrToAssign) {
 }
 export async function deployProjResolver() {
 	projResolver = await projResolver.deployed()
-	store.dispatch(projResolverDeploySuccess(true))
+	store.dispatch(projActions.projResolverDeploySuccess(true))
 }
 export async function getAssocProjs() {
 	const addrs = await getAcctsAsync()
@@ -73,12 +74,12 @@ export async function getAssocProjs() {
 	})
 
 	const assocProjs = await Promise.all(res)
-	store.dispatch(getAssocProjsSuccess(assocProjs))
+	store.dispatch(projActions.getAssocProjsSuccess(assocProjs))
 }
-async function installWatchers(proj) {
+async function installWatchersforProj(proj) {
 	proj.allEvents((err, log) => {
-		console.log(installWatchers.name, log.event, log)
-		//	store.dispatch();
+		console.log(installWatchersforProj.name, log.event, log)
+		store.dispatch(projActions[`eventProj${log.event}`](log))
 	})
 }
 
@@ -92,7 +93,7 @@ export async function mapProjToObj(proj) {
 		addr: proj.address
 	}
 
-	installWatchers(proj)
+	installWatchersforProj(proj)
 	return obj
 }
 
@@ -122,7 +123,7 @@ export async function loadProjs() {
 	const result = await Promise.all(projArrResult.map(projAddr => makeProj(projAddr)))
 
 	let mappedResults = await Promise.all(result.map(res => mapProjToObj(res)))
-	store.dispatch(loadProjsSuccess(mappedResults))
+	store.dispatch(projActions.loadProjsSuccess(mappedResults))
 	getAssocProjs()
 	return projArrResult
 }
@@ -132,9 +133,8 @@ export async function addrType(from, proj) {
 		return 'promo'
 	} else if (await isDistrib(from, proj)) {
 		return 'distrib'
-	} 
-		return 'endConsumer'
-	
+	}
+	return 'endConsumer'
 }
 async function isPromo(from, proj) {
 	const promoAddr = await proj.promo.call({ from })
@@ -169,12 +169,11 @@ class Entity {
 			return await this.projInstance[methodName]({
 				from: this.addr
 			})
-		} 
-			console.log(methodName)
-			return await this.projInstance[methodName](...params, {
-				from: this.addr
-			})
-		
+		}
+		console.log(methodName)
+		return await this.projInstance[methodName](...params, {
+			from: this.addr
+		})
 	}
 
 	/**************************
