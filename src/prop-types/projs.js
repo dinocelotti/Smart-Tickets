@@ -1,4 +1,4 @@
-import PT from 'prop-types';
+import PT from 'prop-types'
 
 const proj = PT.shape({
 	projName: PT.string.isRequired,
@@ -7,12 +7,12 @@ const proj = PT.shape({
 	state: PT.string.isRequired,
 	promoAddr: PT.string.isRequired,
 	addr: PT.string.isRequired
-}).isRequired;
+}).isRequired
 
 const types = {
 	proj,
 	projs: PT.arrayOf(PT.string.isRequired).isRequired,
 	projsByAddr: PT.arrayOf(proj).isRequired
-};
+}
 
-export default types;
+export default types

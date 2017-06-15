@@ -1,16 +1,16 @@
-import Web3 from 'web3';
-const web3 = new Web3();
+import Web3 from 'web3'
+const web3 = new Web3()
 function makeMethod(methodName, ...params) {
 	return {
 		methodName,
 		params
-	};
+	}
 }
 function encodeString(str) {
-	return web3.toHex(str);
+	return web3.toHex(str)
 }
 function decodeString(hex) {
-	return web3.toAscii(hex);
+	return web3.toAscii(hex)
 }
 export const EntityTypes = {
 	queryBuyer: (_buyer, _typeOfTix) => makeMethod('queryBuyer', _buyer, encodeString(_typeOfTix)),
@@ -18,7 +18,7 @@ export const EntityTypes = {
 	tixsLeft: () => makeMethod('tixsLeft'),
 
 	getTixVals: _typeOfTix => makeMethod('getTixVals', encodeString(_typeOfTix))
-};
+}
 export const PromoTypes = {
 	finishStaging: () => makeMethod('finishStaging'),
 
@@ -34,7 +34,7 @@ export const PromoTypes = {
 		makeMethod('setDistribAllotQuan', _distrib, encodeString(_typeOfTix), _quantity),
 
 	setDistribFee: (_distrib, _promosFee) => makeMethod('setDistribFee', _distrib, _promosFee)
-};
+}
 export const BuyerTypes = {
 	setMarkup: (_markup, _typeOfTix) => makeMethod('setMarkup', _markup, encodeString(_typeOfTix)),
 
@@ -42,4 +42,4 @@ export const BuyerTypes = {
 
 	buyTixFromDistrib: (_distrib, _typeOfTix, _quantity) =>
 		makeMethod('buyTixFromDistrib', _distrib, encodeString(_typeOfTix), _quantity)
-};
+}

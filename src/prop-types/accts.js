@@ -1,4 +1,4 @@
-import PT from 'prop-types';
+import PT from 'prop-types'
 const types = {
 	accts: PT.arrayOf(PT.string.isRequired).isRequired,
 	acctsByAddr: PT.arrayOf(
@@ -9,6 +9,6 @@ const types = {
 		})
 	).isRequired,
 	promoInstance: PT.object
-};
+}
 
-export default types;
+export default types
