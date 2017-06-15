@@ -1,5 +1,6 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import css from '../css/side-nav.css'
 
 // Each logical "route" has two components, one for
 // the sidebar and one for the main area. We want to
@@ -10,7 +11,7 @@ const routes = [
 		path: '/',
 		exact: true,
 		sidebar: () => <div>home!</div>,
-		main: () => <h2>Home</h2>,
+		main: () => <h2 className={css.fullpage}>Home</h2>,
 	},
 	{
 		path: '/bubblegum',
@@ -24,16 +25,11 @@ const routes = [
 	},
 ]
 
-const SidebarExample = () =>
+const Sidenav = () =>
 	<Router>
-		<div style={{ display: 'flex' }}>
-			<div
-				style={{
-					padding: '10px',
-					width: '40%',
-					background: '#f0f0f0',
-				}}>
-				<ul style={{ listStyleType: 'none', padding: 0 }}>
+		<div>
+			<div className={css.sidenav}>
+				<ul>
 					<li><Link to="/">Home</Link></li>
 					<li><Link to="/bubblegum">Bubblegum</Link></li>
 					<li><Link to="/shoelaces">Shoelaces</Link></li>
@@ -56,7 +52,7 @@ const SidebarExample = () =>
 				)}
 			</div>
 
-			<div style={{ flex: 1, padding: '10px' }}>
+			<div>
 				{routes.map((route, index) =>
 					// Render more <Route>s with the same paths as
 					// above, but different components this time.
@@ -65,10 +61,11 @@ const SidebarExample = () =>
 						path={route.path}
 						exact={route.exact}
 						component={route.main}
+						className={css.view}
 					/>
 				)}
 			</div>
 		</div>
 	</Router>
 
-export default SidebarExample
+export default Sidenav

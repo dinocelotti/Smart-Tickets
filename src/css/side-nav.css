@@ -1,0 +1,25 @@
+.sidenav {
+	height: calc(100vh - 48px);
+	padding: 24px;
+	background-color: #ED6D68;
+	display: inline-block;
+	width: calc(256px - 48px);
+	position: sticky;
+	top: 0;
+}
+
+.sidenav ~ div {
+	display: inline-block;
+	vertical-align: top;
+}
+
+.topnav {
+}
+
+.content {
+	display: flex;
+}
+
+.fullpage {
+	height: 2000px;
+}

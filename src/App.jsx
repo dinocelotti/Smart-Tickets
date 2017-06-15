@@ -7,7 +7,7 @@ import './css/oswald.css'
 import './css/open-sans.css'
 import './css/pure-min.css'
 import './App.css'
-import SidebarExample from './components/side-bar-example'
+import Sidenav from './components/side-nav'
 
 class App extends Component {
 	componentDidMount() {
@@ -15,7 +15,7 @@ class App extends Component {
 	}
 	render() {
 		if (this.props.projResolverDeployed) {
-			return <SidebarExample />
+			return <Sidenav />
 		}
 		return null
 	}
