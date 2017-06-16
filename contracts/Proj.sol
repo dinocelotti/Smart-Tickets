@@ -26,20 +26,30 @@ contract Proj {
     uint membranFee; //the fee that membran takes for this event
     uint tixTypes = 0; //the number of tix types we have
     
+    uint[] tixsArr;
+    address[] buyerArr;
     mapping(address => Buyer) buyers; // address of the buyer => {isDistrib, quantity allowed to buy}
     mapping(uint => Tix) tixs; // type of tix => {price, quantity}
     mapping(address => mapping(uint => uint)) tixsOf;
     mapping(address => uint) pendingWithdrawls;
 
+    //see https://ethereum.stackexchange.com/questions/17094/how-to-store-ipfs-hash-using-bytes/17112 
+    //for details on 32 byte IPFS hash
     struct Tix {
         uint price;
         uint remaining;
+        //to check for empty values 
+        bool created;
+        bytes32 ipfsHash;
     } 
     struct Buyer {
         bool isDistrib;
         mapping(uint => uint) allotQuan;
         mapping(uint => uint) markup;
         uint promosFee;
+        //to check for empty values 
+        bool created;
+        bytes32 ipfsHash;
     }
 
     function Proj(
@@ -82,8 +92,11 @@ contract Proj {
      event StartPrivateFunding();
      event StartPublicFunding();
      
+     event AddTix(address indexed from, uint typeOfTix);
+     event AddIpfsDetailsToTix(address indexed from, uint typeOfTix, bytes32 _hash);
      event SetTixPrice (address indexed from, uint typeOfTix, uint priceInWei);
      event SetTixQuantity (address indexed from, uint typeOfTix, uint quantity);
+
 
      event SetDistrib (address indexed from, address buyer);
      event SetDistribAllotQuan (address indexed from, address _distrib, uint _typeOfTix, uint _quantity);
@@ -166,8 +179,23 @@ contract Proj {
     /**************************
         Tix Setters
     **************************/
-
+    function addTix(uint _typeOfTix, uint _priceInWei, uint _quantity) onlyPromo() stagingPhase(){
+        //make sure we havent added the same tix twice
+        require(tixs[_typeOfTix].created == false);
+        tixs[_typeOfTix].created = true;
+        tixsArr.push(_typeOfTix);
+        
+        AddTix(msg.sender, _typeOfTix);
+        setTixPrice(_typeOfTix, _priceInWei);
+        setTixQuantity(_typeOfTix, _quantity);
+    }
+    function addIpfsDetailsToTix(uint _typeOfTix, bytes32 _hash) onlyPromo() stagingPhase(){
+        require(tixs[_typeOfTix].created == true);
+        tixs[_typeOfTix].ipfsHash = _hash;
+        AddIpfsDetailsToTix(msg.sender, _typeOfTix, _hash);
+    }
     function setTixPrice(uint _typeOfTix, uint _priceInWei) onlyPromo() stagingPhase() {
+        require(tixs[_typeOfTix].created == true);
         require(_priceInWei >= 0);
         tixs[_typeOfTix].price = _priceInWei;
 
@@ -177,7 +205,7 @@ contract Proj {
     function setTixQuantity(uint _typeOfTix, uint _quantity) onlyPromo() stagingPhase() {
         //make sure we dont go over allotted tixs for entire event
         require(tixsLeft >= _quantity);
-
+        require(tixs[_typeOfTix].created == true);
         if(tixs[_typeOfTix].remaining == 0) {
             tixTypes += 1;
         }
