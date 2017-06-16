@@ -7,7 +7,9 @@ const initialState = {
 		//reference this from proj-reducer
 		assocProjsByAddr: []
 	},
-	accts: []
+	ownedTixByAddr: {},
+	accts: [],
+	tix: []
 }
 function acctsByAddr(state, action) {
 	const nextState = { acctsByAddr: {}, accts: [] }
@@ -16,7 +18,7 @@ function acctsByAddr(state, action) {
 		nextState.accts.push(acct.addr)
 		return Object.assign({}, prevAccts, { [acct.addr]: acct })
 	}, {})
-	console.log('acctsByAddr', nextState.acctsByAddr)
+
 	return Object.assign({}, state, nextState)
 }
 function assocProjsByAddr(state, action) {
@@ -25,7 +27,7 @@ function assocProjsByAddr(state, action) {
 		const acctAddr = nextState.accts[index]
 		return (nextState.acctsByAddr[acctAddr].assocProjsByAddr = assocP)
 	})
-	console.log('assocProjsByAddr', nextState)
+
 	return nextState
 }
 export default (state = initialState, action) => {
