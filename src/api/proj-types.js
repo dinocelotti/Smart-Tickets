@@ -24,6 +24,11 @@ export const PromoTypes = {
 
 	startPublicFunding: () => makeMethod('startPublicFunding'),
 
+	addTix: (_typeOfTix, _priceInWei, _quantity) =>
+		makeMethod('addTix', encodeString(_typeOfTix), _priceInWei, _quantity),
+
+	addIpfsDetailsToTix: (_typeOfTix, _hash) => makeMethod('addIpfsDetailsToTix', encodeString(_typeOfTix), _hash),
+
 	setTixPrice: (_typeOfTix, _priceInWei) => makeMethod('setTixPrice', encodeString(_typeOfTix), _priceInWei),
 
 	setTixQuantity: (_typeOfTix, _quantity) => makeMethod('setTixQuantity', encodeString(_typeOfTix), _quantity),
