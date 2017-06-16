@@ -26,8 +26,8 @@ contract Proj {
     uint membranFee; //the fee that membran takes for this event
     uint tixTypes = 0; //the number of tix types we have
     
-    uint[] tixsArr;
-    address[] buyerArr;
+    uint[] public tixsArr;
+    address[] public distribs;
     mapping(address => Buyer) buyers; // address of the buyer => {isDistrib, quantity allowed to buy}
     mapping(uint => Tix) tixs; // type of tix => {price, quantity}
     mapping(address => mapping(uint => uint)) tixsOf;
@@ -74,6 +74,15 @@ contract Proj {
     function isDistrib() constant returns(bool){
         return buyers[msg.sender].isDistrib;
     }
+    
+    function getTixsLen() constant  returns (uint){
+        return tixsArr.length;
+    }
+    
+    function getDistribsLen() constant  returns (uint){
+        return distribs.length;
+    }
+
     function getTixVals(uint _tixType) constant returns (uint, uint, uint){
         Tix _t = tixs[_tixType];
         return (_tixType, _t.price, _t.remaining);
@@ -98,7 +107,7 @@ contract Proj {
      event SetTixQuantity (address indexed from, uint typeOfTix, uint quantity);
 
 
-     event SetDistrib (address indexed from, address buyer);
+     event AddDistrib (address indexed from, address buyer);
      event SetDistribAllotQuan (address indexed from, address _distrib, uint _typeOfTix, uint _quantity);
      event SetDistribFee (address indexed from, address _distrib, uint _promosFee);
 
@@ -218,12 +227,14 @@ contract Proj {
     /**************************
         Distrib Setters
     **************************/
-    function setDistrib(address _buyer) onlyPromo() stagingPhase() {
+    function addDistrib(address _buyer) onlyPromo() stagingPhase() {
         buyers[_buyer].isDistrib = true;
-        SetDistrib(msg.sender, _buyer);
+        distribs.push(_buyer);
+        AddDistrib(msg.sender, _buyer);
     }
 
     function setDistribAllotQuan(address _distrib, uint _typeOfTix, uint _quantity) onlyPromo() stagingPhase() {
+
         //check for sufficient tixs of that type
         require(tixs[_typeOfTix].remaining >= _quantity);
 
