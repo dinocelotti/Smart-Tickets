@@ -1,63 +1,97 @@
-import * as types from './../actions/action-types';
+import * as types from './../actions/action-types'
 const initialState = {
 	projResolverDeployed: false,
 	projsByAddr: {},
 	projs: []
-};
+}
 
 export default (state = initialState, action) => {
 	switch (action.type) {
 		//when we load the projs, replace the existing sprojs
 		case types.LOAD_PROJS_SUCCESS:
-			let nextState = { projsByAddr: {}, projs: [] };
+			let nextState = { projsByAddr: {}, projs: [] }
 
 			//make a map with the key being an address, value being the proj data
 			nextState.projsByAddr = action.projs.reduce((prev, proj) => {
 				//push onto the array for relational lookup later on
-				nextState.projs.push(proj.addr);
+				nextState.projs.push(proj.addr)
 
-				return Object.assign({}, prev, { [proj.addr]: proj });
-			}, {});
-			console.log('proj-reducer', Object.assign({}, state, nextState));
+				return Object.assign({}, prev, { [proj.addr]: proj })
+			}, {})
+			console.log('proj-reducer', Object.assign({}, state, nextState))
 			//return this new state
-			return Object.assign({}, state, nextState);
+			return Object.assign({}, state, nextState)
 
 		case types.PROJ_RESOLVER_DEPLOYED_SUCCESS:
-			return Object.assign({}, state, { projResolverDeployed: action.projResolverDeployed });
+			return Object.assign({}, state, { projResolverDeployed: action.projResolverDeployed })
 
 		case types.EVENT_PROJ_CREATED:
-			break;
+			break
 
 		case types.EVENT_PROJ_FINISH_STAGING:
 		case types.EVENT_PROJ_START_PUBLIC_FUNDING:
-			return stateHandler(action.type, state, action.event);
+			return stateHandler(action.type, state, action.event)
 
-		case types.EVENT_PROJ_SET_TIX_PRICE:
-		case types.EVENT_PROJ_SET_TIX_QUANTITY:
-			return tixHandler(action.type, state, action.event);
+		case types.EVENT_PROJ_LOAD_TIX:
+			return (() => {
+				let newState = { ...state }
+				let addr = getProjAddrFromTixOrDistrib(action.tix[0])
+				newState.projs[addr].tix = action.tix
+				return newState
+			})()
+
+		case types.EVENT_PROJ_ADD_TIX:
+			return (() => {
+				let newState = { ...state }
+				let addr = getProjAddrFromTixOrDistrib(action.tix[0])
+				newState.projs[addr].tix.push(action.tix)
+				return newState
+			})()
+		case types.EVENT_PROJ_LOAD_DISTRIB:
+			return (() => {
+				let newState = { ...state }
+				let addr = getProjAddrFromTixOrDistrib(action.distribs[0])
+				newState.projs[addr].distribs = action.distribs
+				return newState
+			})()
 		case types.EVENT_PROJ_SET_DISTRIB:
-		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
-		case types.EVENT_PROJ_SET_DISTRIB_FEE:
-		case types.EVENT_PROJ_SET_MARKUP:
-			return distribHandler(action.type, state, action.event);
-
+			return (() => {
+				let newState = { ...state }
+				let addr = getProjAddrFromTixOrDistrib(action.distribs[0])
+				newState.projs[addr].distribs.push(action.distrib)
+				return newState
+			})()
 		case types.EVENT_PROJ_BUY_TIX_FROM_PROMO:
 		case types.EVENT_PROJ_BUY_TIX_FROM_DISTRIB:
-			return buyHandler(action.type, state, action.event);
+			return buyHandler(action.type, state, action.event)
 		case types.EVENT_PROJ_WITHDRAW:
-			break;
+			break
 		case types.EVENT_PROJ_RESOLVER_ADD_ADDR:
 		case types.EVENT_PROJ_RESOLVER_ADD_PROJ:
-
+			break
 		default:
 	}
-	return state;
-};
-function stateHandler(type, prevState, { address, args }) {
-	if (types === types.EVENT_PROJ_FINISH_STAGING) {
-	} else if (types === types.EVENT_PROJ_START_PUBLIC_FUNDING) {
-	}
+	return state
 }
-function tixHandler(type, prevState, { address, args }) {}
-function distribHandler(type, prevState, { address, args }) {}
+function getProjAddrFromTixOrDistrib(tixOrDistrib) {
+	return tixOrDistrib.split('_')[0]
+}
+/**
+ * 		projName: await proj.projName.call(),
+		totalTixs: (await proj.totalTixs.call()).toString(),
+		consumMaxTixs: (await proj.comsumMaxTixs.call()).toString(),
+		state: await getState(proj),
+		promoAddr: await proj.promo.call(),
+		addr: proj.address
+ */
+function stateHandler(type, prevState, { address }) {
+	let nextState = { ...prevState }
+	if (type === types.EVENT_PROJ_FINISH_STAGING) {
+		nextState.projsByAddr[address].state = 'Private Funding'
+	} else if (types === types.EVENT_PROJ_START_PUBLIC_FUNDING) {
+		nextState.projsByAddr[address].state = 'Public Funding'
+	}
+	return nextState
+}
+
 function buyHandler(type, prevState, { address, args }) {}
