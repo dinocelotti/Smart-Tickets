@@ -22,6 +22,10 @@ export default (state = initialState, action) => {
 			nextState.tix.push(action.id)
 			return nextState
 
+		case types.EVENT_PROJ_ADD_IPFS_DETAILS_TO_TIX:
+			nextState.tixById[action.id].ipfsHash = action.ipfsHash
+			return nextState
+
 		case types.EVENT_PROJ_SET_TIX_PRICE:
 			nextState.tixById[action.id].price = action.price
 			return nextState
