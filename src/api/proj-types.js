@@ -33,7 +33,7 @@ export const PromoTypes = {
 
 	setTixQuantity: (_typeOfTix, _quantity) => makeMethod('setTixQuantity', encodeString(_typeOfTix), _quantity),
 
-	addistrib: _distrib => makeMethod('addDistrib', _distrib),
+	addDistrib: _distrib => makeMethod('addDistrib', _distrib),
 
 	setDistribAllotQuan: (_distrib, _typeOfTix, _quantity) =>
 		makeMethod('setDistribAllotQuan', _distrib, encodeString(_typeOfTix), _quantity),

@@ -18,7 +18,7 @@ export default (state = initialState, action) => {
 
 				return Object.assign({}, prev, { [proj.addr]: proj })
 			}, {})
-			console.log('proj-reducer', Object.assign({}, state, nextState))
+
 			//return this new state
 			return Object.assign({}, state, nextState)
 
@@ -32,33 +32,33 @@ export default (state = initialState, action) => {
 		case types.EVENT_PROJ_START_PUBLIC_FUNDING:
 			return stateHandler(action.type, state, action.event)
 
-		case types.EVENT_PROJ_LOAD_TIX:
+		case types.LOAD_TIX_SUCCESS:
 			return (() => {
 				let newState = { ...state }
 				let addr = getProjAddrFromTixOrDistrib(action.tix[0])
-				newState.projs[addr].tix = action.tix
+				newState.projsByAddr[addr].tix = action.tix
 				return newState
 			})()
 
 		case types.EVENT_PROJ_ADD_TIX:
 			return (() => {
 				let newState = { ...state }
-				let addr = getProjAddrFromTixOrDistrib(action.tix[0])
-				newState.projs[addr].tix.push(action.tix)
+				let addr = getProjAddrFromTixOrDistrib(action.tix)
+				newState.projsByAddr[addr].tix.push(action.tix)
 				return newState
 			})()
-		case types.EVENT_PROJ_LOAD_DISTRIB:
+		case types.LOAD_DISTRIBS_SUCCESS:
 			return (() => {
 				let newState = { ...state }
 				let addr = getProjAddrFromTixOrDistrib(action.distribs[0])
-				newState.projs[addr].distribs = action.distribs
+				newState.projsByAddr[addr].distribs = action.distribs
 				return newState
 			})()
-		case types.EVENT_PROJ_SET_DISTRIB:
+		case types.EVENT_PROJ_ADD_DISTRIB:
 			return (() => {
 				let newState = { ...state }
-				let addr = getProjAddrFromTixOrDistrib(action.distribs[0])
-				newState.projs[addr].distribs.push(action.distrib)
+				let addr = getProjAddrFromTixOrDistrib(action.distrib)
+				newState.projsByAddr[addr].distribs.push(action.distrib)
 				return newState
 			})()
 		case types.EVENT_PROJ_BUY_TIX_FROM_PROMO:

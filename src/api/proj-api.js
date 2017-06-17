@@ -4,7 +4,6 @@ import * as projActions from './../actions/proj-actions'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
-import * as _ from 'lodash'
 
 let { proj, projResolver } = store.getState().web3State
 
@@ -91,8 +90,8 @@ export async function mapProjToObj(proj) {
 		state: await getState(proj),
 		promoAddr: await proj.promo.call(),
 		addr: proj.address,
-		tix: {},
-		distribs: {}
+		tix: [],
+		distribs: []
 	}
 
 	installWatchersforProj(proj)
@@ -116,7 +115,7 @@ export async function getState(proj) {
 export async function loadProjs() {
 	const arrLen = parseInt(await projResolver.getProjsLen.call(), 10)
 	let projArrPromise = []
-	for (var i = 0; i < arrLen; i++) {
+	for (let i = 0; i < arrLen; i++) {
 		projArrPromise.push(projResolver.projs(i))
 	}
 
@@ -128,23 +127,34 @@ export async function loadProjs() {
 	getAssocProjs()
 	return projArrResult
 }
-
-export async function addrType(from, proj) {
-	if (await isPromo(from, proj)) {
-		return 'promo'
-	} else if (await isDistrib(from, proj)) {
-		return 'distrib'
+export async function loadTix(projAddr) {
+	//make sure to fire the event as projaddr_tixId
+	const p = await makeProj(projAddr)
+	const arrLen = parseInt(await p.getTixsLen.call(), 10)
+	let tixArrPromise = []
+	for (let i = 0; i < arrLen; i++) {
+		tixArrPromise.push(p.tixArr.call(i))
 	}
-	return 'endConsumer'
+	const tixArrRes = await Promise.all(tixArrPromise)
+	const res = tixArrRes.map(t => `${projAddr}_${t}`)
+	store.dispatch(projActions.loadTixSuccess(res))
+	return res
 }
-async function isPromo(from, proj) {
-	const promoAddr = await proj.promo.call({ from })
-	return promoAddr === from
+
+export async function loadDistribs(projAddr) {
+	//make sure to fire the event as projaddr_distribaddr
+	const p = await makeProj(projAddr)
+	const arrLen = parseInt(await p.getDistribsLen.call(), 10)
+	let distribsArrPromise = []
+	for (let i = 0; i < arrLen; i++) {
+		distribsArrPromise.push(p.tixArr.call(i))
+	}
+	const distribsArrRes = await Promise.all(distribsArrPromise)
+	const res = distribsArrRes.map(d => `${projAddr}_${d}`)
+	store.dispatch(projActions.loadDistribsSuccess)
+	return res
 }
-async function isDistrib(from, proj) {
-	const isDistrib = await proj.isDistrib.call({ from })
-	return isDistrib
-}
+
 async function makeProj(projAddr) {
 	let res = await proj.at(projAddr)
 	return res
@@ -239,8 +249,8 @@ export class Promo extends Entity {
 	/***************
      Distributors
      ***************/
-	async setDistrib(buyer) {
-		await this.wrapTx(PromoTypes.setDistrib(buyer))
+	async addDistrib(buyer) {
+		await this.wrapTx(PromoTypes.addDistrib(buyer))
 	}
 	async setDistribAllotQuan(distrib, tixType, quantity) {
 		await this.wrapTx(PromoTypes.setDistribAllotQuan(distrib, tixType, quantity))
@@ -252,7 +262,7 @@ export class Promo extends Entity {
 	async handleDistribForm({ distribAddr, tixType, distribAllotQuan, distribFee }) {
 		//TODO: Bundle these transactions, setDistrib should be run first before others
 		let txArr = []
-		txArr.push(this.setDistrib(distribAddr))
+		txArr.push(this.addDistrib(distribAddr))
 		txArr.push(this.setDistribAllotQuan(distribAddr, tixType, distribAllotQuan))
 		txArr.push(this.setDistribFee(distribAddr, distribFee))
 		return await Promise.all(txArr)

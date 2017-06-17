@@ -5,7 +5,7 @@ const initialState = { distribById: {}, distribs: [] }
 export default (state = initialState, action) => {
 	let nextState = { ...state }
 	switch (action.type) {
-		case types.EVENT_PROJ_LOAD_DISTRIBS:
+		case types.LOAD_DISTRIBS_SUCCESS:
 			//empty any existing values
 			nextState.distribs.length = 0
 
@@ -16,10 +16,11 @@ export default (state = initialState, action) => {
 				return Object.assign({}, prev, { [d.id]: d })
 			}, {})
 			return Object.assign({}, state, nextState)
-		case types.EVENT_PROJ_SET_DISTRIB:
+		case types.EVENT_PROJ_ADD_DISTRIB:
 			nextState.distribById[action.id] = action.distrib
 			nextState.tix.push(action.id)
 			return nextState
+		//TODO: modify this for account for different types of tickets
 		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
 			nextState.distribById[action.id].allotQuan = action.allotQuan
 			return nextState

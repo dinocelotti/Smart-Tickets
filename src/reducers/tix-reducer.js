@@ -5,7 +5,7 @@ const initialState = { tixById: {}, tix: [] }
 export default (state = initialState, action) => {
 	let nextState = { ...state }
 	switch (action.type) {
-		case types.EVENT_PROJ_LOAD_TIX:
+		case types.LOAD_TIX_SUCCESS:
 			//empty any existing values
 			nextState.tix.length = 0
 
