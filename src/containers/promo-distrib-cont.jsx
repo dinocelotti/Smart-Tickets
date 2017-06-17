@@ -1,4 +1,4 @@
-import PromoDistribForm from './../views/promo-distrib-form';
+import PromoDistribForm from './../components/promo-distrib-form';
 import React, { Component } from 'react';
 import types from '../prop-types/accts';
 

@@ -1,4 +1,4 @@
-import TixQueryForm from './../views/tix-query-form';
+import TixQueryForm from './../components/tix-query-form';
 import React, { Component } from 'react';
 import accTypes from '../prop-types/accts';
 export default class TixQueryFormCont extends Component {

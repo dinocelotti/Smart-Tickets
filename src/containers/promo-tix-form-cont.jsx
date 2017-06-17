@@ -1,4 +1,4 @@
-import PromoTixForm from './../views/promo-tix-form';
+import PromoTixForm from './../components/promo-tix-form';
 import React, { Component } from 'react';
 import accTypes from '../prop-types/accts';
 export default class PromoTixFormCont extends Component {

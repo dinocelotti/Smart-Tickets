@@ -1,4 +1,4 @@
-import BuyerQueryForm from './../views/buyer-query-form';
+import BuyerQueryForm from './../components/buyer-query-form';
 import React, { Component } from 'react';
 import accTypes from '../prop-types/accts';
 export default class BuyerQueryCont extends Component {

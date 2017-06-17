@@ -1,4 +1,4 @@
-import ProjTable from './../views/proj-tables';
+import ProjTable from './../components/proj-tables';
 import React from 'react';
 import * as projApi from './../api/proj-api';
 import { connect } from 'react-redux';

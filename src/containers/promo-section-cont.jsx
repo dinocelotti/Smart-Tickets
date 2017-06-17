@@ -1,4 +1,4 @@
-import { PromoSection } from './../views/promo-section';
+import { PromoSection } from './../components/promo-section';
 import React from 'react';
 import { connect } from 'react-redux';
 import * as projApi from '../api/proj-api';
