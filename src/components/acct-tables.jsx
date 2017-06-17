@@ -1,10 +1,10 @@
-import React from 'react';
-import accTypes from '../prop-types/accts';
+import React from 'react'
+import accTypes from '../prop-types/accts'
 function theadElement(element) {
-	return <th>{element}</th>;
+	return <th>{element}</th>
 }
 function tdElement(element) {
-	return <td>{element}</td>;
+	return <td>{element}</td>
 }
 //{this.props.accts.map(acc => theadElement(acc.addr))}
 export class AcctTableEth extends React.Component {
@@ -16,7 +16,7 @@ export class AcctTableEth extends React.Component {
 					{theadElement('Ether Balance')}
 				</tr>
 			</thead>
-		);
+		)
 		const tbody = (
 			<tbody>
 				{this.props.accts.map(addr =>
@@ -27,16 +27,16 @@ export class AcctTableEth extends React.Component {
 				)}
 
 			</tbody>
-		);
+		)
 		return (
 			<table className="pure-table">
 				{thead}
 				{tbody}
 			</table>
-		);
+		)
 	}
 }
 AcctTableEth.propTypes = {
 	acctsByAddr: accTypes.acctsByAddr,
-	accts: accTypes.accts
-};
+	accts: accTypes.accts,
+}
