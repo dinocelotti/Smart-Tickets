@@ -1,9 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
-import css from '../css/side-nav.css'
-import { EthTable } from '../containers/acct-tables-cont'
+import css from '../css/nav.css'
+import fonts from '../css/fonts.css'
 
-export class Sidenav extends React.Component {
+export class SideNav extends React.Component {
 	constructor() {
 		super()
 		this.state = {
@@ -11,15 +11,11 @@ export class Sidenav extends React.Component {
 				{
 					path: '/',
 					exact: true,
-					view: () => <h1>Home</h1>,
+					component: () => <h1>Home</h1>,
 				},
 				{
-					path: '/bubblegum',
-					view: () => <h2>Bubblegum</h2>,
-				},
-				{
-					path: '/shoelaces',
-					view: () => <EthTable />,
+					path: '/events',
+					component: () => <h1>Events</h1>,
 				},
 			],
 		}
@@ -30,12 +26,21 @@ export class Sidenav extends React.Component {
 				<div>
 					<div className={css.sidenav}>
 						<ul>
-							<li><Link className={css.route} to="/">Home</Link></li>
-							<li>
-								<Link className={css.route} to="/bubblegum">Bubblegum</Link>
+							<li className={css.sidenav__link_li}>
+								<Link className={css.sidenav__link} to="/">
+									<i className={[fonts.materialIcons, fonts.mdLight].join(' ')}>
+										home
+									</i>
+									<span>Home</span>
+								</Link>
 							</li>
-							<li>
-								<Link className={css.route} to="/shoelaces">Shoelaces</Link>
+							<li className={css.sidenav__link_li}>
+								<Link className={css.sidenav__link} to="/events">
+									<i className={[fonts.materialIcons, fonts.mdLight].join(' ')}>
+										event
+									</i>
+									<span>Events</span>
+								</Link>
 							</li>
 						</ul>
 					</div>
@@ -46,7 +51,7 @@ export class Sidenav extends React.Component {
 								key={index}
 								path={route.path}
 								exact={route.exact}
-								component={route.view}
+								component={route.component}
 							/>
 						)}
 					</div>
@@ -56,4 +61,4 @@ export class Sidenav extends React.Component {
 	}
 }
 
-export default Sidenav
+export default SideNav
