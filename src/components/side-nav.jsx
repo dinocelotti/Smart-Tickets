@@ -2,6 +2,7 @@ import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import css from '../css/nav.css'
 import fonts from '../css/fonts.css'
+import image from '../images/logo-white.svg'
 
 export class SideNav extends React.Component {
 	constructor() {
@@ -25,6 +26,7 @@ export class SideNav extends React.Component {
 			<Router>
 				<div>
 					<div className={css.sidenav}>
+						<img src={image} className={css.sideNavLogo} />
 						<ul>
 							<li className={css.sidenav__link_li}>
 								<Link className={css.sidenav__link} to="/">
