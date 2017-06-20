@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { deployProjResolver } from './api/proj-api'
 import PT from 'prop-types'
 import './css/reset.css'
-import './App.css'
+import './css/fonts.css'
+import './css/app.css'
 import SideNav from './components/side-nav'
 
 class App extends Component {
