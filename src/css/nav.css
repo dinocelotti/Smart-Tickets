@@ -15,6 +15,9 @@
 
 .topnav {
 	border-bottom: 1px solid #D8D8D8;
+	position: sticky;
+	top: 0;
+	background-color: #fff;
 }
 
 .topnav__h5 {
