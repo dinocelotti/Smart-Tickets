@@ -1,8 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import TopNav from './top-nav'
 import css from '../css/nav.css'
 import fonts from '../css/fonts.css'
-import image from '../images/logo-white.svg'
+import logo from '../images/logo-white.svg'
 
 export class SideNav extends React.Component {
 	constructor() {
@@ -26,7 +27,7 @@ export class SideNav extends React.Component {
 			<Router>
 				<div>
 					<div className={css.sidenav}>
-						<img src={image} className={css.sideNavLogo} />
+						<img src={logo} className={css.sidenav__logo} />
 						<ul>
 							<li className={css.sidenav__link_li}>
 								<Link className={css.sidenav__link} to="/">
@@ -48,6 +49,7 @@ export class SideNav extends React.Component {
 					</div>
 
 					<div className={css.content}>
+						<TopNav />
 						{this.state.routes.map((route, index) =>
 							<Route
 								key={index}
