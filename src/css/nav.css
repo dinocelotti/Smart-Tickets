@@ -29,7 +29,7 @@
 	display: inline-block;
 	vertical-align: top;
 	position: absolute;
-	width: 100%;
+	width: calc(100% - 224px);
 	height: 100%;
 	overflow: auto;
 }
