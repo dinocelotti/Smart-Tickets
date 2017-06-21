@@ -1,35 +1,67 @@
 import * as types from './../actions/action-types'
+import { combineReducers } from 'redux'
+/**
+ * Tickets {
+ *	[distribId]: {
+	 [ticketId]{
+		 allotQuan: 123,
+		 fee: 124
+		 markup: 324
+	 }
+ }
+ * }
 
-const initialState = { distribById: {}, distribs: [] }
-
-export default (state = initialState, action) => {
-	let nextState = { ...state }
+ */
+const tixByDistrib = (state = {}, action) => {
+	const { tix, distrib } = action
+	switch (action.type) {
+		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
+			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'allotQuan', tix.allotQuan) }
+		case types.EVENT_PROJ_SET_DISTRIB_FEE:
+			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee) }
+		case types.EVENT_PROJ_SET_MARKUP:
+			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'markup', tix.markup) }
+		default:
+			return state
+	}
+}
+const ticketHandler = (state = {}, tixId, attrName, attrVal) => {
+	return { ...state, [tixId]: { ...state[tixId], [attrName]: attrVal } }
+}
+const byId = (state = {}, action) => {
 	switch (action.type) {
 		case types.LOAD_DISTRIBS_SUCCESS:
-			//empty any existing values
-			nextState.distribs.length = 0
-
-			//make a map with the key being an address, value being the tix data
-			nextState.distribById = action.distribs.reduce((prev, d) => {
-				//push onto the array for relational lookup later on
-				nextState.distribs.push(d.id)
-				return Object.assign({}, prev, { [d.id]: d })
-			}, {})
-			return Object.assign({}, state, nextState)
+			return {
+				...state,
+				...action.distribs.reduce((total, distrib) => {
+					total[distrib.id] = distrib
+					return total
+				}, {})
+			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			nextState.distribById[action.id] = action.distrib
-			nextState.tix.push(action.id)
-			return nextState
-		//TODO: modify this for account for different types of tickets
-		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
-			nextState.distribById[action.id].allotQuan = action.allotQuan
-			return nextState
-		case types.EVENT_PROJ_SET_DISTRIB_FEE:
-			nextState.distribById[action.id].fee = action.fee
-			return nextState
-		case types.EVENT_PROJ_SET_MARKUP:
-			nextState.distribById[action.id].markup = action.markup
-			return nextState
+			const { distrib } = action
+			if (distrib) {
+				return { ...state, [distrib.id]: distrib }
+			}
+			return state
+		default:
+			return state
 	}
-	return state
 }
+const ids = (state = [], action) => {
+	switch (action.type) {
+		case types.LOAD_DISTRIBS_SUCCESS:
+			return [...state, action.distribs(distrib => distrib.id)]
+
+		case types.EVENT_PROJ_ADD_DISTRIB:
+			const { distrib } = action
+			if (distrib) {
+				return [...state, distrib.id]
+			}
+			return state
+		default:
+			return state
+	}
+}
+
+export default combineReducers({ tixByDistrib, byId, ids })

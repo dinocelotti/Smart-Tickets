@@ -1,6 +1,6 @@
 import { createStore, applyMiddleware } from 'redux'
 import reducers from './reducers'
-
+import { devToolsEnhancer } from 'redux-devtools-extension'
 const logger = store => next => action => {
 	console.log('dispatching', action)
 	let result = next(action)
@@ -8,5 +8,5 @@ const logger = store => next => action => {
 	return result
 }
 
-const store = createStore(reducers, applyMiddleware(logger))
+const store = createStore(reducers, devToolsEnhancer())
 export default store
