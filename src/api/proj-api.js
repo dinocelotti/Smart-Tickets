@@ -130,17 +130,17 @@ export async function loadProjs() {
 	return projArrResult
 }
 export async function loadTix(projAddr) {
-	//make sure to fire the event as projaddr_tixId
 	const p = await makeProj(projAddr)
 	const arrLen = parseInt(await p.getTixsLen.call(), 10)
 	let tixArrPromise = []
 	for (let i = 0; i < arrLen; i++) {
 		tixArrPromise.push(p.tixArr.call(i))
 	}
-	const tixArrRes = await Promise.all(tixArrPromise)
-	const res = tixArrRes.map(t => `${projAddr}_${t}`)
-	store.dispatch(projActions.loadTixSuccess(res))
-	return res
+	const tix = (await Promise.all(tixArrPromise)).map(t => {
+		return { id: t }
+	})
+	store.dispatch(projActions.loadTixSuccess({ projAddr, tix }))
+	return tix
 }
 
 export async function loadDistribs(projAddr) {
@@ -151,10 +151,9 @@ export async function loadDistribs(projAddr) {
 	for (let i = 0; i < arrLen; i++) {
 		distribsArrPromise.push(p.tixArr.call(i))
 	}
-	const distribsArrRes = await Promise.all(distribsArrPromise)
-	const res = distribsArrRes.map(d => `${projAddr}_${d}`)
-	store.dispatch(projActions.loadDistribsSuccess)
-	return res
+	const distribsArr = await Promise.all(distribsArrPromise)
+	store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
+	return distribsArr
 }
 
 async function makeProj(projAddr) {

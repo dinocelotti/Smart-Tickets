@@ -11,17 +11,19 @@ export function loadProjsSuccess(projs) {
 		projs
 	}
 }
-export function loadDistribsSuccess(distribs) {
+export function loadDistribsSuccess({ projAddr, distribs }) {
 	return {
 		type: types.LOAD_DISTRIBS_SUCCESS,
-		distribs
+		distribs,
+		proj: { addr: projAddr }
 	}
 }
 
-export function loadTixSuccess(tix) {
+export function loadTixSuccess({ projAddr, tix }) {
 	return {
 		type: types.LOAD_TIX_SUCCESS,
-		tix
+		tix,
+		proj: { addr: projAddr }
 	}
 }
 

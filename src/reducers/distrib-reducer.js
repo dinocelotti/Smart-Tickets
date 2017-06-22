@@ -16,11 +16,11 @@ const tixByDistrib = (state = {}, action) => {
 	const { tix, distrib } = action
 	switch (action.type) {
 		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'allotQuan', tix.allotQuan) }
+			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'allotQuan', tix.allotQuan) }
 		case types.EVENT_PROJ_SET_DISTRIB_FEE:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee) }
+			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'fee', tix.fee) }
 		case types.EVENT_PROJ_SET_MARKUP:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'markup', tix.markup) }
+			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'markup', tix.markup) }
 		default:
 			return state
 	}
@@ -34,13 +34,13 @@ const byId = (state = {}, action) => {
 			return {
 				...state,
 				...action.distribs.reduce((total, distrib) => {
-					total[distrib.id] = distrib
+					total[distrib.addr] = distrib
 					return total
 				}, {})
 			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
 			if (action.distrib) {
-				return { ...state, [action.distrib.id]: action.distrib }
+				return { ...state, [action.distrib.addr]: action.distrib }
 			}
 			return state
 		default:
@@ -53,7 +53,7 @@ const ids = (state = [], action) => {
 			return [...state, action.distribs.map(({ id }) => id)]
 
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			return [...state, action.distrib.id]
+			return [...state, action.distrib.addr]
 
 		default:
 			return state
