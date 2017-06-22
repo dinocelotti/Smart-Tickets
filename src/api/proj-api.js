@@ -72,7 +72,9 @@ export async function getAssocProjs() {
 		return projArr
 	})
 
-	const assocProjs = await Promise.all(res)
+	const assocProjs = (await Promise.all(res)).map((assocProjs, index) => {
+		return { assocProjs, acct: addrs[index] }
+	})
 	store.dispatch(projActions.getAssocProjsSuccess(assocProjs))
 }
 async function installWatchersforProj(proj) {

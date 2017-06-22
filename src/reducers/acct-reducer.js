@@ -13,8 +13,8 @@ const byId = (state = {}, action) => {
 		case types.GET_ASSOC_PROJS_SUCCESS:
 			return {
 				...state,
-				...action.assocProjs.reduce((obj, { acct, aPjs }) => {
-					obj[acct] = { ...state[acct], assocProjs: aPjs }
+				...action.assocProjs.reduce((obj, { acct, assocProjs }) => {
+					obj[acct] = { ...state[acct], assocProjs }
 					return obj
 				}, {})
 			}
