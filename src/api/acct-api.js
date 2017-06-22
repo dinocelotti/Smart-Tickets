@@ -1,6 +1,7 @@
 import store from '../store'
 import { getAcctsSuccess } from './../actions/acct-actions'
-const web3RPC = store.getState().web3State.web3RPC
+import Web3 from 'web3'
+const web3RPC = new Web3(store.getState().web3State.provider)
 
 export async function getAcctsAndBals() {
 	let accs = await getAcctsAsync()

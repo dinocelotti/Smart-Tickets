@@ -7,11 +7,9 @@ const proj = contract(Proj)
 const projResolver = contract(ProjResolver)
 proj.setProvider(provider)
 projResolver.setProvider(provider)
-const web3RPC = new Web3(provider)
 
 const initialState = {
 	contract,
-	web3RPC,
 	proj,
 	projResolver,
 	provider

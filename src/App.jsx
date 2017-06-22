@@ -12,7 +12,7 @@ class App extends Component {
 		deployProjResolver()
 	}
 	render() {
-		if (this.props.projResolverDeployed) {
+		if (this.props.projResolver.deployed) {
 			return <SideNav />
 		}
 		return null
@@ -20,12 +20,14 @@ class App extends Component {
 }
 
 App.propTypes = {
-	projResolverDeployed: PT.bool,
+	projResolver: PT.shape({
+		deployed: PT.bool.isRequired
+	}).isRequired
 }
 
 function mapStateToProps(state) {
 	return {
-		projResolverDeployed: state.projState.projResolverDeployed,
+		projResolver: state.projState.projResolver
 	}
 }
 
