@@ -1,38 +1,38 @@
 import * as types from './../actions/action-types'
+import { combineReducers } from 'redux'
 
-const initialState = { tixById: {}, tix: [] }
-
-export default (state = initialState, action) => {
-	let nextState = { ...state }
+const byId = (state = {}, action) => {
 	switch (action.type) {
 		case types.LOAD_TIX_SUCCESS:
-			//empty any existing values
-			nextState.tix.length = 0
-
-			//make a map with the key being an address, value being the tix data
-			nextState.tixById = action.tix.reduce((prev, t) => {
-				//push onto the array for relational lookup later on
-				nextState.tix.push(t.id)
-				return Object.assign({}, prev, { [t.id]: t })
-			}, {})
-			return Object.assign({}, state, nextState)
+			return {
+				...state,
+				...action.tix.reduce((total, t) => {
+					total[t.id] = t
+					return total
+				}, {})
+			}
+		case types.EVENT_PROJ_ADD_TIX:
+			return { ...state, [action.tix.id]: action.tix }
+		case types.EVENT_PROJ_ADD_IPFS_DETAILS_TO_TIX:
+			return { ...state, [action.tix.id]: { ...state[action.tix.id], ipfsHash: action.tix.ipfsHash } }
+		case types.EVENT_PROJ_SET_TIX_PRICE:
+			return { ...state, [action.tix.id]: { ...state[action.tix.id], price: action.tix.price } }
+		case types.EVENT_PROJ_SET_TIX_QUANTITY:
+			return { ...state, [action.tix.id]: { ...state[action.tix.id], quantity: action.tix.quantity } }
+		default:
+			return state
+	}
+}
+const ids = (state = [], action) => {
+	switch (action.type) {
+		case types.LOAD_TIX_SUCCESS:
+			return [...state, action.tix.map(({ id }) => id)]
 
 		case types.EVENT_PROJ_ADD_TIX:
-			nextState.tixById[action.id] = action.tix
-			nextState.tix.push(action.id)
-			return nextState
+			return [...state, action.tix.id]
 
-		case types.EVENT_PROJ_ADD_IPFS_DETAILS_TO_TIX:
-			nextState.tixById[action.id].ipfsHash = action.ipfsHash
-			return nextState
-
-		case types.EVENT_PROJ_SET_TIX_PRICE:
-			nextState.tixById[action.id].price = action.price
-			return nextState
-
-		case types.EVENT_PROJ_SET_TIX_QUANTITY:
-			nextState.tixById[action.id].quantity = action.quantity
-			return nextState
+		default:
+			return state
 	}
-	return state
 }
+export default combineReducers({ byId, ids })

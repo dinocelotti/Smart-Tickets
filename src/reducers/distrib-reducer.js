@@ -39,9 +39,8 @@ const byId = (state = {}, action) => {
 				}, {})
 			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			const { distrib } = action
-			if (distrib) {
-				return { ...state, [distrib.id]: distrib }
+			if (action.distrib) {
+				return { ...state, [action.distrib.id]: action.distrib }
 			}
 			return state
 		default:
@@ -51,14 +50,11 @@ const byId = (state = {}, action) => {
 const ids = (state = [], action) => {
 	switch (action.type) {
 		case types.LOAD_DISTRIBS_SUCCESS:
-			return [...state, action.distribs(distrib => distrib.id)]
+			return [...state, action.distribs.map(({ id }) => id)]
 
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			const { distrib } = action
-			if (distrib) {
-				return [...state, distrib.id]
-			}
-			return state
+			return [...state, action.distrib.id]
+
 		default:
 			return state
 	}

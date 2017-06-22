@@ -1,43 +1,34 @@
 import * as types from './../actions/action-types'
-
-const initialState = {
-	acctsByAddr: {
-		addr: '',
-		balance: '',
-		//reference this from proj-reducer
-		assocProjsByAddr: []
-	},
-	ownedTixByAddr: {},
-	accts: [],
-	tix: []
-}
-function acctsByAddr(state, action) {
-	const nextState = { acctsByAddr: {}, accts: [] }
-
-	nextState.acctsByAddr = action.accts.reduce((prevAccts, acct) => {
-		nextState.accts.push(acct.addr)
-		return Object.assign({}, prevAccts, { [acct.addr]: acct })
-	}, {})
-
-	return Object.assign({}, state, nextState)
-}
-function assocProjsByAddr(state, action) {
-	let nextState = { ...state }
-	action.assocProjs.map((assocP, index) => {
-		const acctAddr = nextState.accts[index]
-		return (nextState.acctsByAddr[acctAddr].assocProjsByAddr = assocP)
-	})
-
-	return nextState
-}
-export default (state = initialState, action) => {
+import { combineReducers } from 'redux'
+const byId = (state = {}, action) => {
 	switch (action.type) {
 		case types.GET_ACCTS_SUCCESS:
-			return acctsByAddr(state, action)
-
+			return {
+				...state,
+				...action.accts.reduce((total, acct) => {
+					total[acct.addr] = acct
+					return total
+				}, {})
+			}
 		case types.GET_ASSOC_PROJS_SUCCESS:
-			return assocProjsByAddr(state, action)
+			return {
+				...state,
+				...action.assocProjs.reduce((obj, { acct, aPjs }) => {
+					obj[acct] = { ...state[acct], assocProjs: aPjs }
+					return obj
+				}, {})
+			}
+
 		default:
+			return state
 	}
-	return state
 }
+const ids = (state = [], action) => {
+	switch (action.type) {
+		case types.GET_ACCTS_SUCCESS:
+			return [...state, action.accts.map(({ addr }) => addr)]
+		default:
+			return state
+	}
+}
+export default combineReducers({ byId, ids })
