@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { deployProjResolver } from './api/proj-api'
+import store from './store'
+import * as actions from './actions/proj-actions'
 import PT from 'prop-types'
 import './css/reset.css'
 import './css/fonts.css'
@@ -8,8 +10,8 @@ import './css/app.css'
 import SideNav from './components/side-nav'
 
 class App extends Component {
-	componentDidMount() {
-		deployProjResolver()
+	async componentDidMount() {
+		store.dispatch(actions.projResolverDeploySuccess(await deployProjResolver()))
 	}
 	render() {
 		if (this.props.projResolver.deployed) {
