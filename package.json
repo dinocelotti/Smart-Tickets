@@ -31,7 +31,6 @@
     "gzip-size": "3.0.0",
     "html-webpack-plugin": "2.24.0",
     "http-proxy-middleware": "0.17.2",
-    "jest": "17.0.2",
     "json-loader": "0.5.4",
     "object-assign": "4.1.0",
     "path-exists": "2.1.0",
@@ -52,7 +51,7 @@
   "dependencies": {
     "bignumber.js": "^4.0.2",
     "dotenv": "^2.0.0",
-    "jest": "^20.0.3",
+    "jest": "^20.0.4",
     "lodash": "^4.17.4",
     "prop-types": "^15.5.10",
     "react": "^15.4.2",
@@ -75,9 +74,11 @@
       "<rootDir>/config/polyfills.js"
     ],
     "testPathIgnorePatterns": [
-      "<rootDir>[/\\\\](build|docs|node_modules)[/\\\\]"
+      "<rootDir>[/\\\\](build|docs|node_modules)[/\\\\]",
+      "/node_modules/",
+      ".git/"
     ],
-    "testEnvironment": "node",
+    "testEnvironment": "jsdom",
     "testURL": "http://localhost",
     "transform": {
       "^.+\\.(js|jsx)$": "<rootDir>/node_modules/babel-jest",
@@ -85,7 +86,8 @@
       "^(?!.*\\.(js|jsx|css|json)$)": "<rootDir>/config/jest/fileTransform.js"
     },
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$"
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx)$",
+      "/node_modules/"
     ],
     "moduleNameMapper": {
       "^react-native$": "react-native-web"
