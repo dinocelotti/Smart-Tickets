@@ -1,17 +1,17 @@
 module.exports = {
 	env: {
 		browser: true,
-		es6: true,
+		es6: true
 	},
 	extends: ['eslint:recommended', 'plugin:react/recommended'],
 	parserOptions: {
 		ecmaVersion: 8,
 		ecmaFeatures: {
-			experimentalObjectRestSpread: true,
-			jsx: true,
+			jsx: true
 		},
-		sourceType: 'module',
+		sourceType: 'module'
 	},
+	parser: 'babel-eslint',
 	plugins: ['react', 'async-await'],
 	rules: {
 		'consistent-return': 2,
@@ -24,6 +24,6 @@ module.exports = {
 		'no-console': [1, { allow: ['warn', 'error', 'log'] }],
 		'no-unused-vars': 1,
 		'react/prop-types': [1],
-		'react/display-name': [1],
-	},
-}
+		'react/display-name': [1]
+	}
+};
