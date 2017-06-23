@@ -34,7 +34,6 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 	await addAddr(promoAddr, newProj.address)
 
 	getAcctsAndBals()
-	loadProjs()
 	return newProjEntry
 }
 
@@ -52,7 +51,8 @@ async function addAddr(from, addrToAssign) {
 }
 export async function deployProjResolver() {
 	projResolver = await projResolver.deployed()
-	store.dispatch(projActions.projResolverDeploySuccess(true))
+	//TODO: store.dispatch(projActions.projResolverDeploySuccess(true))
+	return true
 }
 export async function getAssocProjs() {
 	const addrs = await getAcctsAsync()
@@ -75,7 +75,8 @@ export async function getAssocProjs() {
 	const assocProjs = (await Promise.all(res)).map((assocProjs, index) => {
 		return { assocProjs, acct: addrs[index] }
 	})
-	store.dispatch(projActions.getAssocProjsSuccess(assocProjs))
+	//TODO: store.dispatch(projActions.getAssocProjsSuccess(assocProjs))
+	return assocProjs
 }
 async function installWatchersforProj(proj) {
 	proj.allEvents((err, log) => {
@@ -125,9 +126,9 @@ export async function loadProjs() {
 	const result = await Promise.all(projArrResult.map(projAddr => makeProj(projAddr)))
 
 	let mappedResults = await Promise.all(result.map(res => mapProjToObj(res)))
-	store.dispatch(projActions.loadProjsSuccess(mappedResults))
-	getAssocProjs()
-	return projArrResult
+	//TODO: store.dispatch(projActions.loadProjsSuccess(mappedResults))
+	//TODO: call this manually -> getAssocProjs()
+	return mappedResults
 }
 export async function loadTix(projAddr) {
 	const p = await makeProj(projAddr)
@@ -139,8 +140,8 @@ export async function loadTix(projAddr) {
 	const tix = (await Promise.all(tixArrPromise)).map(t => {
 		return { id: t }
 	})
-	store.dispatch(projActions.loadTixSuccess({ projAddr, tix }))
-	return tix
+	//TODO: store.dispatch(projActions.loadTixSuccess({ projAddr, tix }))
+	return { projAddr, tix }
 }
 
 export async function loadDistribs(projAddr) {
@@ -152,8 +153,8 @@ export async function loadDistribs(projAddr) {
 		distribsArrPromise.push(p.tixArr.call(i))
 	}
 	const distribsArr = await Promise.all(distribsArrPromise)
-	store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
-	return distribsArr
+	//TODO: store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
+	return { projAddr, distribsArr }
 }
 
 async function makeProj(projAddr) {
