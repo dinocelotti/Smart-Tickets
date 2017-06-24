@@ -9,10 +9,14 @@ let { proj, projResolver } = store.getState().web3State
 
 export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
 	//check that the acct exists
-	const acctAddrs = store.getState().acctState.accts
+	/**
+	 *	const acctAddrs = store.getState().acctState.accts
 	if (!acctAddrs.includes(promoAddr)) {
 		throw new Error(`Addr ${promoAddr} does not exist on this wallet`)
 	}
+	 *
+	 */
+
 	const newProj = await proj.new(projName, '10', totalTixs, consumMaxTixs, {
 		//test addr of the promo for now
 		from: promoAddr,
@@ -30,14 +34,12 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 	//add the contract
 	await addProj(newProj.address, promoAddr)
 	//assign promo to proj resolver
-
 	await addAddr(promoAddr, newProj.address)
 
 	return newProjEntry
 }
 
 async function addProj(projAddr, promoAddr) {
-	console.log(projAddr)
 	return await projResolver.addProj(projAddr, {
 		from: promoAddr
 	})
