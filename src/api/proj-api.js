@@ -1,5 +1,5 @@
 import store from '../store'
-import { getAcctsAndBals, getAcctsAsync } from './acct-api'
+import { getAcctsAsync } from './acct-api'
 import * as projActions from './../actions/proj-actions'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
@@ -33,7 +33,6 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 
 	await addAddr(promoAddr, newProj.address)
 
-	getAcctsAndBals()
 	return newProjEntry
 }
 

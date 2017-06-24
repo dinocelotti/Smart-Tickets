@@ -1,5 +1,4 @@
 import store from '../store'
-import { getAcctsSuccess } from './../actions/acct-actions'
 import Web3 from 'web3'
 const web3RPC = new Web3(store.getState().web3State.provider)
 
@@ -14,7 +13,7 @@ export async function getAcctsAndBals() {
 			balance: balances[i]
 		})
 	}
-	store.dispatch(getAcctsSuccess(l))
+	//TODO: store.dispatch(getAcctsSuccess(l))
 	return l
 }
 
