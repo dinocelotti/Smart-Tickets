@@ -3,6 +3,7 @@ import * as api from './proj-api';
 import * as accApi from './acct-api';
 import store from '../store';
 import { projResolverDeploySuccess } from '../actions/proj-actions';
+
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
 const sampleProj = {
 	projName: 'sample project1',
@@ -10,13 +11,27 @@ const sampleProj = {
 	consumMaxTixs: '3',
 	promoAddr: ''
 };
+const sampleTix1 = {
+	tixType: 'regular',
+	tixPrice: '1000',
+	tixQuantity: '10'
+};
 let accountAddrs = [];
+let loadedProjs = [];
+
+const testrpc = require('ethereumjs-testrpc');
+const server = testrpc.server();
+/**
+ *const spawnSync = require('child_process').spawnSync
+spawnSync('bash test.sh', { shell: true })
+ *
+ */
 
 beforeAll(async () => {
 	store.dispatch(projResolverDeploySuccess(await api.deployProjResolver()));
+	console.log('after dispatch');
 	accountAddrs = await accApi.getAcctsAndBals();
 	sampleProj.promoAddr = accountAddrs[0].addr;
-	return accountAddrs;
 });
 
 it('should create a proj', async () => {
@@ -43,7 +58,8 @@ it('should return a proj with this address', async () => {
 });
 
 it('should load all projs', async () => {
-	await expect(api.loadProjs()).resolves.toEqual(
+	let res = await api.loadProjs();
+	expect(res).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
 				projName: expect.any(String),
@@ -56,4 +72,12 @@ it('should load all projs', async () => {
 			})
 		])
 	);
+	loadedProjs = res;
+});
+
+it('should have 100 tix left', async () => {
+	console.log(loadedProjs);
+	const promo = new api.Promo(accountAddrs[0].addr, loadedProjs[0].addr);
+	await promo.init();
+	await expect(promo.getTixsLeft()).resolves.toEqual('100');
 });
