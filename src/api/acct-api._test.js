@@ -1,5 +1,7 @@
 /* eslint-env jest */
 import * as api from './acct-api'
+import * as deployment from '../../scripts/testHelper'
+beforeAll(async () => await deployment.init())
 it('returns all accounts', async () => {
 	await expect(api.getAcctsAndBals()).resolves.toEqual(
 		expect.arrayContaining([
@@ -10,3 +12,4 @@ it('returns all accounts', async () => {
 		])
 	)
 })
+afterAll(async () => await deployment.end())

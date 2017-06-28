@@ -5,9 +5,10 @@ import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
 
-let { proj, projResolver } = store.getState().web3State
+let _projResolver
 
 export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
+	let { proj } = store.getState().web3State
 	//check that the acct exists
 	/**
 	 *	const acctAddrs = store.getState().acctState.accts
@@ -40,18 +41,19 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 }
 
 async function addProj(projAddr, promoAddr) {
-	return await projResolver.addProj(projAddr, {
+	return await _projResolver.addProj(projAddr, {
 		from: promoAddr
 	})
 }
 async function addAddr(from, addrToAssign) {
-	const result = await projResolver.addAddr(addrToAssign, {
+	const result = await _projResolver.addAddr(addrToAssign, {
 		from
 	})
 	return result
 }
 export async function deployProjResolver() {
-	projResolver = await projResolver.deployed()
+	let { projResolver } = store.getState().web3State
+	_projResolver = await projResolver.deployed()
 	//TODO: store.dispatch(projActions.projResolverDeploySuccess(true))
 	return true
 }
@@ -59,13 +61,13 @@ export async function getAssocProjs() {
 	const addrs = await getAcctsAsync()
 
 	//map addrs to the number of projs they have
-	const numProjsArr = await Promise.all(addrs.map(addr => projResolver.getNumProjsOf.call({ from: addr })))
+	const numProjsArr = await Promise.all(addrs.map(addr => _projResolver.getNumProjsOf.call({ from: addr })))
 
 	//for each address get all the associated events they have
 	const res = await addrs.map(async (addr, index) => {
 		let projArrPromise = []
 		for (let i = 0; i < numProjsArr[index]; i++) {
-			projArrPromise.push(projResolver.getProjsAssoc.call(i, { from: addr }))
+			projArrPromise.push(_projResolver.getProjsAssoc.call(i, { from: addr }))
 		}
 
 		//map projs to proj objects
@@ -117,10 +119,10 @@ export async function getState(proj) {
 }
 
 export async function loadProjs() {
-	const arrLen = parseInt(await projResolver.getProjsLen.call(), 10)
+	const arrLen = parseInt(await _projResolver.getProjsLen.call(), 10)
 	let projArrPromise = []
 	for (let i = 0; i < arrLen; i++) {
-		projArrPromise.push(projResolver.projs(i))
+		projArrPromise.push(_projResolver.projs(i))
 	}
 
 	const projArrResult = await Promise.all(projArrPromise)
@@ -159,6 +161,7 @@ export async function loadDistribs(projAddr) {
 }
 
 async function makeProj(projAddr) {
+	let { proj } = store.getState().web3State
 	let res = await proj.at(projAddr)
 	return res
 }

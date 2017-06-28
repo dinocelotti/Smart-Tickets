@@ -1,6 +1,5 @@
 import store from '../store'
 import Web3 from 'web3'
-const web3RPC = new Web3(store.getState().web3State.provider)
 
 export async function getAcctsAndBals() {
 	let accs = await getAcctsAsync()
@@ -19,8 +18,9 @@ export async function getAcctsAndBals() {
 
 //wrapper around web3 getAccts
 export function getAcctsAsync() {
+	const web3 = store.getState().web3State.web3
 	return new Promise((resolve, reject) => {
-		web3RPC.eth.getAccounts((err, accts) => {
+		web3.eth.getAccounts((err, accts) => {
 			if (err) {
 				reject(err)
 			} else {
@@ -32,8 +32,9 @@ export function getAcctsAsync() {
 
 //wrapper around web3 getBalance
 function getAcctBalanceAsync(acct) {
+	const web3 = store.getState().web3State.web3
 	return new Promise((resolve, reject) => {
-		web3RPC.eth.getBalance(acct, (err, balance) => {
+		web3.eth.getBalance(acct, (err, balance) => {
 			if (err) {
 				reject(err)
 			} else {

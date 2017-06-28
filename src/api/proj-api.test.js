@@ -1,38 +1,52 @@
 /* eslint-env jest */
-import * as api from './proj-api';
-import * as accApi from './acct-api';
-import store from '../store';
-import { projResolverDeploySuccess } from '../actions/proj-actions';
+import * as deployment from '../../scripts/testHelper'
+deployment.init()
+import * as api from './proj-api'
+import * as accApi from './acct-api'
 
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000;
+import store from '../store'
+import { projResolverDeploySuccess } from '../actions/proj-actions'
+
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
 const sampleProj = {
 	projName: 'sample project1',
 	totalTixs: '100',
 	consumMaxTixs: '3',
 	promoAddr: ''
-};
+}
 const sampleTix1 = {
 	tixType: 'regular',
 	tixPrice: '1000',
 	tixQuantity: '10'
-};
-let accountAddrs = [];
-let loadedProjs = [];
-
-const testrpc = require('ethereumjs-testrpc');
-const server = testrpc.server();
-/**
- *const spawnSync = require('child_process').spawnSync
-spawnSync('bash test.sh', { shell: true })
- *
- */
-
+}
+let accountAddrs = []
+let loadedProjs = []
+function requireUncached(module) {
+	delete require.cache[require.resolve(module)]
+	return require(module)
+}
 beforeAll(async () => {
-	store.dispatch(projResolverDeploySuccess(await api.deployProjResolver()));
-	console.log('after dispatch');
-	accountAddrs = await accApi.getAcctsAndBals();
-	sampleProj.promoAddr = accountAddrs[0].addr;
-});
+	try {
+		await deployment.init()
+		let { web3, provider, contract } = store.getState().web3State
+		const Proj = requireUncached('../../build/contracts/Proj.json')
+		const ProjResolver = requireUncached('../../build/contracts/ProjResolver.json')
+
+		let currentNetwork = web3.version.network
+		console.log('currentnetwork:', currentNetwork)
+		const proj = contract(Proj)
+		const projResolver = contract(ProjResolver)
+		proj.setProvider(provider)
+		projResolver.setProvider(provider)
+		store.dispatch({ type: { web3Connected: true }, web3, proj, projResolver })
+		store.dispatch(projResolverDeploySuccess(await api.deployProjResolver()))
+		accountAddrs = await accApi.getAcctsAndBals()
+	} catch (e) {
+		console.log(e.stack)
+	}
+	sampleProj.promoAddr = accountAddrs[0].addr
+	return accountAddrs
+})
 
 it('should create a proj', async () => {
 	await expect(api.createProj(sampleProj)).resolves.toEqual(
@@ -43,8 +57,8 @@ it('should create a proj', async () => {
 			promoAddr: expect.any(String),
 			projAddr: expect.any(String)
 		})
-	);
-});
+	)
+})
 
 it('should return a proj with this address', async () => {
 	await expect(api.getAssocProjs()).resolves.toEqual(
@@ -54,11 +68,11 @@ it('should return a proj with this address', async () => {
 				acct: expect.any(String)
 			})
 		])
-	);
-});
+	)
+})
 
 it('should load all projs', async () => {
-	let res = await api.loadProjs();
+	let res = await api.loadProjs()
 	expect(res).toEqual(
 		expect.arrayContaining([
 			expect.objectContaining({
@@ -71,13 +85,15 @@ it('should load all projs', async () => {
 				distribs: expect.arrayContaining([])
 			})
 		])
-	);
-	loadedProjs = res;
-});
+	)
+	loadedProjs = res
+})
 
 it('should have 100 tix left', async () => {
-	console.log(loadedProjs);
-	const promo = new api.Promo(accountAddrs[0].addr, loadedProjs[0].addr);
-	await promo.init();
-	await expect(promo.getTixsLeft()).resolves.toEqual('100');
-});
+	console.log(loadedProjs)
+	const promo = new api.Promo(accountAddrs[0].addr, loadedProjs[0].addr)
+	await promo.init()
+	await expect(promo.getTixsLeft()).resolves.toEqual('100')
+})
+
+afterAll(async () => await deployment.end())

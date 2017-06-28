@@ -1,17 +1,16 @@
-import Proj from '../../build/contracts/Proj.json'
-import ProjResolver from '../../build/contracts/ProjResolver.json'
 import Web3 from 'web3'
 import contract from 'truffle-contract'
 const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const proj = contract(Proj)
-const projResolver = contract(ProjResolver)
-proj.setProvider(provider)
-projResolver.setProvider(provider)
+const web3 = new Web3(provider)
 
 const initialState = {
 	contract,
-	proj,
-	projResolver,
-	provider
+	provider,
+	web3
 }
-export default (state = initialState, action) => state
+export default (state = initialState, action) => {
+	if (action.type.web3Connected) {
+		return { ...state, web3: action.web3, projResolver: action.projResolver, proj: action.proj }
+	}
+	return state
+}

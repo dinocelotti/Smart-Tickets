@@ -61,7 +61,8 @@
     "react-redux": "^5.0.4",
     "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
-    "redux-devtools-extension": "^2.13.2"
+    "redux-devtools-extension": "^2.13.2",
+    "tail": "^1.2.2"
   },
   "scripts": {
     "start": "node scripts/start.js",
