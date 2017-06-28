@@ -40,7 +40,7 @@
     "recursive-readdir": "2.1.0",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
-    "truffle-contract": "^1.1.8",
+    "truffle-contract": "^1.1.11",
     "truffle-solidity-loader": "0.0.8",
     "url-loader": "0.5.7",
     "webpack": "1.14.0",
@@ -52,7 +52,6 @@
     "@types/jest": "^20.0.2",
     "bignumber.js": "^4.0.2",
     "dotenv": "^2.0.0",
-    "ethereumjs-testrpc": "^3.9.2",
     "jest": "^20.0.4",
     "lodash": "^4.17.4",
     "prop-types": "^15.5.10",
@@ -62,7 +61,11 @@
     "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
     "redux-devtools-extension": "^2.13.2",
-    "tail": "^1.2.2"
+    "tail": "^1.2.2",
+    "truffle": "^3.3.0",
+    "truffle-blockchain-utils": "0.0.1",
+    "truffle-contract-schema": "0.0.5",
+    "web3": "^0.19.1"
   },
   "scripts": {
     "start": "node scripts/start.js",
