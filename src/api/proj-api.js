@@ -184,12 +184,14 @@ class Entity {
 	async wrapTx({ methodName, params }) {
 		if (params.length === 0) {
 			return await this.projInstance[methodName]({
-				from: this.addr
+				from: this.addr,
+				gas: 200000
 			})
 		}
 		console.log(methodName)
 		return await this.projInstance[methodName](...params, {
-			from: this.addr
+			from: this.addr,
+			gas: 200000
 		})
 	}
 

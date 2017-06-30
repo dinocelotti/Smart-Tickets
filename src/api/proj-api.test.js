@@ -88,11 +88,19 @@ it('should load all projs', async () => {
 	loadedProjs = res
 })
 
-it('should have 100 tix left', async () => {
-	console.log(loadedProjs)
-	const promo = new api.Promo(accountAddrs[0].addr, loadedProjs[0].addr)
-	await promo.init()
-	await expect(promo.getTixsLeft()).resolves.toEqual('100')
-})
+describe('promoter tests', async () => {
+	let promo
 
+	it('should have 100 tix left', async () => {
+		console.log(loadedProjs)
+		promo = new api.Promo(accountAddrs[0].addr, loadedProjs[0].addr)
+		await promo.init()
+		await expect(promo.getTixsLeft()).resolves.toEqual('100')
+	})
+	it('should add a sample tix', async () => {
+		let promise = promo.handleTixForm(sampleTix1)
+		await expect(promise).resolves
+		console.log(await promise)
+	})
+})
 afterAll(async () => await deployment.end())
