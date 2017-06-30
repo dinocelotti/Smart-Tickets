@@ -26,10 +26,10 @@ const byId = (state = {}, action) => {
 const ids = (state = [], action) => {
 	switch (action.type) {
 		case types.LOAD_TIX_SUCCESS:
-			return [...state, action.tix.map(({ id }) => id)]
+			return [...new Set([...state, ...action.tix.map(({ id }) => id)])]
 
 		case types.EVENT_PROJ_ADD_TIX:
-			return [...state, action.tix.id]
+			return [...new Set([...state, action.tix.id])]
 
 		default:
 			return state

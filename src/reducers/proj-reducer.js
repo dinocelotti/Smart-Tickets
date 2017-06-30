@@ -52,7 +52,7 @@ const byId = (state = {}, action) => {
 const ids = (state = [], action) => {
 	switch (action.type) {
 		case types.LOAD_PROJS_SUCCESS:
-			return [...state, action.projs(({ id }) => id)]
+			return [...new Set([...state, ...action.projs.map(({ id }) => id)])]
 
 		default:
 			return state

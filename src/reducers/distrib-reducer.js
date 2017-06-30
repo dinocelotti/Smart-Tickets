@@ -50,10 +50,10 @@ const byId = (state = {}, action) => {
 const ids = (state = [], action) => {
 	switch (action.type) {
 		case types.LOAD_DISTRIBS_SUCCESS:
-			return [...state, action.distribs.map(({ id }) => id)]
+			return [...new Set([...state, ...action.distribs.map(({ id }) => id)])]
 
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			return [...state, action.distrib.addr]
+			return [...new Set([...state, action.distrib.addr])]
 
 		default:
 			return state
