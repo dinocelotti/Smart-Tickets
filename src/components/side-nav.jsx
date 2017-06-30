@@ -4,6 +4,7 @@ import TopNav from './top-nav'
 import css from '../css/nav.css'
 import fonts from '../css/fonts.css'
 import logo from '../images/logo-white.svg'
+import EventsView from '../views/EventsView'
 
 export class SideNav extends React.Component {
 	constructor() {
@@ -17,7 +18,7 @@ export class SideNav extends React.Component {
 				},
 				{
 					path: '/events',
-					component: () => <h1>Events</h1>,
+					component: () => <EventsView />,
 				},
 			],
 		}
