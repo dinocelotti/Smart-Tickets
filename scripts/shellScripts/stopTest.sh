@@ -1,2 +1,3 @@
-
-kill $(cat ./output/testRpcPid.txt) > /dev/null 2>&1
+echo "killing $(cat ./output/testRpcPid.txt)" >> ./output/killResults.txt
+echo  $(ps $(cat ./output/testRpcPid.txt)) >> ./output/killResults.txt
+kill $(cat ./output/testRpcPid.txt) 

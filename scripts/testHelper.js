@@ -24,21 +24,22 @@ const findLastLine = util.promisify(cb => {
 })
 
 async function init() {
-	await end()
 	let child = spawn(`bash ${__dirname}/shellScripts/beginTest.sh`, {
 		shell: true,
 		cwd: `${__dirname}/..`,
-		detached: true
+		detached: true,
+		stdio: 'ignore'
 	})
 	child.unref()
 	await findLastLine()
-	return setTimeoutPromise(150)
+	return setTimeoutPromise(250)
 }
 async function end() {
 	let child = spawn(`bash ${__dirname}/shellScripts/stopTest.sh`, {
 		shell: true,
 		cwd: `${__dirname}/..`,
-		detached: true
+		detached: true,
+		stdio: 'ignore'
 	})
 	child.unref()
 }

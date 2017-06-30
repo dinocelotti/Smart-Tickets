@@ -7,10 +7,14 @@ import store from './store'
 import { Provider } from 'react-redux'
 const div = document.createElement('div')
 it('renders without crashing', () => {
-	ReactDOM.render(
-		<Provider store={store}>
-			<App />
-		</Provider>,
-		div
-	)
+	try {
+		ReactDOM.render(
+			<Provider store={store}>
+				<App />
+			</Provider>,
+			div
+		)
+	} catch (e) {
+		console.log(('Error index:', e))
+	}
 })

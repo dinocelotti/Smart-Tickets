@@ -1,6 +1,5 @@
 /* eslint-env jest */
 import * as deployment from '../../scripts/testHelper'
-deployment.init()
 import * as api from './proj-api'
 import * as accApi from './acct-api'
 
