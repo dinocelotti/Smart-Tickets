@@ -2,7 +2,8 @@
 import * as deployment from '../../scripts/testHelper'
 import * as api from './proj-api'
 import * as accApi from './acct-api'
-
+import * as apiTypes from './proj-types'
+import utils from './api-helpers'
 import store from '../store'
 import { projResolverDeploySuccess } from '../actions/proj-actions'
 
@@ -18,6 +19,7 @@ const sampleTix1 = {
 	tixPrice: '1000',
 	tixQuantity: '10'
 }
+let txObject = { tx: expect.any(String), receipt: expect.any(Object) }
 let accountAddrs = []
 let loadedProjs = []
 function requireUncached(module) {
@@ -99,8 +101,74 @@ describe('promoter tests', async () => {
 	})
 	it('should add a sample tix', async () => {
 		let promise = promo.handleTixForm(sampleTix1)
-		await expect(promise).resolves
-		console.log(await promise)
+		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
+		//console.log(await promise)
+		//check we actually set the value after
+		let tixVals = await promo.getTixVals(sampleTix1.tixType)
+		expect(tixVals).toEqual({
+			...sampleTix1,
+			//convert to base10 first
+
+			tixType: (+apiTypes.encodeString(sampleTix1.tixType)).toString(10)
+		})
+	})
+	it('should return 90 tix left', async () => {
+		await expect(promo.getTixsLeft()).resolves.toEqual('90')
+	})
+	it('should add the 2nd account as a distrib', async () => {
+		let buyerAddr = accountAddrs[1].addr
+		let promise = promo.addDistrib(buyerAddr)
+		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
+
+		//check they are a distribtor
+		await expect(promo.queryBuyer({ buyerAddr, tixType: 0 })).resolves.toEqual(
+			expect.arrayContaining([true, '0', '0', '0'])
+		)
+	})
+	it('should set the distribAllotQuan', async () => {
+		let buyerAddr = accountAddrs[1].addr
+		let promise = promo.setDistribAllotQuan(buyerAddr, sampleTix1.tixType, 2)
+		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
+
+		//check it was properly set
+		await expect(promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
+			expect.arrayContaining([true, '2', '0', '0'])
+		)
+	})
+	it('should set distribFee', async () => {
+		let buyerAddr = accountAddrs[1].addr
+		let promise = promo.setDistribFee(buyerAddr, 25)
+		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
+
+		//check it was properly set
+		await expect(promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
+			expect.arrayContaining([true, '2', '0', '25'])
+		)
 	})
 })
+/**
+ * 
+ */
+it('should load the one distrib', async () => {
+	console.log(loadedProjs[0].addr)
+	let promise = api.loadDistribs(loadedProjs[0].addr)
+	await expect(promise).resolves.toEqual(
+		expect.objectContaining({ projAddr: loadedProjs[0].addr, distribsArr: [accountAddrs[1].addr] })
+	)
+})
+describe('distrib tests', () => {
+	it('should set the markup on the tix', async () => {
+		let distribAddr = accountAddrs[1].addr
+		let buyer = new api.Buyer(distribAddr, loadedProjs[0].addr, true)
+		await buyer.init()
+		await expect(buyer.setMarkup(100, sampleTix1.tixType)).resolves.toEqual(expect.objectContaining(txObject))
+
+		//make sure it was marked up properly
+		//check it was properly set
+		await expect(buyer.queryBuyer({ buyerAddr: distribAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
+			expect.arrayContaining([true, '2', '100', '25'])
+		)
+	})
+})
+
 afterAll(async () => await deployment.end())

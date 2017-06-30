@@ -6,8 +6,9 @@ const Tail = require('tail').Tail
 const execAsync = util.promisify(exec)
 
 const setTimeoutPromise = time => new Promise(res => setTimeout(() => res(), time))
-const tail = new Tail(`${__dirname}/../output/truffleMigrateOutput.txt`)
+
 const findLastLine = util.promisify(cb => {
+	const tail = new Tail(`${__dirname}/../output/truffleMigrateOutput.txt`)
 	tail.on('line', data => {
 		if (data.search('Saving artifacts...') !== -1) {
 			//console.log(data)

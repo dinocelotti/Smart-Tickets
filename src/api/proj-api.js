@@ -100,7 +100,7 @@ export async function mapProjToObj(proj) {
 		distribs: []
 	}
 
-	installWatchersforProj(proj)
+	//installWatchersforProj(proj)
 	return obj
 }
 
@@ -153,7 +153,7 @@ export async function loadDistribs(projAddr) {
 	const arrLen = parseInt(await p.getDistribsLen.call(), 10)
 	let distribsArrPromise = []
 	for (let i = 0; i < arrLen; i++) {
-		distribsArrPromise.push(p.tixArr.call(i))
+		distribsArrPromise.push(p.distribs.call(i))
 	}
 	const distribsArr = await Promise.all(distribsArrPromise)
 	//TODO: store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
@@ -258,13 +258,13 @@ export class Promo extends Entity {
      Distributors
      ***************/
 	async addDistrib(buyer) {
-		await this.wrapTx(PromoTypes.addDistrib(buyer))
+		return await this.wrapTx(PromoTypes.addDistrib(buyer))
 	}
 	async setDistribAllotQuan(distrib, tixType, quantity) {
-		await this.wrapTx(PromoTypes.setDistribAllotQuan(distrib, tixType, quantity))
+		return await this.wrapTx(PromoTypes.setDistribAllotQuan(distrib, tixType, quantity))
 	}
 	async setDistribFee(distrib, promosFee) {
-		await this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
+		return await this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
 	}
 
 	async handleDistribForm({ distribAddr, tixType, distribAllotQuan, distribFee }) {

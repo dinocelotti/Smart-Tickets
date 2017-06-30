@@ -6,10 +6,10 @@ function makeMethod(methodName, ...params) {
 		params
 	}
 }
-function encodeString(str) {
+export function encodeString(str) {
 	return web3.toHex(str)
 }
-function decodeString(hex) {
+export function decodeString(hex) {
 	return web3.toAscii(hex)
 }
 export const EntityTypes = {
