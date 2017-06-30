@@ -26,7 +26,9 @@ const byId = (state = {}, { type, payload }) => {
 const ids = (state = [], { type, payload }) => {
 	switch (type) {
 		case types.GET_ACCTS_SUCCESS:
-			return [...state, ...payload.accts.map(({ addr }) => addr)]
+			return [...new Set([...state, ...payload.accts.map(({ addr }) => addr)])]
+		case types.GET_ASSOC_PROJS_SUCCESS:
+			return [...new Set([...state, ...payload.assocProjs.map(({ acct }) => acct)])]
 		default:
 			return state
 	}
