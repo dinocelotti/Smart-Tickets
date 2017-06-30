@@ -1,11 +1,11 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
-const byId = (state = {}, action) => {
-	switch (action.type) {
+const byId = (state = {}, { type, payload }) => {
+	switch (type) {
 		case types.GET_ACCTS_SUCCESS:
 			return {
 				...state,
-				...action.accts.reduce((total, acct) => {
+				...payload.accts.reduce((total, acct) => {
 					total[acct.addr] = acct
 					return total
 				}, {})
@@ -13,7 +13,7 @@ const byId = (state = {}, action) => {
 		case types.GET_ASSOC_PROJS_SUCCESS:
 			return {
 				...state,
-				...action.assocProjs.reduce((obj, { acct, assocProjs }) => {
+				...payload.assocProjs.reduce((obj, { acct, assocProjs }) => {
 					obj[acct] = { ...state[acct], assocProjs }
 					return obj
 				}, {})
@@ -23,10 +23,10 @@ const byId = (state = {}, action) => {
 			return state
 	}
 }
-const ids = (state = [], action) => {
-	switch (action.type) {
+const ids = (state = [], { type, payload }) => {
+	switch (type) {
 		case types.GET_ACCTS_SUCCESS:
-			return [...state, action.accts.map(({ addr }) => addr)]
+			return [...state, ...payload.accts.map(({ addr }) => addr)]
 		default:
 			return state
 	}
