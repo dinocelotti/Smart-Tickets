@@ -12,15 +12,14 @@ import { combineReducers } from 'redux'
  * }
 
  */
-const tixByDistrib = (state = {}, action) => {
-	const { tix, distrib } = action
-	switch (action.type) {
+const tixByDistrib = (state = {}, { type, payload: { distribId, tix } = {} }) => {
+	switch (type) {
 		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
-			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'allotQuan', tix.allotQuan) }
+			return { ...state, [distribId]: ticketHandler(state[distribId], tix.id, 'allotQuan', tix.allotQuan) }
 		case types.EVENT_PROJ_SET_DISTRIB_FEE:
-			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'fee', tix.fee) }
+			return { ...state, [distribId]: ticketHandler(state[distribId], tix.id, 'fee', tix.fee) }
 		case types.EVENT_PROJ_SET_MARKUP:
-			return { ...state, [distrib.addr]: ticketHandler(state[distrib.addr], tix.id, 'markup', tix.markup) }
+			return { ...state, [distribId]: ticketHandler(state[distribId], tix.id, 'markup', tix.markup) }
 		default:
 			return state
 	}
@@ -28,32 +27,29 @@ const tixByDistrib = (state = {}, action) => {
 const ticketHandler = (state = {}, tixId, attrName, attrVal) => {
 	return { ...state, [tixId]: { ...state[tixId], [attrName]: attrVal } }
 }
-const byId = (state = {}, action) => {
-	switch (action.type) {
+const byId = (state = {}, { type, payload: { distribs, distribId } = {} }) => {
+	switch (type) {
 		case types.LOAD_DISTRIBS_SUCCESS:
 			return {
 				...state,
-				...action.distribs.reduce((total, distrib) => {
-					total[distrib.addr] = distrib
-					return total
+				...distribs.reduce((obj, distribId) => {
+					obj[distribId] = distribId
+					return obj
 				}, {})
 			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			if (action.distrib) {
-				return { ...state, [action.distrib.addr]: action.distrib }
-			}
-			return state
+			return { ...state, [distribId]: distribId }
 		default:
 			return state
 	}
 }
-const ids = (state = [], action) => {
-	switch (action.type) {
+const ids = (state = [], { type, payload: { distribs, distribId } = {} }) => {
+	switch (type) {
 		case types.LOAD_DISTRIBS_SUCCESS:
-			return [...new Set([...state, ...action.distribs.map(({ id }) => id)])]
+			return [...new Set([...state, ...distribs.map(id => id)])]
 
 		case types.EVENT_PROJ_ADD_DISTRIB:
-			return [...new Set([...state, action.distrib.addr])]
+			return [...new Set([...state, distribId])]
 
 		default:
 			return state

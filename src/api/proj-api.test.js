@@ -153,7 +153,7 @@ it('should load the one distrib', async () => {
 	console.log(loadedProjs[0].addr)
 	let promise = api.loadDistribs(loadedProjs[0].addr)
 	await expect(promise).resolves.toEqual(
-		expect.objectContaining({ projAddr: loadedProjs[0].addr, distribsArr: [accountAddrs[1].addr] })
+		expect.objectContaining({ projAddr: loadedProjs[0].addr, distribs: [accountAddrs[1].addr] })
 	)
 })
 describe('distrib tests', () => {

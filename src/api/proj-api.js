@@ -155,9 +155,9 @@ export async function loadDistribs(projAddr) {
 	for (let i = 0; i < arrLen; i++) {
 		distribsArrPromise.push(p.distribs.call(i))
 	}
-	const distribsArr = await Promise.all(distribsArrPromise)
+	const distribs = await Promise.all(distribsArrPromise)
 	//TODO: store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
-	return { projAddr, distribsArr }
+	return { projAddr, distribs }
 }
 
 async function makeProj(projAddr) {
