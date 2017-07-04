@@ -5,15 +5,15 @@ export async function getAcctsAndBals() {
 	let accs = await getAcctsAsync()
 	let balances = (await Promise.all(accs.map(acc => getAcctBalanceAsync(acc)))).map(b => b.toString())
 
-	let l = []
+	let accts = []
 	for (let i = 0; i < accs.length; i++) {
-		l.push({
+		accts.push({
 			addr: accs[i],
 			balance: balances[i]
 		})
 	}
 	//TODO: store.dispatch(getAcctsSuccess(l))
-	return l
+	return { accts }
 }
 
 //wrapper around web3 getAccts
