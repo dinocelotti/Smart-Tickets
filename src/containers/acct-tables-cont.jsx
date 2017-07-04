@@ -9,32 +9,18 @@ import { getAcctsSuccess } from '../actions/acct-actions'
 class AcctTableEthCont extends React.Component {
 	componentDidMount() {
 		//get acct addrs
-		acctApi
-			.getAcctsAndBals()
-			.then(accts => store.dispatch(getAcctsSuccess(accts)))
+		acctApi.getAcctsAndBals().then(accts => store.dispatch(getAcctsSuccess(accts)))
 	}
 	render() {
-		return (
-			<AcctTableEth
-				accts={this.props.accts}
-				acctsByAddr={this.props.acctsByAddr}
-			/>
-		)
+		return <AcctTableEth accts={this.props.accts} acctsByAddr={this.props.acctsByAddr} />
 	}
 }
 
-AcctTableEthCont.propTypes = {
-	accts: accTypes.accts,
-	acctsByAddr: accTypes.acctsByAddr
-}
-
-function mapEthStateToProps(store) {
+function mapEthStateToProps({ acctState: { byId: acctsByAddr, ids: accts } }) {
 	return {
-		acctsByAddr: store.acctState.acctsByAddr,
-		accts: store.acctState.accts
+		acctsByAddr,
+		accts
 	}
 }
 
-export const EthTable = connect(mapEthStateToProps, { getAcctsSuccess })(
-	AcctTableEthCont
-)
+export const EthTable = connect(mapEthStateToProps, { getAcctsSuccess })(AcctTableEthCont)
