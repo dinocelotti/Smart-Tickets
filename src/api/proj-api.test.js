@@ -41,7 +41,7 @@ beforeAll(async () => {
 		projResolver.setProvider(provider)
 		store.dispatch({ type: { web3Connected: true }, web3, proj, projResolver })
 		store.dispatch(projResolverDeploySuccess(await api.deployProjResolver()))
-		accountAddrs = await accApi.getAcctsAndBals()
+		accountAddrs = (await accApi.getAcctsAndBals()).accts
 	} catch (e) {
 		console.log(e.stack)
 	}

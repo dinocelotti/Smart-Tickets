@@ -19,7 +19,7 @@ describe('proj-reducer', () => {
 				promoAddr: '0XPROMOADDR0',
 				addr: '0XPROJADDR0',
 				tix: [],
-				distribs: ['0XTESTDISTRIB0']
+				distribs: ['0XDISTRIB0']
 			}
 		},
 		ids: ['0XPROJADDR0'],
@@ -32,7 +32,7 @@ describe('proj-reducer', () => {
 		promoAddr: '0XPROMOADDR0',
 		addr: '0XPROJADDR0',
 		tix: [],
-		distribs: ['0XTESTDISTRIB0']
+		distribs: ['0XDISTRIB0']
 	}
 
 	it(`should handle ${types.LOAD_PROJS_SUCCESS}`, () => {
@@ -87,11 +87,17 @@ describe('proj-reducer', () => {
 		expect(
 			reducer(state, {
 				type: types.LOAD_DISTRIBS_SUCCESS,
-				payload: { distribs: ['0XDISTRIB1', '0XDISTRIB2'], proj }
+				payload: { distribs: [{ id: '0XDISTRIB1' }, { id: '0XDISTRIB2' }], proj }
 			})
 		).toEqual({
 			...state,
-			byId: { ...state.byId, '0XPROJADDR0': { ...state.byId['0XPROJADDR0'], distribs: ['0XDISTRIB1', '0XDISTRIB2'] } }
+			byId: {
+				...state.byId,
+				'0XPROJADDR0': {
+					...state.byId['0XPROJADDR0'],
+					distribs: [...state.byId['0XPROJADDR0'].distribs, '0XDISTRIB1', '0XDISTRIB2']
+				}
+			}
 		})
 	})
 	it(`should handle ${types.EVENT_PROJ_ADD_DISTRIB}`, () => {
@@ -101,19 +107,25 @@ describe('proj-reducer', () => {
 					...state,
 					byId: {
 						...state.byId,
-						'0XPROJADDR0': { ...state.byId['0XPROJADDR0'], distribs: ['0XDISTRIB1', '0XDISTRIB2'] }
+						'0XPROJADDR0': {
+							...state.byId['0XPROJADDR0'],
+							distribs: [...state.byId['0XPROJADDR0'].distribs, '0XDISTRIB1', '0XDISTRIB2']
+						}
 					}
 				},
 				{
 					type: types.EVENT_PROJ_ADD_DISTRIB,
-					payload: { distribId: '0XDISTRIB3', proj }
+					payload: { distrib: { id: '0XDISTRIB3' }, proj }
 				}
 			)
 		).toEqual({
 			...state,
 			byId: {
 				...state.byId,
-				'0XPROJADDR0': { ...state.byId['0XPROJADDR0'], distribs: ['0XDISTRIB1', '0XDISTRIB2', '0XDISTRIB3'] }
+				'0XPROJADDR0': {
+					...state.byId['0XPROJADDR0'],
+					distribs: [...state.byId['0XPROJADDR0'].distribs, '0XDISTRIB1', '0XDISTRIB2', '0XDISTRIB3']
+				}
 			}
 		})
 	})

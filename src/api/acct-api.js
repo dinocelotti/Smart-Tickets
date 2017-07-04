@@ -1,19 +1,9 @@
 import store from '../store'
-import Web3 from 'web3'
 
 export async function getAcctsAndBals() {
 	let accs = await getAcctsAsync()
-	let balances = (await Promise.all(accs.map(acc => getAcctBalanceAsync(acc)))).map(b => b.toString())
-
-	let accts = []
-	for (let i = 0; i < accs.length; i++) {
-		accts.push({
-			addr: accs[i],
-			balance: balances[i]
-		})
-	}
-	//TODO: store.dispatch(getAcctsSuccess(l))
-	return { accts }
+	let balances = await Promise.all(accs.map(a => getAcctBalanceAsync(a).then(b => b.toString())))
+	return { accts: accs.reduce((arr, addr, currIdx) => [...arr, { addr, balance: balances[currIdx] }], []) }
 }
 
 //wrapper around web3 getAccts

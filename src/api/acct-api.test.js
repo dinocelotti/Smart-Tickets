@@ -5,12 +5,14 @@ beforeAll(async () => await deployment.init())
 it('returns all accounts', async () => {
 	try {
 		await expect(api.getAcctsAndBals()).resolves.toEqual(
-			expect.arrayContaining([
-				expect.objectContaining({
-					addr: expect.any(String),
-					balance: expect.any(String)
-				})
-			])
+			expect.objectContaining({
+				accts: expect.arrayContaining([
+					expect.objectContaining({
+						addr: expect.any(String),
+						balance: expect.any(String)
+					})
+				])
+			})
 		)
 	} catch (e) {
 		console.log(e)
