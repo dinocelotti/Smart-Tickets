@@ -6,10 +6,7 @@ const byId = (state = {}, { type, payload: { tix } = {} }) => {
 		case types.LOAD_TIX_SUCCESS:
 			return {
 				...state,
-				...tix.reduce((total, t) => {
-					total[t.id] = t
-					return total
-				}, {})
+				...tix.reduce((total, t) => ({ ...total, [t.id]: t }), {})
 			}
 		case types.EVENT_PROJ_ADD_TIX:
 			return { ...state, [tix.id]: tix }

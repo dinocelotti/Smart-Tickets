@@ -1,15 +1,12 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
 
-const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distribId } = {} }) => {
+const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distrib } = {} }) => {
 	switch (type) {
 		case types.LOAD_PROJS_SUCCESS:
 			return {
 				...state,
-				...projs.reduce((obj, proj) => {
-					obj[proj.addr] = proj
-					return obj
-				}, {})
+				...projs.reduce((obj, proj) => ({ ...obj, [proj.addr]: proj }), {})
 			}
 		case types.EVENT_PROJ_CREATED:
 			return { ...state, [proj.addr]: proj }
@@ -28,13 +25,16 @@ const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distrib
 				[proj.addr]: { ...state[proj.addr], tix: [...state[proj.addr].tix, tix] }
 			}
 		case types.LOAD_DISTRIBS_SUCCESS:
-			return { ...state, [proj.addr]: { ...state[proj.addr], distribs } }
+			return {
+				...state,
+				[proj.addr]: { ...state[proj.addr], distribs: [...state[proj.addr].distribs, ...distribs.map(({ id }) => id)] }
+			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
 			return {
 				...state,
 				[proj.addr]: {
 					...state[proj.addr],
-					distribs: [...state[proj.addr].distribs, distribId]
+					distribs: [...state[proj.addr].distribs, distrib.id]
 				}
 			}
 		//TODO: implement these
