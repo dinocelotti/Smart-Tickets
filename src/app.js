@@ -14,12 +14,21 @@ import PT from 'prop-types'
 import './styles/reset.css'
 import './styles/fonts.css'
 import './styles/global.css'
-
+import Proj from '../build/contracts/Proj.json'
+import ProjResolver from '../build/contracts/ProjResolver.json'
+import ReactDOM from 'react-dom'
 class App extends Component {
 	async componentDidMount() {
-		store.dispatch(
-			actions.projResolverDeploySuccess(await deployProjResolver())
-		)
+		let { web3, provider, contract } = store.getState().web3State
+
+		let currentNetwork = web3.version.network
+		console.log('currentnetwork:', currentNetwork)
+		const proj = contract(Proj)
+		const projResolver = contract(ProjResolver)
+		proj.setProvider(provider)
+		projResolver.setProvider(provider)
+		store.dispatch({ type: { web3Connected: true }, web3, proj, projResolver })
+		store.dispatch(actions.projResolverDeploySuccess(await deployProjResolver()))
 	}
 	render() {
 		// TODO: Fix projResolver issue, until then, return SideNav
@@ -40,7 +49,7 @@ class App extends Component {
 		)
 	}
 }
-
+ReactDOM.render(<App />, document.getElementById('root'))
 App.propTypes = {
 	projResolver: PT.shape({
 		deployed: PT.bool.isRequired
