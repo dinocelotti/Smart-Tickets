@@ -1,14 +1,7 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
 
-<<<<<<< HEAD
 const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distrib } = {} }) => {
-=======
-const byId = (
-	state = {},
-	{ type, payload: { projs, proj, tix, distribs, distribId } = {} }
-) => {
->>>>>>> f85a81ecb0e4162bdc8d2a8a14d6409e4063502c
 	switch (type) {
 		case types.LOAD_PROJS_SUCCESS:
 			return {
