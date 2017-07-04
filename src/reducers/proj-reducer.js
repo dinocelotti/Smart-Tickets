@@ -1,7 +1,10 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
 
-const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distribId } = {} }) => {
+const byId = (
+	state = {},
+	{ type, payload: { projs, proj, tix, distribs, distribId } = {} }
+) => {
 	switch (type) {
 		case types.LOAD_PROJS_SUCCESS:
 			return {
@@ -15,9 +18,15 @@ const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distrib
 			return { ...state, [proj.addr]: proj }
 
 		case types.EVENT_PROJ_FINISH_STAGING:
-			return { ...state, [proj.addr]: { ...state[proj.addr], state: 'Private Funding' } }
+			return {
+				...state,
+				[proj.addr]: { ...state[proj.addr], state: 'Private Funding' }
+			}
 		case types.EVENT_PROJ_START_PUBLIC_FUNDING:
-			return { ...state, [proj.addr]: { ...state[proj.addr], state: 'Public Funding' } }
+			return {
+				...state,
+				[proj.addr]: { ...state[proj.addr], state: 'Public Funding' }
+			}
 
 		case types.LOAD_TIX_SUCCESS:
 			return { ...state, [proj.addr]: { ...state[proj.addr], tix } }
@@ -25,7 +34,10 @@ const byId = (state = {}, { type, payload: { projs, proj, tix, distribs, distrib
 		case types.EVENT_PROJ_ADD_TIX:
 			return {
 				...state,
-				[proj.addr]: { ...state[proj.addr], tix: [...state[proj.addr].tix, tix] }
+				[proj.addr]: {
+					...state[proj.addr],
+					tix: [...state[proj.addr].tix, tix]
+				}
 			}
 		case types.LOAD_DISTRIBS_SUCCESS:
 			return { ...state, [proj.addr]: { ...state[proj.addr], distribs } }

@@ -5,10 +5,10 @@ export function createProjSuccess(event) {
 		event
 	}
 }
-export function loadProjsSuccess(projs) {
+export function loadProjsSuccess({ projs }) {
 	return {
 		type: types.LOAD_PROJS_SUCCESS,
-		projs
+		payload: { projs }
 	}
 }
 export function loadDistribsSuccess({ projAddr, distribs }) {
