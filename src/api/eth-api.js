@@ -1,9 +1,11 @@
 /* eslint-env jest */
 import Web3 from 'web3'
 import contract from 'truffle-contract'
-//import { readFileSync } from 'fs'
-import Proj from '../../build/contracts/Proj.json'
-import ProjResolver from '../../build/contracts/ProjResolver'
+let path = require('path')
+let fs = require('fs')
+let Proj = require('../../build/contracts/Proj.json')
+let ProjResolver = require('../../build/contracts/ProjResolver')
+
 export default class API {
 	static proj
 	static projResolver
@@ -19,10 +21,11 @@ export default class API {
 			API.web3 = new Web3(API.provider)
 		}
 	}
-	/*
+
 	readJSON(module) {
-		return JSON.parse(readFileSync(require.resolve(module)))
-	}*/
+		// eslint-disable-next-line
+		return JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/${module}`)))
+	}
 
 	async deployContract({ _contract, name }) {
 		console.log('deploying')
@@ -35,12 +38,15 @@ export default class API {
 	}
 
 	async reloadContracts() {
+		//for node use only
+		if (typeof process === 'object') {
+			Proj = this.readJSON('../../build/contracts/Proj.json')
+			ProjResolver = this.readJSON('../../build/contracts/ProjResolver.json')
+		}
 		return await this.loadContracts()
 	}
 	async loadContracts() {
 		if (!API.proj || !API.projResolver) {
-			//let load = typeof process === 'object' ? this.readJSON :
-
 			API.proj = await contract(Proj)
 			API.projResolver = await contract(ProjResolver)
 			await API.proj.setProvider(API.provider)
