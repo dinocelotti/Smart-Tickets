@@ -1,10 +1,18 @@
 import React from 'react'
 import accTypes from '../prop-types/accts'
 function theadElement(element) {
-	return <th>{element}</th>
+	return (
+		<th>
+			{element}
+		</th>
+	)
 }
 function tdElement(element) {
-	return <td>{element}</td>
+	return (
+		<td>
+			{element}
+		</td>
+	)
 }
 //{this.props.accts.map(acc => theadElement(acc.addr))}
 export class AcctTableEth extends React.Component {
@@ -25,7 +33,6 @@ export class AcctTableEth extends React.Component {
 						{tdElement(this.props.acctsByAddr[addr].balance)}
 					</tr>
 				)}
-
 			</tbody>
 		)
 		return (
@@ -36,7 +43,8 @@ export class AcctTableEth extends React.Component {
 		)
 	}
 }
+/*
 AcctTableEth.propTypes = {
 	acctsByAddr: accTypes.acctsByAddr,
 	accts: accTypes.accts,
-}
+}*/

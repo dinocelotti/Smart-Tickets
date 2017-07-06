@@ -1,11 +1,19 @@
-import React from 'react';
-import projTypes from '../prop-types/projs';
+import React from 'react'
+import projTypes from '../prop-types/projs'
 
 function theadElement(element) {
-	return <th>{element}</th>;
+	return (
+		<th>
+			{element}
+		</th>
+	)
 }
 function tdElement(element) {
-	return <td>{element}</td>;
+	return (
+		<td>
+			{element}
+		</td>
+	)
 }
 //{this.props.accts.map(acc => theadElement(acc.addr))}
 export default class ProjTable extends React.Component {
@@ -21,7 +29,7 @@ export default class ProjTable extends React.Component {
 					{theadElement('State')}
 				</tr>
 			</thead>
-		);
+		)
 		const tbody = (
 			<tbody>
 				<tr>
@@ -33,15 +41,15 @@ export default class ProjTable extends React.Component {
 					{tdElement(this.props.projVals.state)}
 				</tr>
 			</tbody>
-		);
+		)
 		return (
 			<table className="pure-table">
 				{thead}
 				{tbody}
 			</table>
-		);
+		)
 	}
 }
 ProjTable.propTypes = {
 	projVals: projTypes.proj
-};
+}

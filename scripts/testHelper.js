@@ -1,11 +1,10 @@
 /* eslint-env node */
 const util = require('util')
-const { spawn, exec } = require('child_process')
-const fs = require('fs')
+const { spawn } = require('child_process')
 const Tail = require('tail').Tail
-const execAsync = util.promisify(exec)
 
-const setTimeoutPromise = time => new Promise(res => setTimeout(() => res(), time))
+const setTimeoutPromise = time =>
+	new Promise(res => setTimeout(() => res(), time))
 
 const findLastLine = util.promisify(cb => {
 	const tail = new Tail(`${__dirname}/../output/truffleMigrateOutput.txt`)
@@ -33,7 +32,7 @@ async function init() {
 	})
 	child.unref()
 	await findLastLine()
-	return setTimeoutPromise(250)
+	return setTimeoutPromise(450)
 }
 async function end() {
 	let child = spawn(`bash ${__dirname}/shellScripts/stopTest.sh`, {

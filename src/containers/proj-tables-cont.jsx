@@ -7,8 +7,11 @@ import { loadProjsSuccess } from '../actions/proj-actions'
 import store from '../store'
 
 class ProjTableCont extends React.Component {
-	componentDidMount() {
-		projApi.loadProjs().then(projs => store.dispatch(loadProjsSuccess(projs)))
+	async componentDidMount() {
+		console.log('calling projApi')
+		await projApi
+			.loadProjs()
+			.then(projs => store.dispatch(loadProjsSuccess({ projs })))
 	}
 	render() {
 		if (this.props.projs[0])
@@ -29,10 +32,11 @@ function mapProjStateToProps({ projState: { byId: projsByAddr, ids: projs } }) {
 		projsByAddr
 	}
 }
-
-ProjTableCont.propTypes = {
+/**
+ * ProjTableCont.propTypes = {
 	projs: projTypes.projs,
 	projsByAddr: projTypes.projsByAddr
 }
+ */
 
 export default connect(mapProjStateToProps, { loadProjsSuccess })(ProjTableCont)

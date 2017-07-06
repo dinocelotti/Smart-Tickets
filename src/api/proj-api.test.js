@@ -1,11 +1,11 @@
-/* eslint-env jest */
+/* eslint-env jest  */
+/*eslint-env jasmine*/
 import * as deployment from '../../scripts/testHelper'
 import * as api from './proj-api'
 import * as accApi from './acct-api'
 import * as apiTypes from './proj-types'
-import utils from './api-helpers'
-import store from '../store'
-import { projResolverDeploySuccess } from '../actions/proj-actions'
+import EthApi from './eth-api'
+let ethApi = new EthApi()
 
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 100000
 const sampleProj = {
@@ -22,25 +22,15 @@ const sampleTix1 = {
 let txObject = { tx: expect.any(String), receipt: expect.any(Object) }
 let accountAddrs = []
 let loadedProjs = []
-function requireUncached(module) {
-	delete require.cache[require.resolve(module)]
-	return require(module)
-}
+
 beforeAll(async () => {
 	try {
 		await deployment.init()
-		let { web3, provider, contract } = store.getState().web3State
-		const Proj = requireUncached('../../build/contracts/Proj.json')
-		const ProjResolver = requireUncached('../../build/contracts/ProjResolver.json')
-
-		let currentNetwork = web3.version.network
-		console.log('currentnetwork:', currentNetwork)
-		const proj = contract(Proj)
-		const projResolver = contract(ProjResolver)
-		proj.setProvider(provider)
-		projResolver.setProvider(provider)
-		store.dispatch({ type: { web3Connected: true }, web3, proj, projResolver })
-		store.dispatch(projResolverDeploySuccess(await api.deployProjResolver()))
+		await ethApi.reloadContracts()
+		await ethApi.deployContract({
+			_contract: EthApi.projResolver,
+			name: 'projResolver'
+		})
 		accountAddrs = (await accApi.getAcctsAndBals()).accts
 	} catch (e) {
 		console.log(e.stack)
@@ -131,9 +121,9 @@ describe('promoter tests', async () => {
 		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
 
 		//check it was properly set
-		await expect(promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
-			expect.arrayContaining([true, '2', '0', '0'])
-		)
+		await expect(
+			promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })
+		).resolves.toEqual(expect.arrayContaining([true, '2', '0', '0']))
 	})
 	it('should set distribFee', async () => {
 		let buyerAddr = accountAddrs[1].addr
@@ -141,9 +131,9 @@ describe('promoter tests', async () => {
 		await expect(promise).resolves.toEqual(expect.objectContaining(txObject))
 
 		//check it was properly set
-		await expect(promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
-			expect.arrayContaining([true, '2', '0', '25'])
-		)
+		await expect(
+			promo.queryBuyer({ buyerAddr, tixType: sampleTix1.tixType })
+		).resolves.toEqual(expect.arrayContaining([true, '2', '0', '25']))
 	})
 })
 /**
@@ -153,7 +143,10 @@ it('should load the one distrib', async () => {
 	console.log(loadedProjs[0].addr)
 	let promise = api.loadDistribs(loadedProjs[0].addr)
 	await expect(promise).resolves.toEqual(
-		expect.objectContaining({ projAddr: loadedProjs[0].addr, distribs: [accountAddrs[1].addr] })
+		expect.objectContaining({
+			projAddr: loadedProjs[0].addr,
+			distribs: [accountAddrs[1].addr]
+		})
 	)
 })
 describe('distrib tests', () => {
@@ -161,13 +154,15 @@ describe('distrib tests', () => {
 		let distribAddr = accountAddrs[1].addr
 		let buyer = new api.Buyer(distribAddr, loadedProjs[0].addr, true)
 		await buyer.init()
-		await expect(buyer.setMarkup(100, sampleTix1.tixType)).resolves.toEqual(expect.objectContaining(txObject))
+		await expect(buyer.setMarkup(100, sampleTix1.tixType)).resolves.toEqual(
+			expect.objectContaining(txObject)
+		)
 
 		//make sure it was marked up properly
 		//check it was properly set
-		await expect(buyer.queryBuyer({ buyerAddr: distribAddr, tixType: sampleTix1.tixType })).resolves.toEqual(
-			expect.arrayContaining([true, '2', '100', '25'])
-		)
+		await expect(
+			buyer.queryBuyer({ buyerAddr: distribAddr, tixType: sampleTix1.tixType })
+		).resolves.toEqual(expect.arrayContaining([true, '2', '100', '25']))
 	})
 })
 

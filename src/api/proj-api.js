@@ -1,14 +1,20 @@
-import store from '../store'
 import { getAcctsAsync } from './acct-api'
-import * as projActions from './../actions/proj-actions'
+import EthApi from './eth-api'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
 
-let _projResolver
+const mapLength = (len, map) =>
+	Promise.all(
+		Array.from(Array(Utils.isBigNumber(len) ? len.toNumber() : len), map)
+	)
 
-export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
-	let { proj } = store.getState().web3State
+export async function createProj({
+	projName,
+	totalTixs,
+	consumMaxTixs,
+	promoAddr
+}) {
 	//check that the acct exists
 	/**
 	 *	const acctAddrs = store.getState().acctState.accts
@@ -18,11 +24,16 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 	 *
 	 */
 
-	const newProj = await proj.new(projName, '10', totalTixs, consumMaxTixs, {
-		//test addr of the promo for now
-		from: promoAddr,
-		gas: 4306940
-	})
+	const newProj = await EthApi.proj.new(
+		projName,
+		'10',
+		totalTixs,
+		consumMaxTixs,
+		{
+			from: promoAddr,
+			gas: 4306940
+		}
+	)
 
 	const newProjEntry = {
 		projName,
@@ -40,72 +51,61 @@ export async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr
 	return newProjEntry
 }
 
-async function addProj(projAddr, promoAddr) {
-	return await _projResolver.addProj(projAddr, {
+const addProj = (projAddr, promoAddr) =>
+	EthApi.deployed.projResolver.addProj(projAddr, {
 		from: promoAddr
 	})
-}
-async function addAddr(from, addrToAssign) {
-	const result = await _projResolver.addAddr(addrToAssign, {
+
+const addAddr = (from, addrToAssign) =>
+	EthApi.deployed.projResolver.addAddr(addrToAssign, {
 		from
 	})
-	return result
-}
-export async function deployProjResolver() {
-	let { projResolver } = store.getState().web3State
-	_projResolver = await projResolver.deployed()
-	//TODO: store.dispatch(projActions.projResolverDeploySuccess(true))
-	return true
-}
+
 export async function getAssocProjs() {
-	const addrs = await getAcctsAsync()
+	const {
+		getNumProjsOf: _numProjs,
+		getProjsAssoc: _projsAssoc
+	} = EthApi.deployed.projResolver
 
-	//map addrs to the number of projs they have
-	const numProjsArr = await Promise.all(addrs.map(addr => _projResolver.getNumProjsOf.call({ from: addr })))
+	const mapNumProjs = async from => {
+		let len = await _numProjs.call({ from })
+		return mapLength(len, (val, idx) =>
+			_projsAssoc.call(idx, {
+				from
+			})
+		)
+	}
 
-	//for each address get all the associated events they have
-	const res = await addrs.map(async (addr, index) => {
-		let projArrPromise = []
-		for (let i = 0; i < numProjsArr[index]; i++) {
-			projArrPromise.push(_projResolver.getProjsAssoc.call(i, { from: addr }))
-		}
-
-		//map projs to proj objects
-		const projArr = await Promise.all(projArrPromise)
-		return projArr
-	})
-
-	const assocProjs = (await Promise.all(res)).map((assocProjs, index) => {
-		return { assocProjs, acct: addrs[index] }
-	})
-	//TODO: store.dispatch(projActions.getAssocProjsSuccess(assocProjs))
-	return assocProjs
+	let accts = await getAcctsAsync()
+	let assocProjs = accts.map(async acct => ({
+		acct,
+		assocProjs: await mapNumProjs(acct)
+	}))
+	return Promise.all(assocProjs)
 }
 async function installWatchersforProj(proj) {
 	proj.allEvents((err, log) => {
 		console.log(installWatchersforProj.name, log.event, log)
-		store.dispatch(projActions[`eventProj${log.event}`](log))
+		//store.dispatch(projActions[`eventProj${log.event}`](log))
 	})
 }
 
-export async function mapProjToObj(proj) {
-	const obj = {
-		projName: await proj.projName.call(),
-		totalTixs: (await proj.totalTixs.call()).toString(),
-		consumMaxTixs: (await proj.comsumMaxTixs.call()).toString(),
-		state: await getState(proj),
-		promoAddr: await proj.promo.call(),
-		addr: proj.address,
-		tix: [],
-		distribs: []
-	}
+export const mapProjToObj = async proj => ({
+	projName: await proj.projName.call(),
+	totalTixs: (await proj.totalTixs.call()).toString(),
+	consumMaxTixs: (await proj.comsumMaxTixs.call()).toString(),
+	state: await getState(proj),
+	promoAddr: await proj.promo.call(),
+	addr: proj.address,
+	tix: [],
+	distribs: []
+})
 
-	//installWatchersforProj(proj)
-	return obj
-}
+//installWatchersforProj(proj)
 
 // export async function watchForProjs(proj) {}
 export async function getState(proj) {
+	const state = await proj.currentState()
 	const stateMap = {
 		0: 'Staging',
 		1: 'AwaitingApproval',
@@ -113,57 +113,36 @@ export async function getState(proj) {
 		3: 'PublicFunding',
 		4: 'Done'
 	}
-
-	const state = await proj.currentState()
 	return stateMap[state]
 }
 
-export async function loadProjs() {
-	const arrLen = parseInt(await _projResolver.getProjsLen.call(), 10)
-	let projArrPromise = []
-	for (let i = 0; i < arrLen; i++) {
-		projArrPromise.push(_projResolver.projs(i))
-	}
-
-	const projArrResult = await Promise.all(projArrPromise)
-	const result = await Promise.all(projArrResult.map(projAddr => makeProj(projAddr)))
-
-	let mappedResults = await Promise.all(result.map(res => mapProjToObj(res)))
-	//TODO: store.dispatch(projActions.loadProjsSuccess(mappedResults))
-	//TODO: call this manually -> getAssocProjs()
-	return mappedResults
+export const loadProjs = async () => {
+	console.log('called')
+	let len = await EthApi.deployed.projResolver.getProjsLen.call()
+	return mapLength(len, (val, idx) =>
+		EthApi.deployed.projResolver
+			.projs(idx)
+			.then(EthApi.proj.at)
+			.then(mapProjToObj)
+	)
 }
-export async function loadTix(projAddr) {
-	const p = await makeProj(projAddr)
-	const arrLen = parseInt(await p.getTixsLen.call(), 10)
-	let tixArrPromise = []
-	for (let i = 0; i < arrLen; i++) {
-		tixArrPromise.push(p.tixArr.call(i))
-	}
-	const tix = (await Promise.all(tixArrPromise)).map(t => {
-		return { id: t }
-	})
-	//TODO: store.dispatch(projActions.loadTixSuccess({ projAddr, tix }))
+
+export const loadTix = async projAddr => {
+	let p = await EthApi.proj.at(projAddr)
+	let len = await p.getTixLen.call()
+	let tix = mapLength(len, (val, idx) =>
+		p.tixArr.call(idx).then(t => ({ id: t }))
+	)
 	return { projAddr, tix }
 }
 
-export async function loadDistribs(projAddr) {
+export const loadDistribs = async projAddr => {
 	//make sure to fire the event as projaddr_distribaddr
-	const p = await makeProj(projAddr)
-	const arrLen = parseInt(await p.getDistribsLen.call(), 10)
-	let distribsArrPromise = []
-	for (let i = 0; i < arrLen; i++) {
-		distribsArrPromise.push(p.distribs.call(i))
-	}
-	const distribs = await Promise.all(distribsArrPromise)
-	//TODO: store.dispatch(projActions.loadDistribsSuccess({ projAddr, distribsArr }))
-	return { projAddr, distribs }
-}
-
-async function makeProj(projAddr) {
-	let { proj } = store.getState().web3State
-	let res = await proj.at(projAddr)
-	return res
+	let p = await EthApi.proj.at(projAddr)
+	return p.getDistribsLen
+		.call()
+		.then(len => mapLength(len, (val, idx) => p.distribs.call(idx)))
+		.then(distribs => ({ projAddr, distribs }))
 }
 
 class Entity {
@@ -173,7 +152,7 @@ class Entity {
 		this.projInstance = {}
 	}
 	async init() {
-		this.projInstance = await makeProj(this.projAddr)
+		this.projInstance = await EthApi.proj.at(this.projAddr)
 		return this.projInstance
 	}
 
@@ -182,17 +161,15 @@ class Entity {
    **************************/
 
 	async wrapTx({ methodName, params }) {
-		if (params.length === 0) {
-			return await this.projInstance[methodName]({
-				from: this.addr,
-				gas: 200000
-			})
-		}
-		console.log(methodName)
-		return await this.projInstance[methodName](...params, {
-			from: this.addr,
-			gas: 200000
-		})
+		return this.projInstance[methodName](
+			...[
+				...params,
+				{
+					from: this.addr,
+					gas: 200000
+				}
+			]
+		)
 	}
 
 	/**************************
@@ -211,7 +188,9 @@ class Entity {
 	}
 
 	async getTixVals(tixType) {
-		const res = Utils.maptoBN(await this.wrapTx(EntityTypes.getTixVals(tixType)))
+		const res = Utils.maptoBN(
+			await this.wrapTx(EntityTypes.getTixVals(tixType))
+		)
 
 		return {
 			tixType: res[0],
@@ -225,11 +204,11 @@ export class Promo extends Entity {
      Phase Setters
      **************************/
 	async finishStaging() {
-		return await this.wrapTx(PromoTypes.finishStaging())
+		return this.wrapTx(PromoTypes.finishStaging())
 	}
 
 	async startPublicFunding() {
-		return await this.wrapTx(PromoTypes.startPublicFunding())
+		return this.wrapTx(PromoTypes.startPublicFunding())
 	}
 
 	/**************************
@@ -240,40 +219,47 @@ export class Promo extends Entity {
      Tixs
      ***************/
 	async addTix(tixType, tixPrice, tixQuantity) {
-		return await this.wrapTx(PromoTypes.addTix(tixType, tixPrice, tixQuantity))
+		return this.wrapTx(PromoTypes.addTix(tixType, tixPrice, tixQuantity))
 	}
 	async addIpfsDetailsToTix(tixType, hash) {
-		return await this.wrapTx(PromoTypes.addIpfsDetailsToTix(tixType, hash))
+		return this.wrapTx(PromoTypes.addIpfsDetailsToTix(tixType, hash))
 	}
 	async setTixPrice(tixType, tixPrice) {
-		return await this.wrapTx(PromoTypes.setTixPrice(tixType, tixPrice))
+		return this.wrapTx(PromoTypes.setTixPrice(tixType, tixPrice))
 	}
 	async setTixQuantity(tixType, tixQuantity) {
-		return await this.wrapTx(PromoTypes.setTixQuantity(tixType, tixQuantity))
+		return this.wrapTx(PromoTypes.setTixQuantity(tixType, tixQuantity))
 	}
 	async handleTixForm({ tixType, tixPrice, tixQuantity }) {
-		return await this.addTix(tixType, tixPrice, tixQuantity)
+		return this.addTix(tixType, tixPrice, tixQuantity)
 	}
 	/***************
      Distributors
      ***************/
 	async addDistrib(buyer) {
-		return await this.wrapTx(PromoTypes.addDistrib(buyer))
+		return this.wrapTx(PromoTypes.addDistrib(buyer))
 	}
 	async setDistribAllotQuan(distrib, tixType, quantity) {
-		return await this.wrapTx(PromoTypes.setDistribAllotQuan(distrib, tixType, quantity))
+		return this.wrapTx(
+			PromoTypes.setDistribAllotQuan(distrib, tixType, quantity)
+		)
 	}
 	async setDistribFee(distrib, promosFee) {
-		return await this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
+		return this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
 	}
 
-	async handleDistribForm({ distribAddr, tixType, distribAllotQuan, distribFee }) {
+	async handleDistribForm({
+		distribAddr,
+		tixType,
+		distribAllotQuan,
+		distribFee
+	}) {
 		//TODO: Bundle these transactions, setDistrib should be run first before others
 		let txArr = []
 		txArr.push(this.addDistrib(distribAddr))
 		txArr.push(this.setDistribAllotQuan(distribAddr, tixType, distribAllotQuan))
 		txArr.push(this.setDistribFee(distribAddr, distribFee))
-		return await Promise.all(txArr)
+		return Promise.all(txArr)
 	}
 }
 
@@ -287,7 +273,9 @@ export class Buyer extends Entity {
      Staging Phase
      **************************/
 	async setMarkup(markup, tixType) {
-		return this.isDistrib ? await this.wrapTx(BuyerTypes.setMarkup(markup, tixType)) : ApiErrs.NOT_DISTRIB
+		return this.isDistrib
+			? this.wrapTx(BuyerTypes.setMarkup(markup, tixType))
+			: ApiErrs.NOT_DISTRIB
 	}
 
 	/**************************
@@ -295,10 +283,12 @@ export class Buyer extends Entity {
      **************************/
 	async buyTixFromPromo(tixType, quantity) {
 		//get phase to check to see if its valid
-		return await this.wrapTx(BuyerTypes.buyTixFromPromo(tixType, quantity))
+		return this.wrapTx(BuyerTypes.buyTixFromPromo(tixType, quantity))
 	}
 
 	async buyTixFromDistrib(distribAddr, tixType, quantity) {
-		return await this.wrapTx(BuyerTypes.buyTixFromDistrib(distribAddr, tixType, quantity))
+		return this.wrapTx(
+			BuyerTypes.buyTixFromDistrib(distribAddr, tixType, quantity)
+		)
 	}
 }

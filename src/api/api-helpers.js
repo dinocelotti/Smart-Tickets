@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js'
 
 function isBigNumber(object) {
-	return object instanceof BigNumber || (object && object.constructor && object.constructor.name === 'BigNumber')
+	return (
+		object instanceof BigNumber ||
+		(object && object.constructor && object.constructor.name === 'BigNumber')
+	)
 }
 function maptoBN(arr) {
 	return arr.map(x => BNtoStr(x))
