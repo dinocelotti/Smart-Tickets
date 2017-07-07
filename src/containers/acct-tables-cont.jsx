@@ -8,10 +8,8 @@ import { getAcctsSuccess } from '../actions/acct-actions'
 
 class AcctTableEthCont extends React.Component {
 	componentDidMount() {
-		//get acct addrs
-		acctApi
-			.getAcctsAndBals()
-			.then(accts => store.dispatch(getAcctsSuccess(accts)))
+		console.log('getAcctsCalled')
+		this.props.getAccts()
 	}
 	render() {
 		return (
@@ -29,7 +27,9 @@ function mapEthStateToProps({ acctState: { byId: acctsByAddr, ids: accts } }) {
 		accts
 	}
 }
-
-export const EthTable = connect(mapEthStateToProps, { getAcctsSuccess })(
+const mapDispatchToProps = dispatch => ({
+	getAccts: dispatch.bind(null, getAcctsSuccess())
+})
+export const EthTable = connect(mapEthStateToProps, mapDispatchToProps)(
 	AcctTableEthCont
 )

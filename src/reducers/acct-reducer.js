@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 const byId = (state = {}, { type, payload: { accts, assocProjs } = {} }) => {
 	switch (type) {
 		case types.GET_ACCTS_SUCCESS:
+			console.log(accts)
 			return {
 				...state,
 				...accts.reduce((total, acct) => ({ ...total, [acct.addr]: acct }), {})
@@ -10,7 +11,13 @@ const byId = (state = {}, { type, payload: { accts, assocProjs } = {} }) => {
 		case types.GET_ASSOC_PROJS_SUCCESS:
 			return {
 				...state,
-				...assocProjs.reduce((obj, { acct, assocProjs }) => ({ ...obj, [acct]: { ...state[acct], assocProjs } }), {})
+				...assocProjs.reduce(
+					(obj, { acct, assocProjs }) => ({
+						...obj,
+						[acct]: { ...state[acct], assocProjs }
+					}),
+					{}
+				)
 			}
 
 		default:

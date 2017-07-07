@@ -1,8 +1,10 @@
 import * as types from './action-types'
+import * as api from '../api/acct-api'
 
-export function getAcctsSuccess({ accts }) {
-	return {
-		type: types.GET_ACCTS_SUCCESS,
-		payload: { accts }
-	}
-}
+export const getAcctsSuccess = () => async dispatch =>
+	api.getAcctsAndBals().then(accts =>
+		dispatch({
+			type: types.GET_ACCTS_SUCCESS,
+			payload: accts
+		})
+	)

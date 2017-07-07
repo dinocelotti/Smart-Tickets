@@ -64,6 +64,7 @@
 		"react-table": "^6.4.0",
 		"redux": "^3.6.0",
 		"redux-devtools-extension": "^2.13.2",
+		"redux-thunk": "^2.2.0",
 		"styled-components": "^2.1.1",
 		"tail": "^1.2.2",
 		"truffle": "^3.3.0",
@@ -77,8 +78,12 @@
 		"test": "node scripts/test.js --env=jsdom"
 	},
 	"jest": {
-		"collectCoverageFrom": ["src/**/*.{js,jsx}"],
-		"setupFiles": ["<rootDir>/config/polyfills.js"],
+		"collectCoverageFrom": [
+			"src/**/*.{js,jsx}"
+		],
+		"setupFiles": [
+			"<rootDir>/config/polyfills.js"
+		],
 		"testPathIgnorePatterns": [
 			"<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
 			"/node_modules/",
@@ -100,7 +105,9 @@
 		}
 	},
 	"babel": {
-		"presets": ["react-app"]
+		"presets": [
+			"react-app"
+		]
 	},
 	"eslintConfig": {
 		"extends": "react-app"
