@@ -64,7 +64,7 @@ contract Proj {
             comsumMaxTixs = _comsumMaxTixs;
             promo = msg.sender;  
             currentState = State.Staging;
-            Created(promo, projName);
+            Created(promo, projName, membranFee, tixsLeft, totalTixs, comsumMaxTixs);
         }
 
 
@@ -95,23 +95,24 @@ contract Proj {
 /**************************
         Event Firers  
 **************************/
-     event Created(address indexed promo, string projName);
+
+     event Created(address indexed promo, string projName, uint membranFee, uint tixLeft, uint totalTixs, uint consumMaxTixs);
 
      event FinishStaging();
      event StartPrivateFunding();
      event StartPublicFunding();
      
-     event AddTix(address indexed from, uint typeOfTix);
-     event AddIpfsDetailsToTix(address indexed from, uint typeOfTix, bytes32 _hash);
-     event SetTixPrice (address indexed from, uint typeOfTix, uint priceInWei);
-     event SetTixQuantity (address indexed from, uint typeOfTix, uint quantity);
+     event AddTix(address indexed promo, uint typeOfTix);
+     event AddIpfsDetailsToTix(address indexed promo, uint typeOfTix, bytes32 ipfsHash);
+     event SetTixPrice (address indexed promo, uint typeOfTix, uint priceInWei);
+     event SetTixQuantity (address indexed promo, uint typeOfTix, uint quantity);
 
 
-     event AddDistrib (address indexed from, address buyer);
-     event SetDistribAllotQuan (address indexed from, address _distrib, uint _typeOfTix, uint _quantity);
-     event SetDistribFee (address indexed from, address _distrib, uint _promosFee);
+     event AddDistrib (address indexed promo, address distrib);
+     event SetDistribAllotQuan (address indexed promo, address _distrib, uint _typeOfTix, uint allotQuan);
+     event SetDistribFee (address indexed promo, address _distrib, uint fee);
 
-     event SetMarkup (address indexed from, uint _markup, uint _typeOfTix);
+     event SetMarkup (address indexed distrib, uint _markup, uint _typeOfTix);
 
      event BuyTixFromPromo(address indexed from, address indexed to, bool indexed isDistrib, uint typeOfTix, uint quantity, uint weiSent);
      event BuyTixFromDistrib(address indexed from, address indexed to, bool indexed isDistrib, uint typeOfTix,  uint quantity, uint weiSent);

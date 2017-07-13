@@ -4,11 +4,10 @@ import { connect } from 'react-redux'
 import * as acctApi from '../api/acct-api'
 import accTypes from '../prop-types/accts'
 import store from '../store'
-import { getAcctsSuccess } from '../actions/acct-actions'
+import { getAccts } from '../actions/acct-actions'
 
 class AcctTableEthCont extends React.Component {
 	componentDidMount() {
-		console.log('getAcctsCalled')
 		this.props.getAccts()
 	}
 	render() {
@@ -28,7 +27,7 @@ function mapEthStateToProps({ acctState: { byId: acctsByAddr, ids: accts } }) {
 	}
 }
 const mapDispatchToProps = dispatch => ({
-	getAccts: dispatch.bind(null, getAcctsSuccess())
+	getAccts: () => dispatch(getAccts())
 })
 export const EthTable = connect(mapEthStateToProps, mapDispatchToProps)(
 	AcctTableEthCont

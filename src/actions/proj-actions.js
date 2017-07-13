@@ -1,8 +1,8 @@
 import * as types from './action-types'
-export function createProjSuccess(event) {
+export function event_createProj({ proj }) {
 	return {
-		type: types.CREATE_PROJ_SUCCESS,
-		event
+		type: types.CREATED,
+		payload: { proj }
 	}
 }
 export function loadProjsSuccess({ projs }) {
@@ -40,53 +40,54 @@ export function projResolverDeploySuccess(projResolverDeployed) {
 	}
 }
 
-export function eventProjCreated(event) {
-	return { type: types.EVENT_PROJ_CREATED, event }
+//TODO: add addr to object
+export function Created(proj) {
+	return { type: types.CREATED, payload: { proj } }
 }
-export function eventProjFinishStaging(event) {
-	return { type: types.EVENT_PROJ_FINISH_STAGING, event }
+export function FinishStaging(proj) {
+	return { type: types.FINISH_STAGING, payload: proj }
 }
-export function eventProjStartPublicFunding(event) {
-	return { type: types.EVENT_PROJ_START_PUBLIC_FUNDING, event }
+export function StartPublicFunding(proj) {
+	return { type: types.START_PUBLIC_FUNDING, payload: proj }
 }
-export function eventProjAddTix(event) {
-	return { type: types.EVENT_PROJ_ADD_TIX, event }
+export function AddTix(proj) {
+	return { type: types.ADD_TIX, payload: proj }
 }
-export function eventProjAddIpfsDetailsToTix(event) {
-	return { type: types.EVENT_PROJ_ADD_IPFS_DETAILS_TO_TIX, event }
+export function AddIpfsDetailsToTix(event) {
+	return { type: types.ADD_IPFS_DETAILS_TO_TIX, event }
 }
-export function eventProjSetTixPrice(event) {
-	return { type: types.EVENT_PROJ_SET_TIX_PRICE, event }
+export function SetTixPrice(event) {
+	return { type: types.SET_TIX_PRICE, event }
 }
-export function eventProjSetTixQuantity(event) {
-	return { type: types.EVENT_PROJ_SET_TIX_QUANTITY, event }
-}
-
-export function eventProjAddDistrib(event) {
-	return { type: types.EVENT_PROJ_SET_DISTRIB, event }
-}
-export function eventProjSetDistribAllotQuan(event) {
-	return { type: types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN, event }
-}
-export function eventProjSetDistribFee(event) {
-	return { type: types.EVENT_PROJ_SET_DISTRIB_FEE, event }
-}
-export function eventProjSetMarkup(event) {
-	return { type: types.EVENT_PROJ_SET_MARKUP, event }
-}
-export function eventProjBuyTixFromPromo(event) {
-	return { type: types.EVENT_PROJ_BUY_TIX_FROM_PROMO, event }
-}
-export function eventProjBuyTixFromDistrib(event) {
-	return { type: types.EVENT_PROJ_BUY_TIX_FROM_DISTRIB, event }
-}
-export function eventProjWithdraw(event) {
-	return { type: types.EVENT_PROJ_WITHDRAW, event }
+export function SetTixQuantity(event) {
+	return { type: types.SET_TIX_QUANTITY, event }
 }
 
-export function eventProjResolverAddAddr(event) {
+export function AddDistrib(event) {
+	return { type: types.SET_DISTRIB, event }
+}
+export function SetDistribAllotQuan(event) {
+	return { type: types.SET_DISTRIB_ALLOT_QUAN, event }
+}
+export function SetDistribFee(event) {
+	return { type: types.SET_DISTRIB_FEE, event }
+}
+export function SetMarkup(event) {
+	return { type: types.SET_MARKUP, event }
+}
+export function BuyTixFromPromo(event) {
+	return { type: types.BUY_TIX_FROM_PROMO, event }
+}
+export function BuyTixFromDistrib(event) {
+	return { type: types.BUY_TIX_FROM_DISTRIB, event }
+}
+export function Withdraw(event) {
+	return { type: types.WITHDRAW, event }
+}
+
+export function ResolverAddAddr(event) {
 	return { type: types.CREATE_PROJ_SUCCESS, event }
 }
-export function eventProjResolverAddProj(event) {
+export function ResolverAddProj(event) {
 	return { type: types.CREATE_PROJ_SUCCESS, event }
 }

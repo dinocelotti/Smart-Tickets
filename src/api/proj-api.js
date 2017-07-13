@@ -86,7 +86,7 @@ export async function getAssocProjs() {
 async function installWatchersforProj(proj) {
 	proj.allEvents((err, log) => {
 		console.log(installWatchersforProj.name, log.event, log)
-		//store.dispatch(projActions[`eventProj${log.event}`](log))
+		//store.dispatch(projActions[`${log.event}`](log))
 	})
 }
 
@@ -115,7 +115,10 @@ export async function getState(proj) {
 	}
 	return stateMap[state]
 }
-
+export const loadProj = async projAddr => {
+	let p = await EthApi.proj.at(projAddr)
+	return mapProjToObj(p)
+}
 export const loadProjs = async () => {
 	console.log('called')
 	let len = await EthApi.deployed.projResolver.getProjsLen.call()

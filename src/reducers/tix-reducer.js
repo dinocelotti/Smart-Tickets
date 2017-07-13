@@ -8,14 +8,20 @@ const byId = (state = {}, { type, payload: { tix } = {} }) => {
 				...state,
 				...tix.reduce((total, t) => ({ ...total, [t.id]: t }), {})
 			}
-		case types.EVENT_PROJ_ADD_TIX:
+		case types.ADD_TIX:
 			return { ...state, [tix.id]: tix }
-		case types.EVENT_PROJ_ADD_IPFS_DETAILS_TO_TIX:
-			return { ...state, [tix.id]: { ...state[tix.id], ipfsHash: tix.ipfsHash } }
-		case types.EVENT_PROJ_SET_TIX_PRICE:
+		case types.ADD_IPFS_DETAILS_TO_TIX:
+			return {
+				...state,
+				[tix.id]: { ...state[tix.id], ipfsHash: tix.ipfsHash }
+			}
+		case types.SET_TIX_PRICE:
 			return { ...state, [tix.id]: { ...state[tix.id], price: tix.price } }
-		case types.EVENT_PROJ_SET_TIX_QUANTITY:
-			return { ...state, [tix.id]: { ...state[tix.id], quantity: tix.quantity } }
+		case types.SET_TIX_QUANTITY:
+			return {
+				...state,
+				[tix.id]: { ...state[tix.id], quantity: tix.quantity }
+			}
 		default:
 			return state
 	}
@@ -25,7 +31,7 @@ const ids = (state = [], { type, payload: { tix } = {} }) => {
 		case types.LOAD_TIX_SUCCESS:
 			return [...new Set([...state, ...tix.map(({ id }) => id)])]
 
-		case types.EVENT_PROJ_ADD_TIX:
+		case types.ADD_TIX:
 			return [...new Set([...state, tix.id])]
 
 		default:

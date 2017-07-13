@@ -15,11 +15,30 @@ import { combineReducers } from 'redux'
 const tixByDistrib = (state = {}, { type, payload: { distrib, tix } = {} }) => {
 	switch (type) {
 		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'allotQuan', tix.allotQuan) }
+			return {
+				...state,
+				[distrib.id]: ticketHandler(
+					state[distrib.id],
+					tix.id,
+					'allotQuan',
+					tix.allotQuan
+				)
+			}
 		case types.EVENT_PROJ_SET_DISTRIB_FEE:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee) }
+			return {
+				...state,
+				[distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee)
+			}
 		case types.EVENT_PROJ_SET_MARKUP:
-			return { ...state, [distrib.id]: ticketHandler(state[distrib.id], tix.id, 'markup', tix.markup) }
+			return {
+				...state,
+				[distrib.id]: ticketHandler(
+					state[distrib.id],
+					tix.id,
+					'markup',
+					tix.markup
+				)
+			}
 		default:
 			return state
 	}
@@ -32,7 +51,10 @@ const byId = (state = {}, { type, payload: { distribs, distrib } = {} }) => {
 		case types.LOAD_DISTRIBS_SUCCESS:
 			return {
 				...state,
-				...distribs.reduce((obj, distrib) => ({ ...obj, [distrib.id]: distrib }), {})
+				...distribs.reduce(
+					(obj, distrib) => ({ ...obj, [distrib.id]: distrib }),
+					{}
+				)
 			}
 		case types.EVENT_PROJ_ADD_DISTRIB:
 			return { ...state, [distrib.id]: distrib }
