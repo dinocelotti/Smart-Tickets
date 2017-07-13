@@ -31,20 +31,20 @@ let projHandler = {
 	Withdraw: () => {}
 }
 let projResolverHandler = {
-	Created: () => {},
+	Created: () => 'hi',
 	AddProj: () => {},
 	AddAddr: () => {}
 }
-let logHanderCreator = actionCreators => (log, err) => {
+let logHanderCreator = actionCreators => (err, log) => {
 	if (err) throw err
-
-	return Object.keys(actionCreators).forEach(key => {
-		actionCreators[key][log.event]
-			? actionCreators[key][log.event](helper.normalizeArgs(log))
-			: null
+	let val
+	Object.keys(actionCreators).forEach(key => {
+		if (actionCreators[key][log.event])
+			val = actionCreators[key][log.event](helper.normalizeArgs(log))
 	})
+	return val
 }
-let logHandler = logHanderCreator({ projHandler, projResolverHandler })
+let logHandler = logHanderCreator({ actionCreator })
 
 let ethApi = new EthApi()
 let proj, projResolver
@@ -66,7 +66,23 @@ const sampleProjGen = (function* sampleProjGen() {
 		index++
 	}
 })()
-
+const sampleTixGen = (function* sampleTixGen() {
+	let index = 0
+	let tixType = num => `TixType${num}`
+	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 1)
+	let tixPrice = randomNumGen(50)
+	let tixQuantity = randomNumGen(50)
+	//eslint-disable-next-line
+	while (true) {
+		yield {
+			tixType: tixType(index),
+			tixPrice: tixPrice(),
+			tixQuantity: tixQuantity()
+		}
+		index++
+	}
+})()
+console.error(sampleTixGen.next().value)
 beforeAll(async () => {
 	try {
 		await deployment.init()
@@ -99,19 +115,14 @@ it('should retreive those projs using a filter and dispatch them to the store', 
 	event.watch(async (error, log) => {
 		logs.push(log)
 		let _log = helper.normalizeArgs(log)
-		console.log(_log)
 		let { addr, proj: _p } = _log
 		let p = await proj.at(_p)
-		p.Created({}, { fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
-			let normalizedLog = helper.normalizeArgs(_log)
-			console.log(normalizedLog)
-			console.log(actionCreator.Created(normalizedLog))
-			store.dispatch(actionCreator.Created(normalizedLog))
+		p.allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
+			store.dispatch(logHandler(err, _log))
 			console.log(store.getState().projState)
 			if (logs.length === 1) done()
 		})
 	})
 })
-//it('should test the time to retrive via array', () => {
 
 afterAll(async () => await deployment.end())

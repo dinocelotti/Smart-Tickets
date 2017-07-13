@@ -45,35 +45,35 @@ export function Created(proj) {
 	return { type: types.CREATED, payload: { proj } }
 }
 export function FinishStaging(proj) {
-	return { type: types.FINISH_STAGING, payload: proj }
+	return { type: types.FINISH_STAGING, payload: { proj } }
 }
 export function StartPublicFunding(proj) {
-	return { type: types.START_PUBLIC_FUNDING, payload: proj }
+	return { type: types.START_PUBLIC_FUNDING, payload: { proj } }
 }
-export function AddTix(proj) {
-	return { type: types.ADD_TIX, payload: proj }
+export function AddTix(tix) {
+	return { type: types.ADD_TIX, payload: { tix } }
 }
-export function AddIpfsDetailsToTix(event) {
-	return { type: types.ADD_IPFS_DETAILS_TO_TIX, event }
+export function AddIpfsDetailsToTix(tix) {
+	return { type: types.ADD_IPFS_DETAILS_TO_TIX, payload: { tix } }
 }
-export function SetTixPrice(event) {
-	return { type: types.SET_TIX_PRICE, event }
+export function SetTixPrice(tix) {
+	return { type: types.SET_TIX_PRICE, payload: { tix } }
 }
-export function SetTixQuantity(event) {
-	return { type: types.SET_TIX_QUANTITY, event }
+export function SetTixQuantity(tix) {
+	return { type: types.SET_TIX_QUANTITY, payload: { tix } }
 }
 
-export function AddDistrib(event) {
-	return { type: types.SET_DISTRIB, event }
+export function AddDistrib(distrib) {
+	return { type: types.SET_DISTRIB, payload: { distrib } }
 }
-export function SetDistribAllotQuan(event) {
-	return { type: types.SET_DISTRIB_ALLOT_QUAN, event }
+export function SetDistribAllotQuan(distrib) {
+	return { type: types.SET_DISTRIB_ALLOT_QUAN, payload: { distrib } }
 }
-export function SetDistribFee(event) {
-	return { type: types.SET_DISTRIB_FEE, event }
+export function SetDistribFee(distrib) {
+	return { type: types.SET_DISTRIB_FEE, payload: { distrib } }
 }
-export function SetMarkup(event) {
-	return { type: types.SET_MARKUP, event }
+export function SetMarkup(distrib) {
+	return { type: types.SET_MARKUP, payload: { distrib } }
 }
 export function BuyTixFromPromo(event) {
 	return { type: types.BUY_TIX_FROM_PROMO, event }
