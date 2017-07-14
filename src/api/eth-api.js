@@ -28,9 +28,7 @@ export default class API {
 	}
 
 	async deployContract({ _contract, name }) {
-		console.log('deploying')
 		API.deployed[name] = await _contract.deployed()
-		console.log('deployed')
 		return true
 	}
 	changeProvider(_provider) {
