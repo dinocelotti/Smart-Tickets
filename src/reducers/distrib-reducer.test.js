@@ -14,18 +14,24 @@ describe('distrib-reducer', () => {
 		expect(
 			reducer(undefined, {
 				type: types.LOAD_DISTRIBS_SUCCESS,
-				payload: { distribs: [{ id: '0XDISTRIB1' }, { id: '0XDISTRIB2' }], projAddr: '0XPROJADDR1' }
+				payload: {
+					distribs: [{ id: '0XDISTRIB1' }, { id: '0XDISTRIB2' }],
+					projAddr: '0XPROJADDR1'
+				}
 			})
 		).toEqual({
-			byId: { '0XDISTRIB1': { id: '0XDISTRIB1' }, '0XDISTRIB2': { id: '0XDISTRIB2' } },
+			byId: {
+				'0XDISTRIB1': { id: '0XDISTRIB1' },
+				'0XDISTRIB2': { id: '0XDISTRIB2' }
+			},
 			ids: ['0XDISTRIB1', '0XDISTRIB2'],
 			tixByDistrib: {}
 		})
 	})
-	it(`should handle ${types.EVENT_PROJ_ADD_DISTRIB}`, () => {
+	it(`should handle ${types.ADD_DISTRIB}`, () => {
 		expect(
 			reducer(undefined, {
-				type: types.EVENT_PROJ_ADD_DISTRIB,
+				type: types.ADD_DISTRIB,
 				payload: { distrib: { id: '0XDISTRIB00' }, projAddr: '0XPROJADDR1' }
 			})
 		).toEqual({
@@ -34,10 +40,10 @@ describe('distrib-reducer', () => {
 			tixByDistrib: {}
 		})
 	})
-	it(`should handle ${types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN}`, () => {
+	it(`should handle ${types.SET_DISTRIB_ALLOT_QUAN}`, () => {
 		expect(
 			reducer(undefined, {
-				type: types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN,
+				type: types.SET_DISTRIB_ALLOT_QUAN,
 				payload: {
 					distrib: { id: '0XDISTRIB00' },
 					tix: {
@@ -46,12 +52,16 @@ describe('distrib-reducer', () => {
 					}
 				}
 			})
-		).toEqual({ byId: {}, ids: [], tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { allotQuan: '50' } } } })
+		).toEqual({
+			byId: {},
+			ids: [],
+			tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { allotQuan: '50' } } }
+		})
 	})
-	it(`should handle ${types.EVENT_PROJ_SET_DISTRIB_FEE}`, () => {
+	it(`should handle ${types.SET_DISTRIB_FEE}`, () => {
 		expect(
 			reducer(undefined, {
-				type: types.EVENT_PROJ_SET_DISTRIB_FEE,
+				type: types.SET_DISTRIB_FEE,
 				payload: {
 					distrib: { id: '0XDISTRIB00' },
 					tix: {
@@ -60,12 +70,16 @@ describe('distrib-reducer', () => {
 					}
 				}
 			})
-		).toEqual({ byId: {}, ids: [], tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { fee: '20' } } } })
+		).toEqual({
+			byId: {},
+			ids: [],
+			tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { fee: '20' } } }
+		})
 	})
-	it(`should handle ${types.EVENT_PROJ_SET_MARKUP}`, () => {
+	it(`should handle ${types.SET_MARKUP}`, () => {
 		expect(
 			reducer(undefined, {
-				type: types.EVENT_PROJ_SET_MARKUP,
+				type: types.SET_MARKUP,
 				payload: {
 					distrib: { id: '0XDISTRIB00' },
 					tix: {
@@ -74,6 +88,10 @@ describe('distrib-reducer', () => {
 					}
 				}
 			})
-		).toEqual({ byId: {}, ids: [], tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { markup: '75' } } } })
+		).toEqual({
+			byId: {},
+			ids: [],
+			tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { markup: '75' } } }
+		})
 	})
 })

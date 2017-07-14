@@ -14,7 +14,7 @@ import { combineReducers } from 'redux'
  */
 const tixByDistrib = (state = {}, { type, payload: { distrib, tix } = {} }) => {
 	switch (type) {
-		case types.EVENT_PROJ_SET_DISTRIB_ALLOT_QUAN:
+		case types.SET_DISTRIB_ALLOT_QUAN:
 			return {
 				...state,
 				[distrib.id]: ticketHandler(
@@ -24,12 +24,12 @@ const tixByDistrib = (state = {}, { type, payload: { distrib, tix } = {} }) => {
 					tix.allotQuan
 				)
 			}
-		case types.EVENT_PROJ_SET_DISTRIB_FEE:
+		case types.SET_DISTRIB_FEE:
 			return {
 				...state,
 				[distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee)
 			}
-		case types.EVENT_PROJ_SET_MARKUP:
+		case types.SET_MARKUP:
 			return {
 				...state,
 				[distrib.id]: ticketHandler(
@@ -56,7 +56,7 @@ const byId = (state = {}, { type, payload: { distribs, distrib } = {} }) => {
 					{}
 				)
 			}
-		case types.EVENT_PROJ_ADD_DISTRIB:
+		case types.ADD_DISTRIB:
 			return { ...state, [distrib.id]: distrib }
 		default:
 			return state
@@ -67,7 +67,7 @@ const ids = (state = [], { type, payload: { distribs, distrib } = {} }) => {
 		case types.LOAD_DISTRIBS_SUCCESS:
 			return [...new Set([...state, ...distribs.map(({ id }) => id)])]
 
-		case types.EVENT_PROJ_ADD_DISTRIB:
+		case types.ADD_DISTRIB:
 			return [...new Set([...state, distrib.id])]
 
 		default:
