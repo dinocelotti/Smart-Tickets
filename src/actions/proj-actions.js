@@ -39,10 +39,10 @@ export function projResolverDeploySuccess(projResolverDeployed) {
 		projResolverDeployed
 	}
 }
-
+const getId = (data, addr) => `${data.typeOfTix}_${addr}`
 //TODO: add addr to object
-export function Created(proj) {
-	return { type: types.CREATED, payload: { proj } }
+export function Created({ data, addr }) {
+	return { type: types.CREATED, payload: { proj: { ...data, addr } } }
 }
 export function FinishStaging(proj) {
 	return { type: types.FINISH_STAGING, payload: { proj } }
@@ -50,17 +50,26 @@ export function FinishStaging(proj) {
 export function StartPublicFunding(proj) {
 	return { type: types.START_PUBLIC_FUNDING, payload: { proj } }
 }
-export function AddTix(tix) {
-	return { type: types.ADD_TIX, payload: { tix } }
+export function AddTix({ data, addr }) {
+	return {
+		type: types.ADD_TIX,
+		payload: { proj: { addr }, tix: { id: getId(data, addr), ...data } }
+	}
 }
 export function AddIpfsDetailsToTix(tix) {
 	return { type: types.ADD_IPFS_DETAILS_TO_TIX, payload: { tix } }
 }
-export function SetTixPrice(tix) {
-	return { type: types.SET_TIX_PRICE, payload: { tix } }
+export function SetTixPrice({ data, addr }) {
+	return {
+		type: types.SET_TIX_PRICE,
+		payload: { proj: { addr }, tix: { id: getId(data, addr), ...data } }
+	}
 }
-export function SetTixQuantity(tix) {
-	return { type: types.SET_TIX_QUANTITY, payload: { tix } }
+export function SetTixQuantity({ data, addr }) {
+	return {
+		type: types.SET_TIX_QUANTITY,
+		payload: { proj: { addr }, tix: { id: getId(data, addr), ...data } }
+	}
 }
 
 export function AddDistrib(distrib) {
