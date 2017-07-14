@@ -8,17 +8,17 @@ function isBigNumber(object) {
 }
 const normalizeArgs = ({ args, address }) => {
 	//logs.args._proj
-	return Object.keys(args).reduce(
-		(obj, key) => {
+	return {
+		data: Object.keys(args).reduce((obj, key) => {
 			return {
 				...obj,
 				[key[0] === '_' ? key.slice(1) : key]: isBigNumber(args[key])
 					? args[key].toString()
 					: args[key]
 			}
-		},
-		{ addr: address }
-	)
+		}, {}),
+		addr: address
+	}
 }
 
 function maptoBN(arr) {
