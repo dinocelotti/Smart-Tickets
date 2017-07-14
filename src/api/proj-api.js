@@ -149,8 +149,8 @@ export const loadDistribs = async projAddr => {
 }
 
 class Entity {
-	constructor(addr, projAddr) {
-		this.addr = addr
+	constructor({ promo: promoAddr, addr: projAddr }) {
+		this.addr = promoAddr
 		this.projAddr = projAddr
 		this.projInstance = {}
 	}
