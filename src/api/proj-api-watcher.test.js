@@ -11,32 +11,11 @@ import helper from './api-helpers'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
 const mapLength = (len, map) => Promise.all(Array.from(Array(len), map))
-/**
- * 
- */
-let projHandler = {
-	Created: () => {},
-	FinishStaging: () => {},
-	StartPrivateFunding: () => {},
-	AddTix: () => {},
-	AddIpfsDetailsToTix: () => {},
-	SetTixPrice: () => {},
-	SetTixQuantity: () => {},
-	AddDistrib: () => {},
-	SetDistribAllotQuan: () => {},
-	SetDistribFee: () => {},
-	SetMarkup: () => {},
-	BuyTixFromPromo: () => {},
-	BuyTixFromDistrib: () => {},
-	Withdraw: () => {}
-}
-let projResolverHandler = {
-	Created: () => 'hi',
-	AddProj: () => {},
-	AddAddr: () => {}
-}
 let logHanderCreator = actionCreators => (err, log) => {
-	if (err) throw err
+	if (err) {
+		console.error(err)
+		throw err
+	}
 	let val
 	Object.keys(actionCreators).forEach(key => {
 		if (actionCreators[key][log.event])
@@ -46,6 +25,9 @@ let logHanderCreator = actionCreators => (err, log) => {
 }
 let logHandler = logHanderCreator({ actionCreator })
 
+let testProjs = []
+let sampleTixs = []
+let projState = () => store.getState().projState
 let ethApi = new EthApi()
 let proj, projResolver
 const sampleProjGen = (function* sampleProjGen() {
@@ -71,7 +53,7 @@ const sampleTixGen = (function* sampleTixGen() {
 	let tixType = num => `TixType${num}`
 	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 1)
 	let tixPrice = randomNumGen(50)
-	let tixQuantity = randomNumGen(50)
+	let tixQuantity = randomNumGen(5)
 	//eslint-disable-next-line
 	while (true) {
 		yield {
@@ -82,7 +64,11 @@ const sampleTixGen = (function* sampleTixGen() {
 		index++
 	}
 })()
-console.error(sampleTixGen.next().value)
+
+for (let i = 0; i < 10; i++) {
+	sampleTixs.push(sampleTixGen.next().value)
+}
+console.log(sampleTixs)
 beforeAll(async () => {
 	try {
 		await deployment.init()
@@ -98,7 +84,7 @@ beforeAll(async () => {
 	}
 })
 
-it('should add a bunch of projs to the first accout', async () => {
+it('should add a bunch of projs to the first account', async () => {
 	let accounts = await accApi.getAcctsAsync()
 	console.log(accounts)
 
@@ -115,14 +101,40 @@ it('should retreive those projs using a filter and dispatch them to the store', 
 	event.watch(async (error, log) => {
 		logs.push(log)
 		let _log = helper.normalizeArgs(log)
-		let { addr, proj: _p } = _log
+		console.error(_log)
+		let { addr, data: { proj: _p } } = _log
 		let p = await proj.at(_p)
+		testProjs.push(p)
 		p.allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
+			console.log(logHandler(err, _log))
 			store.dispatch(logHandler(err, _log))
 			console.log(store.getState().projState)
+
 			if (logs.length === 1) done()
 		})
 	})
 })
 
+it('should add a tix to the proj', async done => {
+	setTimeout(async () => {
+		let proj = projState().byId[projState().ids[0]]
+		let promo = new api.Promo(proj)
+		try {
+			await promo.init()
+			await promo.handleTixForm(sampleTixs[0])
+		} catch (e) {
+			console.error(e)
+		}
+		testProjs[0].allEvents(
+			{ fromBlock: 0, toBlock: 'pending' },
+			(err, _log) => {
+				console.error(logHandler(err, _log))
+				store.dispatch(logHandler(err, _log))
+				console.log(JSON.stringify(store.getState().projState, null, 1))
+				console.log(JSON.stringify(store.getState().tixState, null, 1))
+				done()
+			}
+		)
+	}, 1500)
+})
 afterAll(async () => await deployment.end())
