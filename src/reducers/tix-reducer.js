@@ -16,7 +16,7 @@ const byId = (state = {}, { type, payload: { tix } = {} }) => {
 				[tix.id]: { ...state[tix.id], ipfsHash: tix.ipfsHash }
 			}
 		case types.SET_TIX_PRICE:
-			return { ...state, [tix.id]: { ...state[tix.id], price: tix.price } }
+			return { ...state, [tix.id]: { ...state[tix.id], price: tix.priceInWei } }
 		case types.SET_TIX_QUANTITY:
 			return {
 				...state,
