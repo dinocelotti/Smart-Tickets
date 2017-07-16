@@ -33,7 +33,7 @@ let proj, projResolver
 const sampleProjGen = (function* sampleProjGen() {
 	let index = 0
 	let projName = num => `Sample Project ${num}`
-	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 1)
+	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 5)
 	let totalTix = randomNumGen(100)
 	let consumMaxTixs = randomNumGen(5)
 	//eslint-disable-next-line
@@ -115,26 +115,26 @@ it('should retreive those projs using a filter and dispatch them to the store', 
 	})
 })
 
-it('should add a tix to the proj', async done => {
-	setTimeout(async () => {
-		let proj = projState().byId[projState().ids[0]]
-		let promo = new api.Promo(proj)
-		try {
-			await promo.init()
-			await promo.handleTixForm(sampleTixs[0])
-		} catch (e) {
-			console.error(e)
-		}
-		testProjs[0].allEvents(
-			{ fromBlock: 0, toBlock: 'pending' },
-			(err, _log) => {
-				console.error(logHandler(err, _log))
-				store.dispatch(logHandler(err, _log))
-				console.log(JSON.stringify(store.getState().projState, null, 1))
-				console.log(JSON.stringify(store.getState().tixState, null, 1))
-				done()
-			}
-		)
-	}, 1500)
+it('should add a tix to the proj and test for its events', async done => {
+	let proj = projState().byId[projState().ids[0]]
+	let promo = new api.Promo(proj)
+	try {
+		await promo.init()
+		await promo.handleTixForm(sampleTixs[0])
+		await promo.addIpfsDetailsToTix({
+			ipfsHash: 'TESTHASH',
+			...sampleTixs[0]
+		})
+	} catch (e) {
+		console.error(e)
+	}
+	testProjs[0].allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
+		console.error(logHandler(err, _log))
+		store.dispatch(logHandler(err, _log))
+		console.log(JSON.stringify(store.getState().projState, null, 1))
+		console.log(JSON.stringify(store.getState().tixState, null, 1))
+		done()
+	})
 })
+
 afterAll(async () => await deployment.end())
