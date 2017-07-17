@@ -224,8 +224,8 @@ export class Promo extends Entity {
 	async addTix(tixType, tixPrice, tixQuantity) {
 		return this.wrapTx(PromoTypes.addTix(tixType, tixPrice, tixQuantity))
 	}
-	async addIpfsDetailsToTix(tixType, hash) {
-		return this.wrapTx(PromoTypes.addIpfsDetailsToTix(tixType, hash))
+	async addIpfsDetailsToTix({ tixType, ipfsHash }) {
+		return this.wrapTx(PromoTypes.addIpfsDetailsToTix(tixType, ipfsHash))
 	}
 	async setTixPrice(tixType, tixPrice) {
 		return this.wrapTx(PromoTypes.setTixPrice(tixType, tixPrice))
@@ -242,12 +242,13 @@ export class Promo extends Entity {
 	async addDistrib(buyer) {
 		return this.wrapTx(PromoTypes.addDistrib(buyer))
 	}
-	async setDistribAllotQuan(distrib, tixType, quantity) {
+	async setDistribAllotQuan({ distrib, tixType, tixQuantity }) {
+		console.error(distrib, tixType, tixQuantity)
 		return this.wrapTx(
-			PromoTypes.setDistribAllotQuan(distrib, tixType, quantity)
+			PromoTypes.setDistribAllotQuan(distrib, tixType, tixQuantity)
 		)
 	}
-	async setDistribFee(distrib, promosFee) {
+	async setDistribFee({ distrib, promosFee }) {
 		return this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
 	}
 

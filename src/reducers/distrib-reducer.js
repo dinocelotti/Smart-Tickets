@@ -24,11 +24,14 @@ const tixByDistrib = (state = {}, { type, payload: { distrib, tix } = {} }) => {
 					tix.allotQuan
 				)
 			}
-		case types.SET_DISTRIB_FEE:
+		/**
+		 *		case types.SET_DISTRIB_FEE:
 			return {
 				...state,
 				[distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee)
 			}
+		*/
+
 		case types.SET_MARKUP:
 			return {
 				...state,
@@ -55,6 +58,11 @@ const byId = (state = {}, { type, payload: { distribs, distrib } = {} }) => {
 					(obj, distrib) => ({ ...obj, [distrib.id]: distrib }),
 					{}
 				)
+			}
+		case types.SET_DISTRIB_FEE:
+			return {
+				...state,
+				[distrib.id]: { ...state[distrib.id], fee: distrib.fee }
 			}
 		case types.ADD_DISTRIB:
 			return { ...state, [distrib.id]: distrib }

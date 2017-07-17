@@ -39,7 +39,7 @@ export function projResolverDeploySuccess(projResolverDeployed) {
 		projResolverDeployed
 	}
 }
-const getId = (data, addr) => `${data.typeOfTix}_${addr}`
+const getId = (data, addr) => `${data.distrib || data.typeOfTix}_${addr}`
 //TODO: add addr to object
 export function Created({ data, addr }) {
 	return { type: types.CREATED, payload: { proj: { ...data, addr } } }
@@ -56,8 +56,11 @@ export function AddTix({ data, addr }) {
 		payload: { proj: { addr }, tix: { id: getId(data, addr), ...data } }
 	}
 }
-export function AddIpfsDetailsToTix(tix) {
-	return { type: types.ADD_IPFS_DETAILS_TO_TIX, payload: { tix } }
+export function AddIpfsDetailsToTix({ data, addr }) {
+	return {
+		type: types.ADD_IPFS_DETAILS_TO_TIX,
+		payload: { proj: { addr }, tix: { id: getId(data, addr), ...data } }
+	}
 }
 export function SetTixPrice({ data, addr }) {
 	return {
@@ -72,17 +75,47 @@ export function SetTixQuantity({ data, addr }) {
 	}
 }
 
-export function AddDistrib(distrib) {
-	return { type: types.SET_DISTRIB, payload: { distrib } }
+export function AddDistrib({ data, addr }) {
+	return {
+		type: types.ADD_DISTRIB,
+		payload: { proj: { addr }, distrib: { id: getId(data, addr), ...data } }
+	}
 }
-export function SetDistribAllotQuan(distrib) {
-	return { type: types.SET_DISTRIB_ALLOT_QUAN, payload: { distrib } }
+export function SetDistribAllotQuan({ data, addr }) {
+	return {
+		type: types.SET_DISTRIB_ALLOT_QUAN,
+		payload: {
+			proj: { addr },
+			distrib: {
+				id: getId(data, addr),
+				...data
+			},
+			tix: {
+				id: getId({ typeOfTix: data.typeOfTix }, addr),
+				allotQuan: data.allotQuan
+			}
+		}
+	}
 }
-export function SetDistribFee(distrib) {
-	return { type: types.SET_DISTRIB_FEE, payload: { distrib } }
+//set the promo fee for a distrib
+export function SetDistribFee({ data, addr }) {
+	return {
+		type: types.SET_DISTRIB_FEE,
+		payload: {
+			proj: { addr },
+			distrib: { id: getId(data, addr), ...data }
+		}
+	}
 }
-export function SetMarkup(distrib) {
-	return { type: types.SET_MARKUP, payload: { distrib } }
+export function SetMarkup({ data, addr }) {
+	return {
+		type: types.SET_MARKUP,
+		payload: {
+			proj: { addr },
+			distrib: { id: getId(data, addr), ...data },
+			tix: { id: getId({ typeOfTix: data.typeOfTix }, addr), fee: data.markup }
+		}
+	}
 }
 export function BuyTixFromPromo(event) {
 	return { type: types.BUY_TIX_FROM_PROMO, event }

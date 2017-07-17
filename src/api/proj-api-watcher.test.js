@@ -24,7 +24,7 @@ let logHanderCreator = actionCreators => (err, log) => {
 	return val
 }
 let logHandler = logHanderCreator({ actionCreator })
-
+let accounts = []
 let testProjs = []
 let sampleTixs = []
 let projState = () => store.getState().projState
@@ -33,7 +33,7 @@ let proj, projResolver
 const sampleProjGen = (function* sampleProjGen() {
 	let index = 0
 	let projName = num => `Sample Project ${num}`
-	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 5)
+	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 6)
 	let totalTix = randomNumGen(100)
 	let consumMaxTixs = randomNumGen(5)
 	//eslint-disable-next-line
@@ -51,7 +51,7 @@ const sampleProjGen = (function* sampleProjGen() {
 const sampleTixGen = (function* sampleTixGen() {
 	let index = 0
 	let tixType = num => `TixType${num}`
-	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 1)
+	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 2)
 	let tixPrice = randomNumGen(50)
 	let tixQuantity = randomNumGen(5)
 	//eslint-disable-next-line
@@ -85,7 +85,7 @@ beforeAll(async () => {
 })
 
 it('should add a bunch of projs to the first account', async () => {
-	let accounts = await accApi.getAcctsAsync()
+	accounts = await accApi.getAcctsAsync()
 	console.log(accounts)
 
 	await mapLength(1, () =>
@@ -137,4 +137,30 @@ it('should add a tix to the proj and test for its events', async done => {
 	})
 })
 
+it('should add a distrib and test for its events', async done => {
+	let proj = projState().byId[projState().ids[0]]
+	let promo = new api.Promo(proj)
+	let distrib = {
+		distrib: accounts[1],
+		tixType: sampleTixs[0].tixType,
+		tixQuantity: sampleTixs[0].tixQuantity - 1,
+		promosFee: 10
+	}
+	try {
+		await promo.init()
+		await promo.addDistrib(accounts[1])
+		await promo.setDistribAllotQuan(distrib)
+		await promo.setDistribFee(distrib)
+	} catch (e) {
+		console.error(e)
+	}
+	testProjs[0].allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
+		console.error(JSON.stringify(logHandler(err, _log), null, 1))
+		store.dispatch(logHandler(err, _log))
+		console.log(JSON.stringify(store.getState().projState, null, 1))
+		console.log(JSON.stringify(store.getState().distribState, null, 1))
+		done()
+	})
+})
+//test setmarkup after
 afterAll(async () => await deployment.end())

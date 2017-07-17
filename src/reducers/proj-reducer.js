@@ -52,7 +52,10 @@ const byId = (
 				...state,
 				[proj.addr]: {
 					...state[proj.addr],
-					distribs: [...state[proj.addr].distribs, distrib.id]
+					distribs: [
+						...(state[proj.addr].distribs ? state[proj.addr].distribs : []),
+						distrib.id
+					]
 				}
 			}
 		//TODO: implement these
