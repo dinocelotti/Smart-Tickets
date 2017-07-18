@@ -1,16 +1,16 @@
-import Web3 from 'web3'
-import contract from 'truffle-contract'
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-const web3 = new Web3(provider)
+import * as types from './../actions/action-types'
 
 const initialState = {
-	contract,
-	provider,
-	web3
+	web3: { connected: false },
+	projResolver: { deployed: false }
 }
-export default (state = initialState, action) => {
-	if (action.type.web3Connected) {
-		return { ...state, web3: action.web3, projResolver: action.projResolver, proj: action.proj }
-	}
-	return state
+
+const actionHandler = {
+	[types.WEB3_CONNECTED]: state => ({ ...state, web3: { connected: true } }),
+	[types.PROJ_RESOLVER_DEPLOYED]: state => ({
+		...state,
+		projResolver: { deployed: true }
+	})
 }
+export default (state = initialState, { type, payload }) =>
+	actionHandler[type] ? actionHandler[type](state) : state

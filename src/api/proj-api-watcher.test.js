@@ -3,11 +3,11 @@
 import * as deployment from '../../scripts/testHelper'
 import * as api from './proj-api'
 import * as accApi from './acct-api'
-import * as apiTypes from './proj-types'
 import EthApi from './eth-api'
 import store from '../store'
 import * as actionCreator from '../actions/proj-actions'
 import helper from './api-helpers'
+import * as accActions from '../actions/acct-actions'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
 const mapLength = (len, map) => Promise.all(Array.from(Array(len), map))
@@ -87,7 +87,7 @@ beforeAll(async () => {
 it('should add a bunch of projs to the first account', async () => {
 	accounts = await accApi.getAcctsAsync()
 	console.log(accounts)
-
+	store.dispatch(accActions.getAccts())
 	await mapLength(1, () =>
 		api.createProj({
 			...sampleProjGen.next().value,
@@ -163,4 +163,7 @@ it('should add a distrib and test for its events', async done => {
 	})
 })
 //test setmarkup after
-afterAll(async () => await deployment.end())
+afterAll(async () => {
+	await deployment.end()
+	console.log(JSON.stringify(store.getState(), null, 1))
+})

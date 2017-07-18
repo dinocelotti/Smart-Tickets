@@ -1,6 +1,8 @@
 /* eslint-env jest */
 import Web3 from 'web3'
 import contract from 'truffle-contract'
+import store from '../store'
+import web3Actions from '../actions/web3-actions'
 let path = require('path')
 let fs = require('fs')
 let Proj = require('../../build/contracts/Proj.json')
@@ -19,6 +21,7 @@ export default class API {
 		}
 		if (!API.web3) {
 			API.web3 = new Web3(API.provider)
+			store.dispatch(web3Actions.web3Connected())
 		}
 	}
 
@@ -29,6 +32,9 @@ export default class API {
 
 	async deployContract({ _contract, name }) {
 		API.deployed[name] = await _contract.deployed()
+		//if its projResolver then dispatch the action
+		if (name === 'projResolver')
+			store.dispatch(web3Actions.projResolverDeployed())
 		return true
 	}
 	changeProvider(_provider) {
