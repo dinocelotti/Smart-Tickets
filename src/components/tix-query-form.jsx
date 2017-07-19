@@ -1,6 +1,12 @@
 import React, { Component } from 'react'
-
+import propTypes from 'prop-types'
 export default class PromoTixForm extends Component {
+	static propTypes = {
+		queryTix: propTypes.func,
+		setTixVals: propTypes.func,
+		tixPrice: propTypes.string,
+		tixQuantity: propTypes.string
+	}
 	render() {
 		return (
 			<form

@@ -1,22 +1,15 @@
 import PromoTixForm from './../components/promo-tix-form'
 import React, { Component } from 'react'
+import propTypes from 'prop-types'
 export default class PromoTixFormCont extends Component {
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			/**
-         * Tixs
-         */
-			tixQuantity: '',
-			tixPrice: '',
-			tixType: '',
-			tixsLeft: 0
-		}
-
-		this.setTixVals = this.setTixVals.bind(this)
-		this.setTixsLeft = this.setTixsLeft.bind(this)
-		this.createTixs = this.createTixs.bind(this)
+	static propTypes = {
+		promoInstance: propTypes.object
+	}
+	state = {
+		tixQuantity: '',
+		tixPrice: '',
+		tixType: '',
+		tixsLeft: 0
 	}
 
 	isEmpObj(obj) {
@@ -36,17 +29,14 @@ export default class PromoTixFormCont extends Component {
 		const tixsLeft = await promoInstance.getTixsLeft()
 		await this.setTixsLeft(tixsLeft)
 	}
-	async setTixsLeft(tixsLeft) {
-		await this.setStateAsync({ tixsLeft })
-	}
+	setTixsLeft = async tixsLeft => await this.setStateAsync({ tixsLeft })
 
-	setTixVals(name, e) {
+	setTixVals = (name, e) =>
 		this.setState({
 			[name]: e.target.value
 		})
-	}
 
-	async createTixs(e) {
+	createTixs = async e => {
 		e.preventDefault()
 		console.log('create tixs called')
 		let res = await this.props.promoInstance.handleTixForm(this.state)

@@ -11,7 +11,11 @@ import './styles/reset.css'
 import './styles/fonts.css'
 import './styles/global.css'
 import EthApi from './api/eth-api'
+import propTypes from 'prop-types'
 class App extends Component {
+	static propTypes = {
+		projResolver: propTypes.shape({ deployed: propTypes.bool })
+	}
 	async componentDidMount() {
 		let ethApi = new EthApi()
 		await ethApi.loadContracts()

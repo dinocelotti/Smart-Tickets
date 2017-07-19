@@ -1,19 +1,16 @@
 import PromoDistribForm from './../components/promo-distrib-form'
 import React, { Component } from 'react'
-
+import propTypes from 'prop-types'
 export default class PromoDistribCont extends Component {
-	constructor(props) {
-		super(props)
+	static propTypes = {
+		promoInstance: propTypes.object
+	}
 
-		this.state = {
-			distribAddr: '',
-			distribAllotQuan: '',
-			distribFee: '',
-			tixType: ''
-		}
-
-		this.setDistribVals = this.setDistribVals.bind(this)
-		this.createDistrib = this.createDistrib.bind(this)
+	state = {
+		distribAddr: '',
+		distribAllotQuan: '',
+		distribFee: '',
+		tixType: ''
 	}
 
 	isEmpObj(obj) {
@@ -27,13 +24,12 @@ export default class PromoDistribCont extends Component {
 		})
 	}
 
-	setDistribVals(name, e) {
+	setDistribVals = (name, e) =>
 		this.setState({
 			[name]: e.target.value
 		})
-	}
 
-	createDistrib(e) {
+	createDistrib = e => {
 		e.preventDefault()
 		if (this.isEmpObj(this.props.promoInstance)) return
 		this.props.promoInstance.handleDistribForm(this.state)

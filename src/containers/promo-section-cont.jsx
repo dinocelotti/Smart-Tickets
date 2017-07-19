@@ -6,23 +6,20 @@ import Distrib from './promo-distrib-cont'
 import TixForm from './promo-tix-form-cont'
 import TixQuery from './tix-query-cont'
 import BuyerQuery from './buyer-query-cont'
-
+import propTypes from 'prop-types'
 class PromoSectionCont extends React.Component {
-	constructor(props) {
-		super(props)
-
-		this.state = {
-			projName: '',
-			totalTixs: '',
-			consumMaxTixs: '',
-			promoAddr: '',
-			projAddr: '',
-			promoInstance: {}
-		}
-		this.setProjVals = this.setProjVals.bind(this)
-		this.createProj = this.createProj.bind(this)
-		this.setProjAddr = this.setProjAddr.bind(this)
-		this.setPromoAddr = this.setPromoAddr.bind(this)
+	static propTypes = {
+		accts: propTypes.array,
+		projs: propTypes.array,
+		projsByAddr: propTypes.object
+	}
+	state = {
+		projName: '',
+		totalTixs: '',
+		consumMaxTixs: '',
+		promoAddr: '',
+		projAddr: '',
+		promoInstance: {}
 	}
 	//takes an obj
 	setStateAsync(state) {
@@ -31,18 +28,18 @@ class PromoSectionCont extends React.Component {
 		})
 	}
 
-	setProjVals(name, e) {
+	setProjVals = (name, e) =>
 		this.setState({
 			[name]: e.target.value
 		})
-	}
-	async setProjAddr(e) {
+
+	setProjAddr = async e => {
 		const projAddr = e.target.value
 		await this.setStateAsync({ projAddr })
 		await this.setPromoInstance()
 	}
 
-	async setPromoAddr(e) {
+	setPromoAddr = async e => {
 		const promoAddr = e.target.value
 		await this.setStateAsync({ promoAddr })
 		await this.setPromoInstance()
@@ -86,7 +83,7 @@ class PromoSectionCont extends React.Component {
 		}
 	}
 
-	createProj(e) {
+	createProj = e => {
 		e.preventDefault()
 		const projVals = this.state
 

@@ -1,4 +1,3 @@
-import store from '../store'
 import EthApi from './eth-api'
 export async function getAcctsAndBals() {
 	console.log('called')

@@ -1,5 +1,5 @@
 import React from 'react'
-
+import propTypes from 'prop-types'
 function theadElement(element) {
 	return (
 		<th>
@@ -16,6 +16,16 @@ function tdElement(element) {
 }
 //{this.props.accts.map(acc => theadElement(acc.addr))}
 export default class ProjTable extends React.Component {
+	static propTypes = {
+		projVals: propTypes.shape({
+			projName: propTypes.string,
+			totalTixs: propTypes.string,
+			consumMaxTixs: propTypes.string,
+			promoAddr: propTypes.string,
+			addr: propTypes.string,
+			state: propTypes.string
+		})
+	}
 	render() {
 		const thead = (
 			<thead>

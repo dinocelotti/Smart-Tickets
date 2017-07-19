@@ -1,6 +1,15 @@
 import React, { Component } from 'react'
-
+import propTypes from 'prop-types'
 export default class BuyerQueryForm extends Component {
+	static propTypes = {
+		queryBuyer: propTypes.func,
+		setBuyerVals: propTypes.func,
+		distribFee: propTypes.string,
+		promoFee: propTypes.string,
+		distribAllotQuan: propTypes.string,
+		isDistrib: propTypes.string
+	}
+
 	render() {
 		return (
 			<form

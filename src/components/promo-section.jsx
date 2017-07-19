@@ -1,5 +1,11 @@
 import React from 'react'
+import propTypes from 'prop-types'
 export class PromoSection extends React.Component {
+	static propTypes = {
+		createProj: propTypes.func,
+		setProjVals: propTypes.func,
+		accts: propTypes.array
+	}
 	render() {
 		return (
 			<form

@@ -1,4 +1,5 @@
 import React from 'react'
+import propTypes from 'prop-types'
 function theadElement(element) {
 	return (
 		<th>
@@ -15,6 +16,10 @@ function tdElement(element) {
 }
 //{this.props.accts.map(acc => theadElement(acc.addr))}
 export class AcctTableEth extends React.Component {
+	static propTypes = {
+		accts: propTypes.array,
+		acctsByAddr: propTypes.object
+	}
 	render() {
 		const thead = (
 			<thead>
@@ -42,8 +47,3 @@ export class AcctTableEth extends React.Component {
 		)
 	}
 }
-/*
-AcctTableEth.propTypes = {
-	acctsByAddr: accTypes.acctsByAddr,
-	accts: accTypes.accts,
-}*/

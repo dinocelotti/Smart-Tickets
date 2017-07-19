@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
-
+import propTypes from 'prop-types'
 export default class PromoDistribForm extends Component {
+	static propTypes = {
+		createDistrib: propTypes.func,
+		setDistribVals: propTypes.func
+	}
 	render() {
 		return (
 			<form

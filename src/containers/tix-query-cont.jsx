@@ -1,16 +1,15 @@
 import TixQueryForm from './../components/tix-query-form'
 import React, { Component } from 'react'
+import propTypes from 'prop-types'
 export default class TixQueryFormCont extends Component {
-	constructor(props) {
-		super(props)
+	static propTypes = {
+		promoInstance: propTypes.object
+	}
 
-		this.state = {
-			tixType: '',
-			tixQuantity: '',
-			tixPrice: ''
-		}
-		this.setTixVals = this.setTixVals.bind(this)
-		this.queryTix = this.queryTix.bind(this)
+	state = {
+		tixType: '',
+		tixQuantity: '',
+		tixPrice: ''
 	}
 
 	isEmpObj(obj) {
@@ -18,19 +17,17 @@ export default class TixQueryFormCont extends Component {
 	}
 
 	//takes an obj
-	setStateAsync(state) {
-		return new Promise(res => {
+	setStateAsync = state =>
+		new Promise(res => {
 			this.setState(state, res)
 		})
-	}
 
-	setTixVals(name, e) {
+	setTixVals = (name, e) =>
 		this.setState({
 			[name]: e.target.value
 		})
-	}
 
-	async queryTix(e) {
+	queryTix = async e => {
 		e.preventDefault()
 		const { promoInstance } = this.props
 		//check object exists

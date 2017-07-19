@@ -2,9 +2,12 @@ import ProjTable from './../components/proj-tables'
 import React from 'react'
 import { connect } from 'react-redux'
 import { loadProjsSuccess } from '../actions/proj-actions'
-
+import propTypes from 'prop-types'
 class ProjTableCont extends React.Component {
-	async componentDidMount() {}
+	static propTypes = {
+		projs: propTypes.array,
+		projsByAddr: propTypes.object
+	}
 	render() {
 		if (this.props.projs[0])
 			return (

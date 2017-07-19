@@ -1,6 +1,10 @@
 import BuyerQueryForm from './../components/buyer-query-form'
 import React, { Component } from 'react'
+import propTypes from 'prop-types'
 export default class BuyerQueryCont extends Component {
+	static propTypes = {
+		promoInstance: propTypes.object
+	}
 	state = {
 		buyerAddr: '',
 		tixType: '',
@@ -11,7 +15,6 @@ export default class BuyerQueryCont extends Component {
 	}
 	constructor(props) {
 		super(props)
-
 		this.setBuyerVals = this.setBuyerVals.bind(this)
 		this.queryBuyer = this.queryBuyer.bind(this)
 	}
