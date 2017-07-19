@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
-
+import propTypes from 'prop-types'
 const StyledLink = styled(Link)`
 	color: #fff;
 	line-height: 24px;
@@ -16,12 +16,15 @@ const StyledLink = styled(Link)`
 	}
 `
 
-const NavLink = props => {
-	return (
-		<StyledLink {...props}>
-			{props.children}
-		</StyledLink>
-	)
+export default class NavLink extends Component {
+	static propTypes = {
+		children: propTypes.any
+	}
+	render() {
+		return (
+			<StyledLink {...this.props}>
+				{this.props.children}
+			</StyledLink>
+		)
+	}
 }
-
-export default NavLink

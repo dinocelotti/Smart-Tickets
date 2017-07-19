@@ -1,9 +1,13 @@
-import React from 'react'
+import React, { Component } from 'react'
 import styled from 'styled-components'
 import Nav from './Nav'
+import propTypes from 'prop-types'
 
-const Layout = props => {
-	const View = styled.div`
+class Layout extends Component {
+	static propTypes = {
+		children: propTypes.any
+	}
+	View = styled.div`
 		display: inline-block;
 		vertical-align: top;
 		position: absolute;
@@ -11,7 +15,7 @@ const Layout = props => {
 		height: 100%;
 		overflow: auto;
 	`
-	const TopNav = styled.div`
+	TopNav = styled.div`
 		border-bottom: 1px solid #d8d8d8;
 		position: sticky;
 		top: 0;
@@ -22,17 +26,19 @@ const Layout = props => {
 			padding: 24px;
 		}
 	`
-	return (
-		<div>
-			<Nav />
-			<View>
-				<TopNav>
-					<h5>Heading</h5>
-				</TopNav>
-				{props.children}
-			</View>
-		</div>
-	)
+	render() {
+		return (
+			<div>
+				<Nav />
+				<this.View>
+					<this.TopNav>
+						<h5>Heading</h5>
+					</this.TopNav>
+					{this.props.children}
+				</this.View>
+			</div>
+		)
+	}
 }
 
 export default Layout
