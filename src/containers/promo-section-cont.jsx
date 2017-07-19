@@ -6,8 +6,6 @@ import Distrib from './promo-distrib-cont'
 import TixForm from './promo-tix-form-cont'
 import TixQuery from './tix-query-cont'
 import BuyerQuery from './buyer-query-cont'
-import accTypes from '../prop-types/accts'
-import projTypes from '../prop-types/projs'
 
 class PromoSectionCont extends React.Component {
 	constructor(props) {

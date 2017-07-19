@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PT from 'prop-types'
 
 export default class BuyerQueryForm extends Component {
 	render() {

@@ -1,10 +1,7 @@
 import ProjTable from './../components/proj-tables'
 import React from 'react'
-import * as projApi from './../api/proj-api'
 import { connect } from 'react-redux'
-import projTypes from '../prop-types/projs'
 import { loadProjsSuccess } from '../actions/proj-actions'
-import store from '../store'
 
 class ProjTableCont extends React.Component {
 	async componentDidMount() {}

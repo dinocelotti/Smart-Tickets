@@ -1,6 +1,5 @@
 import PromoDistribForm from './../components/promo-distrib-form'
 import React, { Component } from 'react'
-import types from '../prop-types/accts'
 
 export default class PromoDistribCont extends Component {
 	constructor(props) {
@@ -47,7 +46,4 @@ export default class PromoDistribCont extends Component {
 			/>
 		)
 	}
-}
-PromoDistribCont.propTypes = {
-	promoInstance: types.promoInstance
 }

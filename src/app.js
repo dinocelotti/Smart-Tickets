@@ -6,15 +6,10 @@ import history from './util/history'
 import Home from './views/Home'
 import Components from './views/Components'
 import Events from './views/Events'
-import PT from 'prop-types'
 import * as api from './api/proj-api'
-/**
- *import './styles/reset.css'
+import './styles/reset.css'
 import './styles/fonts.css'
 import './styles/global.css'
-
- *
- */
 import EthApi from './api/eth-api'
 class App extends Component {
 	async componentDidMount() {
@@ -24,11 +19,11 @@ class App extends Component {
 			_contract: EthApi.projResolver,
 			name: 'projResolver'
 		})
-		api.loadAppState()
 		//start loading state
+		api.loadAppState()
 	}
 	render() {
-		if (this.props.projResolver && this.props.projResolver.deployed) {
+		if (this.props.projResolver.deployed) {
 			console.log(this.props.projResolver, 'rendered')
 			return (
 				<ConnectedRouter history={history}>

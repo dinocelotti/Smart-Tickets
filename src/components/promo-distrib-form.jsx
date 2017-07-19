@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PT from 'prop-types'
 
 export default class PromoDistribForm extends Component {
 	render() {
@@ -46,8 +45,4 @@ export default class PromoDistribForm extends Component {
 			</form>
 		)
 	}
-}
-PromoDistribForm.propTypes = {
-	createDistrib: PT.func.isRequired,
-	setDistribVals: PT.func.isRequired
 }

@@ -12,5 +12,5 @@ const actionHandler = {
 		projResolver: { deployed: true }
 	})
 }
-export default (state = initialState, { type, payload }) =>
+export default (state = initialState, { type }) =>
 	actionHandler[type] ? actionHandler[type](state) : state

@@ -1,9 +1,6 @@
 import { AcctTableEth } from './../components/acct-tables'
 import React from 'react'
 import { connect } from 'react-redux'
-import * as acctApi from '../api/acct-api'
-import accTypes from '../prop-types/accts'
-import store from '../store'
 import { getAccts } from '../actions/acct-actions'
 
 class AcctTableEthCont extends React.Component {

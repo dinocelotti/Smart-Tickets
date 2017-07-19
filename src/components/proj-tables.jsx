@@ -1,5 +1,4 @@
 import React from 'react'
-import projTypes from '../prop-types/projs'
 
 function theadElement(element) {
 	return (

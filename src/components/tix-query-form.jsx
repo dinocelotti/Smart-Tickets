@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PT from 'prop-types'
 
 export default class PromoTixForm extends Component {
 	render() {
@@ -40,10 +39,4 @@ export default class PromoTixForm extends Component {
 			</form>
 		)
 	}
-}
-PromoTixForm.propTypes = {
-	queryTix: PT.func.isRequired,
-	setTixVals: PT.func.isRequired,
-	tixPrice: PT.string.isRequired,
-	tixQuantity: PT.string.isRequired
 }
