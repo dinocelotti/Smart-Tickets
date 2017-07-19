@@ -118,7 +118,7 @@ class PromoSectionCont extends React.Component {
 						{this.props.accts.map(addr => {
 							return this.props.projs.map(projAddr => {
 								if (
-									addr === this.props.projsByAddr[projAddr].promoAddr &&
+									addr === this.props.projsByAddr[projAddr].promo &&
 									this.state.projAddr === projAddr
 								) {
 									return (
@@ -159,7 +159,6 @@ class PromoSectionCont extends React.Component {
 }
 
 function mapStateToProps({ projState, acctState }) {
-	console.log(projState, acctState)
 	return {
 		projs: projState.ids,
 		projsByAddr: projState.byId,

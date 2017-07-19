@@ -21,7 +21,7 @@ export default class ProjTable extends React.Component {
 			projName: propTypes.string,
 			totalTixs: propTypes.string,
 			consumMaxTixs: propTypes.string,
-			promoAddr: propTypes.string,
+			promo: propTypes.string,
 			addr: propTypes.string,
 			state: propTypes.string
 		})
@@ -45,7 +45,7 @@ export default class ProjTable extends React.Component {
 					{tdElement(this.props.projVals.projName)}
 					{tdElement(this.props.projVals.totalTixs)}
 					{tdElement(this.props.projVals.consumMaxTixs)}
-					{tdElement(this.props.projVals.promoAddr)}
+					{tdElement(this.props.projVals.promo)}
 					{tdElement(this.props.projVals.addr)}
 					{tdElement(this.props.projVals.state)}
 				</tr>

@@ -27,11 +27,5 @@ function mapProjStateToProps({ projState: { byId: projsByAddr, ids: projs } }) {
 		projsByAddr
 	}
 }
-/**
- * ProjTableCont.propTypes = {
-	projs: projTypes.projs,
-	projsByAddr: projTypes.projsByAddr
-}
- */
 
 export default connect(mapProjStateToProps, { loadProjsSuccess })(ProjTableCont)
