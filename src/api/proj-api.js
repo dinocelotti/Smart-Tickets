@@ -3,7 +3,8 @@ import EthApi from './eth-api'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
-
+import store from '../store'
+import * as actionCreator from '../actions/proj-actions'
 const mapLength = (len, map) =>
 	Promise.all(
 		Array.from(Array(Utils.isBigNumber(len) ? len.toNumber() : len), map)
@@ -15,15 +16,6 @@ export async function createProj({
 	consumMaxTixs,
 	promoAddr
 }) {
-	//check that the acct exists
-	/**
-	 *	const acctAddrs = store.getState().acctState.accts
-	if (!acctAddrs.includes(promoAddr)) {
-		throw new Error(`Addr ${promoAddr} does not exist on this wallet`)
-	}
-	 *
-	 */
-
 	const newProj = await EthApi.proj.new(
 		projName,
 		'10',
@@ -83,27 +75,7 @@ export async function getAssocProjs() {
 	}))
 	return Promise.all(assocProjs)
 }
-async function installWatchersforProj(proj) {
-	proj.allEvents((err, log) => {
-		console.log(installWatchersforProj.name, log.event, log)
-		//store.dispatch(projActions[`${log.event}`](log))
-	})
-}
 
-export const mapProjToObj = async proj => ({
-	projName: await proj.projName.call(),
-	totalTixs: (await proj.totalTixs.call()).toString(),
-	consumMaxTixs: (await proj.comsumMaxTixs.call()).toString(),
-	state: await getState(proj),
-	promoAddr: await proj.promo.call(),
-	addr: proj.address,
-	tix: [],
-	distribs: []
-})
-
-//installWatchersforProj(proj)
-
-// export async function watchForProjs(proj) {}
 export async function getState(proj) {
 	const state = await proj.currentState()
 	const stateMap = {
@@ -115,39 +87,34 @@ export async function getState(proj) {
 	}
 	return stateMap[state]
 }
-export const loadProj = async projAddr => {
-	let p = await EthApi.proj.at(projAddr)
-	return mapProjToObj(p)
-}
-export const loadProjs = async () => {
-	console.log('called')
-	let len = await EthApi.deployed.projResolver.getProjsLen.call()
-	return mapLength(len, (val, idx) =>
-		EthApi.deployed.projResolver
-			.projs(idx)
-			.then(EthApi.proj.at)
-			.then(mapProjToObj)
-	)
-}
+export const loadAppState = async () => {
+	let projResolver = EthApi.deployed.projResolver
+	let proj = EthApi.proj
 
-export const loadTix = async projAddr => {
-	let p = await EthApi.proj.at(projAddr)
-	let len = await p.getTixLen.call()
-	let tix = mapLength(len, (val, idx) =>
-		p.tixArr.call(idx).then(t => ({ id: t }))
-	)
-	return { projAddr, tix }
+	let logHanderCreator = actionCreators => (err, log) => {
+		if (err) {
+			console.error(err)
+			throw err
+		}
+		let val
+		Object.keys(actionCreators).forEach(key => {
+			if (actionCreators[key][log.event])
+				val = actionCreators[key][log.event](Utils.normalizeArgs(log))
+		})
+		return val
+	}
+	const logHandler = logHanderCreator({ actionCreator })
+	const filterObj = { fromBlock: 0, toBlock: 'pending' }
+	projResolver.AddProj({}, filterObj).watch(async (error, log) => {
+		const normalizedLog = Utils.normalizeArgs(log)
+		console.error(normalizedLog)
+		const { data: { proj: projAddr } } = normalizedLog
+		const projInstance = await proj.at(projAddr)
+		projInstance.allEvents(filterObj, (err, _log) =>
+			store.dispatch(logHandler(err, _log))
+		)
+	})
 }
-
-export const loadDistribs = async projAddr => {
-	//make sure to fire the event as projaddr_distribaddr
-	let p = await EthApi.proj.at(projAddr)
-	return p.getDistribsLen
-		.call()
-		.then(len => mapLength(len, (val, idx) => p.distribs.call(idx)))
-		.then(distribs => ({ projAddr, distribs }))
-}
-
 class Entity {
 	constructor({ promo: promoAddr, addr: projAddr }) {
 		this.addr = promoAddr

@@ -50,6 +50,3 @@ export default class ProjTable extends React.Component {
 		)
 	}
 }
-ProjTable.propTypes = {
-	projVals: projTypes.proj
-}

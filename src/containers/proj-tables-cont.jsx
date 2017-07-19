@@ -7,12 +7,7 @@ import { loadProjsSuccess } from '../actions/proj-actions'
 import store from '../store'
 
 class ProjTableCont extends React.Component {
-	async componentDidMount() {
-		console.log('calling projApi')
-		await projApi
-			.loadProjs()
-			.then(projs => store.dispatch(loadProjsSuccess({ projs })))
-	}
+	async componentDidMount() {}
 	render() {
 		if (this.props.projs[0])
 			return (

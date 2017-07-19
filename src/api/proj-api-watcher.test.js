@@ -102,7 +102,7 @@ it('should retreive those projs using a filter and dispatch them to the store', 
 		logs.push(log)
 		let _log = helper.normalizeArgs(log)
 		console.error(_log)
-		let { addr, data: { proj: _p } } = _log
+		let { data: { proj: _p } } = _log
 		let p = await proj.at(_p)
 		testProjs.push(p)
 		p.allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {

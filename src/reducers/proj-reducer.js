@@ -80,13 +80,5 @@ const ids = (state = [], { type, payload: { projs, proj } = {} }) => {
 			return state
 	}
 }
-const projResolver = (state = { deployed: false }, { type }) => {
-	switch (type) {
-		case types.PROJ_RESOLVER_DEPLOYED_SUCCESS:
-			return { ...state, deployed: true }
 
-		default:
-			return state
-	}
-}
-export default combineReducers({ projResolver, ids, byId })
+export default combineReducers({ ids, byId })

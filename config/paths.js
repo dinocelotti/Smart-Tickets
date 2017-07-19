@@ -35,7 +35,7 @@ module.exports = {
 	appBuild: resolveApp('build_webpack'),
 	appPublic: resolveApp('public'),
 	appHtml: resolveApp('public/index.html'),
-	appIndexJs: resolveApp('src/app.js'),
+	appIndexJs: resolveApp('src/index.jsx'),
 	appPackageJson: resolveApp('package.json'),
 	appSrc: resolveApp('src'),
 	yarnLockFile: resolveApp('yarn.lock'),

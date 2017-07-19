@@ -1,18 +1,20 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Provider } from 'react-redux'
 import { Route } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
-import store from './store'
 import history from './util/history'
 import Home from './views/Home'
 import Components from './views/Components'
 import Events from './views/Events'
 import PT from 'prop-types'
-import './styles/reset.css'
+import * as api from './api/proj-api'
+/**
+ *import './styles/reset.css'
 import './styles/fonts.css'
 import './styles/global.css'
-import ReactDOM from 'react-dom'
+
+ *
+ */
 import EthApi from './api/eth-api'
 class App extends Component {
 	async componentDidMount() {
@@ -22,15 +24,13 @@ class App extends Component {
 			_contract: EthApi.projResolver,
 			name: 'projResolver'
 		})
+		api.loadAppState()
+		//start loading state
 	}
 	render() {
-		// TODO: Fix projResolver issue, until then, return SideNav
-		// if (this.props.projResolver.deployed) {
-		// 	return <SideNav />
-		// }
-		// return null
-		return (
-			<Provider store={store}>
+		if (this.props.projResolver && this.props.projResolver.deployed) {
+			console.log(this.props.projResolver, 'rendered')
+			return (
 				<ConnectedRouter history={history}>
 					<div>
 						<Route exact path="/" component={Home} />
@@ -38,10 +38,13 @@ class App extends Component {
 						<Route path="/components" component={Components} />
 					</div>
 				</ConnectedRouter>
-			</Provider>
-		)
+			)
+		}
+		return null
 	}
 }
-ReactDOM.render(<App />, document.getElementById('root'))
+function mapStateToProps({ web3State: { projResolver } }) {
+	return { projResolver }
+}
 
-export default connect()(App)
+export default connect(mapStateToProps)(App)
