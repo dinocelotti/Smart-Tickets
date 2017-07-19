@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
-import PT from 'prop-types';
+import React, { Component } from 'react'
+import PT from 'prop-types'
 
 export default class PromoDistribForm extends Component {
 	render() {
 		return (
-			<form className="pure-form pure-form-stacked" onSubmit={this.props.createDistrib}>
+			<form
+				className="pure-form pure-form-stacked"
+				onSubmit={this.props.createDistrib}
+			>
 				<label htmlFor="distribAddr"> Distrib Buyer Addr</label>
 				<input
 					type="text"
@@ -41,10 +44,10 @@ export default class PromoDistribForm extends Component {
 					{' '}Submit{' '}
 				</button>
 			</form>
-		);
+		)
 	}
 }
 PromoDistribForm.propTypes = {
 	createDistrib: PT.func.isRequired,
 	setDistribVals: PT.func.isRequired
-};
+}

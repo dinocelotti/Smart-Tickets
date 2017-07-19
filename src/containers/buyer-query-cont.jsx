@@ -1,6 +1,5 @@
 import BuyerQueryForm from './../components/buyer-query-form'
 import React, { Component } from 'react'
-import accTypes from '../prop-types/accts'
 export default class BuyerQueryCont extends Component {
 	state = {
 		buyerAddr: '',
@@ -9,11 +8,7 @@ export default class BuyerQueryCont extends Component {
 		distribAllotQuan: '',
 		isDistrib: 'false',
 		promoFee: ''
-	};
-
-	propTypes = {
-		promoInstance: accTypes.promoInstance
-	};
+	}
 	constructor(props) {
 		super(props)
 
@@ -41,7 +36,12 @@ export default class BuyerQueryCont extends Component {
 	async queryBuyer(e) {
 		e.preventDefault()
 		if (this.isEmpObj(this.props.promoInstance)) return
-		const [isDistrib, distribAllotQuan, distribFee, promoFee] = await this.props.promoInstance.queryBuyer(this.state)
+		const [
+			isDistrib,
+			distribAllotQuan,
+			distribFee,
+			promoFee
+		] = await this.props.promoInstance.queryBuyer(this.state)
 		await this.setStateAsync({
 			isDistrib,
 			distribAllotQuan,

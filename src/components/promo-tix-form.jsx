@@ -1,13 +1,21 @@
-import React, { Component } from 'react';
-import PT from 'prop-types';
+import React, { Component } from 'react'
 
 export default class PromoTixForm extends Component {
 	render() {
 		return (
-			<form className="pure-form pure-form-stacked" onSubmit={this.props.createTixs}>
+			<form
+				className="pure-form pure-form-stacked"
+				onSubmit={this.props.createTixs}
+			>
 				<fieldset className="pure-group">
 					<label htmlFor="tixsLeft"> Remaining tixs left </label>
-					<input type="text" id="tixsLeft" className="pure-input-3-4" value={this.props.tixsLeft} readOnly />
+					<input
+						type="text"
+						id="tixsLeft"
+						className="pure-input-3-4"
+						value={this.props.tixsLeft}
+						readOnly
+					/>
 					<label htmlFor="tixType"> Tix Type</label>
 					<input
 						type="text"
@@ -35,11 +43,6 @@ export default class PromoTixForm extends Component {
 					</button>
 				</fieldset>
 			</form>
-		);
+		)
 	}
 }
-PromoTixForm.propTypes = {
-	createTixs: PT.func.isRequired,
-	tixsLeft: PT.func.isRequired,
-	setTixVals: PT.func.isRequired
-};

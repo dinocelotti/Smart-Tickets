@@ -1,11 +1,11 @@
-import React from 'react';
-import PT from 'prop-types';
-import accTypes from '../prop-types/accts';
+import React from 'react'
 export class PromoSection extends React.Component {
 	render() {
 		return (
-			<form className="pure-form pure-form-stacked" onSubmit={this.props.createProj}>
-
+			<form
+				className="pure-form pure-form-stacked"
+				onSubmit={this.props.createProj}
+			>
 				<legend> An Proj Creation Form</legend>
 				<fieldset className="pure-group">
 					<label htmlFor="projName"> Proj Name </label>
@@ -26,9 +26,7 @@ export class PromoSection extends React.Component {
 						onChange={this.props.setProjVals.bind(this, 'totalTixs')}
 					/>
 
-					<label htmlFor="consumMaxTixs">
-						{' '}Tix buy limit for consums
-					</label>
+					<label htmlFor="consumMaxTixs"> Tix buy limit for consums</label>
 					<input
 						id="consumMaxTixs"
 						type="text"
@@ -38,8 +36,16 @@ export class PromoSection extends React.Component {
 					/>
 
 					<label htmlFor="promoAddr"> Your wallet addr </label>
-					<select id="promoAddr" className="pure-input-3-4" onChange={this.props.setProjVals.bind(this, 'promoAddr')}>
-						{this.props.accts.map(addr => <option key={addr}>{addr}</option>)}
+					<select
+						id="promoAddr"
+						className="pure-input-3-4"
+						onChange={this.props.setProjVals.bind(this, 'promoAddr')}
+					>
+						{this.props.accts.map(addr =>
+							<option key={addr}>
+								{addr}
+							</option>
+						)}
 					</select>
 					<br />
 					<button type="submit" className="pure-button pure-button-primary">
@@ -47,11 +53,6 @@ export class PromoSection extends React.Component {
 					</button>
 				</fieldset>
 			</form>
-		);
+		)
 	}
 }
-PromoSection.propTypes = {
-	createProj: PT.func.isRequired,
-	setProjVals: PT.func.isRequired,
-	accts: accTypes.accts
-};

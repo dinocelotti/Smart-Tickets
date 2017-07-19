@@ -1,17 +1,17 @@
-import { PromoSection } from './../components/promo-section';
-import React from 'react';
-import { connect } from 'react-redux';
-import * as projApi from '../api/proj-api';
-import Distrib from './promo-distrib-cont';
-import TixForm from './promo-tix-form-cont';
-import TixQuery from './tix-query-cont';
-import BuyerQuery from './buyer-query-cont';
-import accTypes from '../prop-types/accts';
-import projTypes from '../prop-types/projs';
+import { PromoSection } from './../components/promo-section'
+import React from 'react'
+import { connect } from 'react-redux'
+import * as projApi from '../api/proj-api'
+import Distrib from './promo-distrib-cont'
+import TixForm from './promo-tix-form-cont'
+import TixQuery from './tix-query-cont'
+import BuyerQuery from './buyer-query-cont'
+import accTypes from '../prop-types/accts'
+import projTypes from '../prop-types/projs'
 
 class PromoSectionCont extends React.Component {
 	constructor(props) {
-		super(props);
+		super(props)
 
 		this.state = {
 			projName: '',
@@ -20,76 +20,83 @@ class PromoSectionCont extends React.Component {
 			promoAddr: '',
 			projAddr: '',
 			promoInstance: {}
-		};
-		this.setProjVals = this.setProjVals.bind(this);
-		this.createProj = this.createProj.bind(this);
-		this.setProjAddr = this.setProjAddr.bind(this);
-		this.setPromoAddr = this.setPromoAddr.bind(this);
+		}
+		this.setProjVals = this.setProjVals.bind(this)
+		this.createProj = this.createProj.bind(this)
+		this.setProjAddr = this.setProjAddr.bind(this)
+		this.setPromoAddr = this.setPromoAddr.bind(this)
 	}
 	//takes an obj
 	setStateAsync(state) {
 		return new Promise(res => {
-			this.setState(state, res);
-		});
+			this.setState(state, res)
+		})
 	}
 
 	setProjVals(name, e) {
 		this.setState({
 			[name]: e.target.value
-		});
+		})
 	}
 	async setProjAddr(e) {
-		const projAddr = e.target.value;
-		await this.setStateAsync({ projAddr });
-		await this.setPromoInstance();
+		const projAddr = e.target.value
+		await this.setStateAsync({ projAddr })
+		await this.setPromoInstance()
 	}
 
 	async setPromoAddr(e) {
-		const promoAddr = e.target.value;
-		await this.setStateAsync({ promoAddr });
-		await this.setPromoInstance();
+		const promoAddr = e.target.value
+		await this.setStateAsync({ promoAddr })
+		await this.setPromoInstance()
 	}
 	isEmpObj(obj) {
-		return Object.keys(obj).length === 0 && obj.constructor === Object;
+		return Object.keys(obj).length === 0 && obj.constructor === Object
 	}
 
 	samePromoInstance(prevInstance, newInstance) {
-		return prevInstance.projAddr === newInstance.projAddr && prevInstance.promoAddr === newInstance.promoAddr;
+		return (
+			prevInstance.projAddr === newInstance.projAddr &&
+			prevInstance.promoAddr === newInstance.promoAddr
+		)
 	}
 
 	async setPromoInstance() {
-		const { promoAddr, projAddr } = this.state;
+		const { promoAddr, projAddr } = this.state
 		//check to see if both fields are set
-		if (promoAddr.length === 0 || projAddr.length === 0) return;
+		if (promoAddr.length === 0 || projAddr.length === 0) return
 
-		const prevInstance = this.state.promoInstance;
-		if (!this.isEmpObj(prevInstance) && this.samePromoInstance(prevInstance, { promoAddr, projAddr })) return;
+		const prevInstance = this.state.promoInstance
+		if (
+			!this.isEmpObj(prevInstance) &&
+			this.samePromoInstance(prevInstance, { promoAddr, projAddr })
+		)
+			return
 
-		const promoInstance = new projApi.Promo(promoAddr, projAddr);
-		await promoInstance.init();
-		await this.setStateAsync({ promoInstance });
+		const promoInstance = new projApi.Promo(promoAddr, projAddr)
+		await promoInstance.init()
+		await this.setStateAsync({ promoInstance })
 	}
 
 	async componentWillReceiveProps({ projs, projsByAddr, accts }) {
 		if (projs.length > 0) {
-			const defaultProj = projsByAddr[projs[0]];
-			await this.setProjAddr(this.mockTarget(defaultProj.addr));
+			const defaultProj = projsByAddr[projs[0]]
+			await this.setProjAddr(this.mockTarget(defaultProj.addr))
 			//check if current owners addrs is the promo of the current proj
 			if (accts.includes(defaultProj.promoAddr)) {
-				await this.setPromoAddr(this.mockTarget(defaultProj.promoAddr));
+				await this.setPromoAddr(this.mockTarget(defaultProj.promoAddr))
 			}
 		}
 	}
 
 	createProj(e) {
-		e.preventDefault();
-		const projVals = this.state;
+		e.preventDefault()
+		const projVals = this.state
 
 		if (!projVals.promoAddr) {
-			projVals.promoAddr = this.props.accts[0];
+			projVals.promoAddr = this.props.accts[0]
 		}
 
-		projApi.createProj(projVals);
+		projApi.createProj(projVals)
 	}
 
 	mockTarget(value) {
@@ -97,7 +104,7 @@ class PromoSectionCont extends React.Component {
 			target: {
 				value
 			}
-		};
+		}
 	}
 
 	render() {
@@ -115,18 +122,27 @@ class PromoSectionCont extends React.Component {
 					<select id="promoAddr" onChange={this.setPromoAddr}>
 						{this.props.accts.map(addr => {
 							return this.props.projs.map(projAddr => {
-								if (addr === this.props.projsByAddr[projAddr].promoAddr && this.state.projAddr === projAddr) {
-									return <option key={addr}>{addr}</option>;
+								if (
+									addr === this.props.projsByAddr[projAddr].promoAddr &&
+									this.state.projAddr === projAddr
+								) {
+									return (
+										<option key={addr}>
+											{addr}
+										</option>
+									)
 								}
-								return null;
-							});
+								return null
+							})
 						})}
 					</select>
-					<label htmlFor="projAddr">
-						{' '}Contract Addr to interact with
-					</label>
+					<label htmlFor="projAddr"> Contract Addr to interact with</label>
 					<select id="projAddr" onChange={this.setProjAddr}>
-						{this.props.projs.map(projAddr => <option key={projAddr}>{projAddr}</option>)}
+						{this.props.projs.map(projAddr =>
+							<option key={projAddr}>
+								{projAddr}
+							</option>
+						)}
 					</select>
 					<br />
 				</form>
@@ -143,21 +159,16 @@ class PromoSectionCont extends React.Component {
 					<TixQuery promoInstance={this.state.promoInstance} />
 				</div>
 			</div>
-		);
+		)
 	}
 }
 
-PromoSectionCont.propTypes = {
-	accts: accTypes.accts,
-	projs: projTypes.projs,
-	projsByAddr: projTypes.projsByAddr
-};
-
-function mapStateToProps(state) {
+function mapStateToProps({ projState, acctState }) {
+	console.log(projState, acctState)
 	return {
-		projs: state.projState.projs,
-		projsByAddr: state.projState.projsByAddr,
-		accts: state.acctState.accts
-	};
+		projs: projState.ids,
+		projsByAddr: projState.byId,
+		accts: acctState.ids
+	}
 }
-export default connect(mapStateToProps)(PromoSectionCont);
+export default connect(mapStateToProps)(PromoSectionCont)
