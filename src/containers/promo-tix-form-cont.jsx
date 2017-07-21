@@ -9,7 +9,7 @@ export default class PromoTixFormCont extends Component {
 		tixQuantity: '',
 		tixPrice: '',
 		tixType: '',
-		tixsLeft: 0
+		tixsLeft: '0'
 	}
 
 	isEmpObj(obj) {

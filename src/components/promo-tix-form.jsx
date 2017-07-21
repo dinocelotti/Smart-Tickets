@@ -4,7 +4,7 @@ export default class PromoTixForm extends Component {
 	static propTypes = {
 		createTixs: propTypes.func,
 		setTixVals: propTypes.func,
-		tixsLeft: propTypes.number
+		tixsLeft: propTypes.string
 	}
 	static defaultProps = {
 		tixsLeft: '0'

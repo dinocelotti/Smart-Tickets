@@ -67,7 +67,10 @@ class PromoSectionCont extends React.Component {
 		)
 			return
 
-		const promoInstance = new projApi.Promo(promoAddr, projAddr)
+		const promoInstance = new projApi.Promo({
+			promo: promoAddr,
+			addr: projAddr
+		})
 		await promoInstance.init()
 		await this.setStateAsync({ promoInstance })
 	}
