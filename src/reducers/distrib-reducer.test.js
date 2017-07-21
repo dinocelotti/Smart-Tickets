@@ -63,17 +63,15 @@ describe('distrib-reducer', () => {
 			reducer(undefined, {
 				type: types.SET_DISTRIB_FEE,
 				payload: {
-					distrib: { id: '0XDISTRIB00' },
-					tix: {
-						id: '0XTIXID',
-						fee: '20'
-					}
+					distrib: { id: '0XDISTRIB00', fee: '20' }
 				}
 			})
 		).toEqual({
-			byId: {},
-			ids: [],
-			tixByDistrib: { '0XDISTRIB00': { '0XTIXID': { fee: '20' } } }
+			byId: {
+				'0XDISTRIB00': { fee: '20' }
+			},
+			tixByDistrib: {},
+			ids: []
 		})
 	})
 	it(`should handle ${types.SET_MARKUP}`, () => {

@@ -47,7 +47,7 @@ describe('tix-reducer', () => {
 		expect(
 			reducer(state2, {
 				type: types.SET_TIX_PRICE,
-				payload: { tix: { price: '1000', id: state2.ids[0] } }
+				payload: { tix: { priceInWei: '1000', id: state2.ids[0] } }
 			})
 		).toEqual(state3)
 	})

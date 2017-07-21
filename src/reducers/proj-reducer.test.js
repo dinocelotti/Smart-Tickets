@@ -6,8 +6,7 @@ describe('proj-reducer', () => {
 	it('should return the intial state', () => {
 		expect(reducer(undefined, {})).toEqual({
 			byId: {},
-			ids: [],
-			projResolver: { deployed: false }
+			ids: []
 		})
 	})
 	let state = {
@@ -22,8 +21,7 @@ describe('proj-reducer', () => {
 				distribs: ['0XDISTRIB0']
 			}
 		},
-		ids: ['0XPROJADDR0'],
-		projResolver: { deployed: false }
+		ids: ['0XPROJADDR0']
 	}
 	let proj = {
 		projName: 'TESTPROJ0',
@@ -176,15 +174,6 @@ describe('proj-reducer', () => {
 					]
 				}
 			}
-		})
-	})
-	it(`should handle ${types.PROJ_RESOLVER_DEPLOYED_SUCCESS}`, () => {
-		expect(
-			reducer(undefined, { type: types.PROJ_RESOLVER_DEPLOYED_SUCCESS })
-		).toEqual({
-			byId: {},
-			ids: [],
-			projResolver: { deployed: true }
 		})
 	})
 })
