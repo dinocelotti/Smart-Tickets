@@ -7,11 +7,14 @@ import Home from './views/Home'
 import Components from './views/Components'
 import Events from './views/Events'
 import * as api from './api/proj-api'
+import EthApi from './api/eth-api'
+import propTypes from 'prop-types'
 import './styles/reset.css'
 import './styles/fonts.css'
 import './styles/global.css'
-import EthApi from './api/eth-api'
-import propTypes from 'prop-types'
+import '!style!css!./styles/grids-responsive-min.css'
+import '!style!css!./styles/pure-min.css'
+
 class App extends Component {
 	static propTypes = {
 		projResolver: propTypes.shape({ deployed: propTypes.bool })
