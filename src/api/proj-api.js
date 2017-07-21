@@ -89,8 +89,6 @@ export async function getState(proj) {
 	return stateMap[state]
 }
 export const loadAppState = async () => {
-	console.log('resetting web3')
-	EthApi.web3.reset(true)
 	console.log('App state loading...')
 	let projResolver = EthApi.deployed.projResolver
 	let proj = EthApi.proj
@@ -107,9 +105,13 @@ export const loadAppState = async () => {
 		})
 		return val
 	}
+	console.log('Uninstalling old filters')
+
 	const logHandler = logHanderCreator({ actionCreator })
-	const filterObj = { fromBlock: 0, toBlock: 'pending' }
-	projResolver.AddProj({}, filterObj).watch(async (error, log) => {
+	const filterObj = { fromBlock: 0, toBlock: 'latest' }
+	let projResolverFilter = projResolver.AddProj({}, filterObj)
+	projResolverFilter.stopWatching()
+	projResolverFilter.watch(async (error, log) => {
 		const normalizedLog = Utils.normalizeArgs(log)
 		console.error(normalizedLog)
 		const { data: { proj: projAddr } } = normalizedLog
@@ -247,7 +249,8 @@ export class Promo extends Entity {
 
 export class Buyer extends Entity {
 	constructor(buyerAddr, projAddr, isDistrib = false) {
-		super(buyerAddr, projAddr)
+		//TODO: refactor name... a buyer is not a promo
+		super({ promo: buyerAddr, addr: projAddr })
 		this.isDistrib = isDistrib
 	}
 
