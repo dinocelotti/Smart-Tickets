@@ -14,7 +14,7 @@ export default class API {
 	static provider
 	static web3
 	static deployed = { projResolver: {} }
-
+	static projsAtAddr = {}
 	constructor() {
 		if (!API.provider) {
 			API.provider = new Web3.providers.HttpProvider('http://localhost:8545')
@@ -24,7 +24,16 @@ export default class API {
 			store.dispatch(web3Actions.web3Connected())
 		}
 	}
-
+	async getProjAtAddr({ addr }) {
+		console.log('Getting projAtAddr' + addr)
+		if (!API.projsAtAddr[addr]) {
+			console.log('Instance not created, making...')
+			let p = await API.proj.at(addr)
+			API.projsAtAddr[addr] = p
+		}
+		console.log('Returning instance')
+		return API.projsAtAddr[addr]
+	}
 	readJSON(module) {
 		// eslint-disable-next-line
 		return JSON.parse(fs.readFileSync(path.resolve(`${__dirname}/${module}`)))

@@ -5,6 +5,7 @@ import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
 import store from '../store'
 import * as actionCreator from '../actions/proj-actions'
+const ethApi = new EthApi()
 const mapLength = (len, map) =>
 	Promise.all(
 		Array.from(Array(Utils.isBigNumber(len) ? len.toNumber() : len), map)
@@ -88,6 +89,9 @@ export async function getState(proj) {
 	return stateMap[state]
 }
 export const loadAppState = async () => {
+	console.log('resetting web3')
+	EthApi.web3.reset(true)
+	console.log('App state loading...')
 	let projResolver = EthApi.deployed.projResolver
 	let proj = EthApi.proj
 
@@ -109,6 +113,7 @@ export const loadAppState = async () => {
 		const normalizedLog = Utils.normalizeArgs(log)
 		console.error(normalizedLog)
 		const { data: { proj: projAddr } } = normalizedLog
+		console.log(normalizedLog, projAddr)
 		const projInstance = await proj.at(projAddr)
 		projInstance.allEvents(filterObj, (err, _log) =>
 			store.dispatch(logHandler(err, _log))
@@ -122,7 +127,13 @@ class Entity {
 		this.projInstance = {}
 	}
 	async init() {
-		this.projInstance = await EthApi.proj.at(this.projAddr)
+		console.log('initializing entity')
+		try {
+			this.projInstance = await ethApi.getProjAtAddr({ addr: this.projAddr })
+		} catch (e) {
+			console.error(e)
+		}
+		console.log('done')
 		return this.projInstance
 	}
 
