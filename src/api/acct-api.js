@@ -1,6 +1,5 @@
 import EthApi from './eth-api'
 export async function getAcctsAndBals() {
-	console.log('called')
 	let accs = await getAcctsAsync()
 	let balances = await Promise.all(
 		accs.map(a => getAcctBalanceAsync(a).then(b => b.toString()))
