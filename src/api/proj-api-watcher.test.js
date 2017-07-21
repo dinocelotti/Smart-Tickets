@@ -11,7 +11,7 @@ import * as accActions from '../actions/acct-actions'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
 const mapLength = (len, map) => Promise.all(Array.from(Array(len), map))
-let logHanderCreator = actionCreators => (err, log) => {
+const logHanderCreator = actionCreators => (err, log) => {
 	if (err) {
 		console.error(err)
 		throw err
@@ -23,19 +23,19 @@ let logHanderCreator = actionCreators => (err, log) => {
 	})
 	return val
 }
-let logHandler = logHanderCreator({ actionCreator })
+const logHandler = logHanderCreator({ actionCreator })
 let accounts = []
-let testProjs = []
-let sampleTixs = []
-let projState = () => store.getState().projState
-let ethApi = new EthApi()
+const testProjs = []
+const sampleTixs = []
+const projState = () => store.getState().projState
+const ethApi = new EthApi()
 let proj, projResolver
 const sampleProjGen = (function* sampleProjGen() {
 	let index = 0
-	let projName = num => `Sample Project ${num}`
-	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 6)
-	let totalTix = randomNumGen(100)
-	let consumMaxTixs = randomNumGen(5)
+	const projName = num => `Sample Project ${num}`
+	const randomNumGen = seed => () => Math.floor(Math.random() * seed + 6)
+	const totalTix = randomNumGen(100)
+	const consumMaxTixs = randomNumGen(5)
 	//eslint-disable-next-line
 	while (true) {
 		yield {
@@ -50,10 +50,10 @@ const sampleProjGen = (function* sampleProjGen() {
 })()
 const sampleTixGen = (function* sampleTixGen() {
 	let index = 0
-	let tixType = num => `TixType${num}`
-	let randomNumGen = seed => () => Math.floor(Math.random() * seed + 2)
-	let tixPrice = randomNumGen(50)
-	let tixQuantity = randomNumGen(5)
+	const tixType = num => `TixType${num}`
+	const randomNumGen = seed => () => Math.floor(Math.random() * seed + 2)
+	const tixPrice = randomNumGen(50)
+	const tixQuantity = randomNumGen(5)
 	//eslint-disable-next-line
 	while (true) {
 		yield {
@@ -96,14 +96,14 @@ it('should add a bunch of projs to the first account', async () => {
 	)
 })
 it('should retreive those projs using a filter and dispatch them to the store', async done => {
-	let logs = []
-	let event = projResolver.AddProj({}, { fromBlock: 0, toBlock: 'pending' })
+	const logs = []
+	const event = projResolver.AddProj({}, { fromBlock: 0, toBlock: 'pending' })
 	event.watch(async (error, log) => {
 		logs.push(log)
-		let _log = helper.normalizeArgs(log)
+		const _log = helper.normalizeArgs(log)
 		console.error(_log)
-		let { data: { proj: _p } } = _log
-		let p = await proj.at(_p)
+		const { data: { proj: _p } } = _log
+		const p = await proj.at(_p)
 		testProjs.push(p)
 		p.allEvents({ fromBlock: 0, toBlock: 'pending' }, (err, _log) => {
 			console.log(logHandler(err, _log))
@@ -116,8 +116,8 @@ it('should retreive those projs using a filter and dispatch them to the store', 
 })
 
 it('should add a tix to the proj and test for its events', async done => {
-	let proj = projState().byId[projState().ids[0]]
-	let promo = new api.Promo(proj)
+	const proj = projState().byId[projState().ids[0]]
+	const promo = new api.Promo(proj)
 	try {
 		await promo.init()
 		await promo.handleTixForm(sampleTixs[0])
@@ -138,9 +138,9 @@ it('should add a tix to the proj and test for its events', async done => {
 })
 
 it('should add a distrib and test for its events', async done => {
-	let proj = projState().byId[projState().ids[0]]
-	let promo = new api.Promo(proj)
-	let distrib = {
+	const proj = projState().byId[projState().ids[0]]
+	const promo = new api.Promo(proj)
+	const distrib = {
 		distrib: accounts[1],
 		tixType: sampleTixs[0].tixType,
 		tixQuantity: sampleTixs[0].tixQuantity - 1,

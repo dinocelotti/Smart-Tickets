@@ -24,6 +24,13 @@ module.exports = {
 		'no-console': [1, { allow: ['warn', 'error', 'log'] }],
 		'no-unused-vars': 1,
 		'react/prop-types': [1],
-		'react/display-name': [1]
+		'react/display-name': [1],
+		'prefer-const': [
+			'error',
+			{
+				destructuring: 'any',
+				ignoreReadBeforeAssign: false
+			}
+		]
 	}
-};
+}

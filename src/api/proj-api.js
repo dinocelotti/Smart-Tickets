@@ -61,7 +61,7 @@ export async function getAssocProjs() {
 	} = EthApi.deployed.projResolver
 
 	const mapNumProjs = async from => {
-		let len = await _numProjs.call({ from })
+		const len = await _numProjs.call({ from })
 		return mapLength(len, (val, idx) =>
 			_projsAssoc.call(idx, {
 				from
@@ -69,8 +69,8 @@ export async function getAssocProjs() {
 		)
 	}
 
-	let accts = await getAcctsAsync()
-	let assocProjs = accts.map(async acct => ({
+	const accts = await getAcctsAsync()
+	const assocProjs = accts.map(async acct => ({
 		acct,
 		assocProjs: await mapNumProjs(acct)
 	}))
@@ -90,10 +90,9 @@ export async function getState(proj) {
 }
 export const loadAppState = async () => {
 	console.log('App state loading...')
-	let projResolver = EthApi.deployed.projResolver
-	let proj = EthApi.proj
+	const projResolver = EthApi.deployed.projResolver
 
-	let logHanderCreator = actionCreators => (err, log) => {
+	const logHanderCreator = actionCreators => (err, log) => {
 		if (err) {
 			console.error(err)
 			throw err
@@ -109,17 +108,19 @@ export const loadAppState = async () => {
 
 	const logHandler = logHanderCreator({ actionCreator })
 	const filterObj = { fromBlock: 0, toBlock: 'latest' }
-	let projResolverFilter = projResolver.AddProj({}, filterObj)
+	const projResolverFilter = projResolver.AddProj({}, filterObj)
 	projResolverFilter.stopWatching()
+	console.log('Watching projResolver...')
 	projResolverFilter.watch(async (error, log) => {
 		const normalizedLog = Utils.normalizeArgs(log)
-		console.error(normalizedLog)
+		console.log('ProjResolver Log found:', normalizedLog)
 		const { data: { proj: projAddr } } = normalizedLog
-		console.log(normalizedLog, projAddr)
-		const projInstance = await proj.at(projAddr)
-		projInstance.allEvents(filterObj, (err, _log) =>
+		console.log('Creating projInstance...')
+		const projInstance = await ethApi.getProjAtAddr({ addr: projAddr })
+		projInstance.allEvents(filterObj, (err, _log) => {
+			console.log('Proj Log found', _log)
 			store.dispatch(logHandler(err, _log))
-		)
+		})
 	})
 }
 class Entity {
@@ -239,7 +240,7 @@ export class Promo extends Entity {
 		distribFee
 	}) {
 		//TODO: Bundle these transactions, setDistrib should be run first before others
-		let txArr = []
+		const txArr = []
 		txArr.push(this.addDistrib(distribAddr))
 		txArr.push(this.setDistribAllotQuan(distribAddr, tixType, distribAllotQuan))
 		txArr.push(this.setDistribFee(distribAddr, distribFee))

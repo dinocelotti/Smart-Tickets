@@ -3,8 +3,8 @@ import Web3 from 'web3'
 import contract from 'truffle-contract'
 import store from '../store'
 import web3Actions from '../actions/web3-actions'
-let path = require('path')
-let fs = require('fs')
+const path = require('path')
+const fs = require('fs')
 let Proj = require('../../build/contracts/Proj.json')
 let ProjResolver = require('../../build/contracts/ProjResolver')
 
@@ -28,7 +28,7 @@ export default class API {
 		console.log('Getting projAtAddr' + addr)
 		if (!API.projsAtAddr[addr]) {
 			console.log('Instance not created, making...')
-			let p = await API.proj.at(addr)
+			const p = await API.proj.at(addr)
 			API.projsAtAddr[addr] = p
 		}
 		console.log('Returning instance')

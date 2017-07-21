@@ -9,7 +9,7 @@ describe('tix-reducer', () => {
 			ids: []
 		})
 	})
-	let state = {
+	const state = {
 		byId: { TIXID00: { id: 'TIXID00' } },
 		ids: ['TIXID00']
 	}
@@ -21,7 +21,7 @@ describe('tix-reducer', () => {
 			})
 		).toEqual(state)
 	})
-	let state2 = {
+	const state2 = {
 		...state,
 		byId: {
 			...state.byId,
@@ -36,7 +36,7 @@ describe('tix-reducer', () => {
 			})
 		).toEqual(state2)
 	})
-	let state3 = {
+	const state3 = {
 		...state2,
 		byId: {
 			...state2.byId,
@@ -51,7 +51,7 @@ describe('tix-reducer', () => {
 			})
 		).toEqual(state3)
 	})
-	let state4 = {
+	const state4 = {
 		...state3,
 		byId: {
 			...state3.byId,

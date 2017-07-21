@@ -33,7 +33,7 @@ const byId = (
 				...state,
 				[proj.addr]: {
 					...state[proj.addr],
-					tix: [...(state[proj.addr].tix ? state[proj.addr].tix : []), tix]
+					tix: [...(state[proj.addr].tix ? state[proj.addr].tix : []), tix.id]
 				}
 			}
 		case types.LOAD_DISTRIBS_SUCCESS:

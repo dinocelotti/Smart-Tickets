@@ -19,8 +19,11 @@ class App extends Component {
 	static propTypes = {
 		projResolver: propTypes.shape({ deployed: propTypes.bool })
 	}
-	async componentDidMount() {
-		let ethApi = new EthApi()
+	componentDidMount() {
+		this.load()
+	}
+	async load() {
+		const ethApi = new EthApi()
 		await ethApi.loadContracts()
 		await ethApi.deployContract({
 			_contract: EthApi.projResolver,

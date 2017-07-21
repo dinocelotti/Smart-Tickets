@@ -9,7 +9,7 @@ describe('proj-reducer', () => {
 			ids: []
 		})
 	})
-	let state = {
+	const state = {
 		byId: {
 			'0XPROJADDR0': {
 				projName: 'TESTPROJ0',
@@ -23,7 +23,7 @@ describe('proj-reducer', () => {
 		},
 		ids: ['0XPROJADDR0']
 	}
-	let proj = {
+	const proj = {
 		projName: 'TESTPROJ0',
 		totalTix: '100',
 		consumMaxTixs: '2',
@@ -101,7 +101,7 @@ describe('proj-reducer', () => {
 						}
 					}
 				},
-				{ type: types.ADD_TIX, payload: { proj, tix: 'TIX2' } }
+				{ type: types.ADD_TIX, payload: { proj, tix: { id: 'TIX2' } } }
 			)
 		).toEqual({
 			...state,
