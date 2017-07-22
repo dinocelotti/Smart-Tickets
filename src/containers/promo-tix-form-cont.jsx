@@ -31,7 +31,7 @@ export default class PromoTixFormCont extends Component {
 	}
 	setTixsLeft = async tixsLeft => await this.setStateAsync({ tixsLeft })
 
-	setTixVals = (name, e) =>
+	setTixVals = name => e =>
 		this.setState({
 			[name]: e.target.value
 		})

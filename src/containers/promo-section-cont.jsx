@@ -28,7 +28,7 @@ class PromoSectionCont extends React.Component {
 		})
 	}
 
-	setProjVals = (name, e) =>
+	setProjVals = name => e =>
 		this.setState({
 			[name]: e.target.value
 		})

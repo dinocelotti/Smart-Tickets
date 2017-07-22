@@ -6,7 +6,6 @@ import history from './util/history'
 import Home from './views/Home'
 import Components from './views/Components'
 import Events from './views/Events'
-import api from './api/proj-api'
 import EthApi from './api/eth-api'
 import store from './store'
 //eslint-disable-next-line

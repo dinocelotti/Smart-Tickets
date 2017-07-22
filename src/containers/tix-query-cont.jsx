@@ -22,7 +22,7 @@ export default class TixQueryFormCont extends Component {
 			this.setState(state, res)
 		})
 
-	setTixVals = (name, e) =>
+	setTixVals = name => e =>
 		this.setState({
 			[name]: e.target.value
 		})

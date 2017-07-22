@@ -15,7 +15,7 @@ export default class PromoDistribForm extends Component {
 				<input
 					type="text"
 					id="distribAddr"
-					onChange={this.props.setDistribVals.bind(this, 'distribAddr')}
+					onChange={this.props.setDistribVals('distribAddr')}
 					className="pure-input-3-4"
 					placeholder="Buyer addr"
 				/>
@@ -23,7 +23,7 @@ export default class PromoDistribForm extends Component {
 				<input
 					type="text"
 					id="distribAllotQuan"
-					onChange={this.props.setDistribVals.bind(this, 'distribAllotQuan')}
+					onChange={this.props.setDistribVals('distribAllotQuan')}
 					className="pure-input-3-4"
 					placeholder="Allotted Quantities"
 				/>
@@ -32,13 +32,13 @@ export default class PromoDistribForm extends Component {
 					type="text"
 					id="tixType"
 					className="pure-input-3-4"
-					onChange={this.props.setDistribVals.bind(this, 'tixType')}
+					onChange={this.props.setDistribVals('tixType')}
 				/>
 				<label htmlFor="distribFee"> Fee for Distrib Buyer </label>
 				<input
 					type="text"
 					id="distribFee"
-					onChange={this.props.setDistribVals.bind(this, 'distribFee')}
+					onChange={this.props.setDistribVals('distribFee')}
 					className="pure-input-3-4"
 					placeholder="Fee in Percent"
 				/>

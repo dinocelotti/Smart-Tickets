@@ -29,21 +29,21 @@ export default class PromoTixForm extends Component {
 						type="text"
 						id="tixType"
 						className="pure-input-3-4"
-						onChange={this.props.setTixVals.bind(this, 'tixType')}
+						onChange={this.props.setTixVals('tixType')}
 					/>
 					<label htmlFor="tixPrice"> Tix Price </label>
 					<input
 						type="text"
 						id="tixPrice"
 						className="pure-input-3-4"
-						onChange={this.props.setTixVals.bind(this, 'tixPrice')}
+						onChange={this.props.setTixVals('tixPrice')}
 					/>
 					<label htmlFor="tixQuantity"> Tix Quantity </label>
 					<input
 						type="text"
 						id="tixQuantity"
 						className="pure-input-3-4"
-						onChange={this.props.setTixVals.bind(this, 'tixQuantity')}
+						onChange={this.props.setTixVals('tixQuantity')}
 					/>
 					<br />
 					<button type="submit" className="pure-button pure-button-primary">

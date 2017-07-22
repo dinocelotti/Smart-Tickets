@@ -13,11 +13,6 @@ export default class BuyerQueryCont extends Component {
 		isDistrib: 'false',
 		promoFee: ''
 	}
-	constructor(props) {
-		super(props)
-		this.setBuyerVals = this.setBuyerVals.bind(this)
-		this.queryBuyer = this.queryBuyer.bind(this)
-	}
 
 	isEmpObj(obj) {
 		return Object.keys(obj).length === 0 && obj.constructor === Object
@@ -30,13 +25,13 @@ export default class BuyerQueryCont extends Component {
 		})
 	}
 
-	setBuyerVals(name, e) {
+	setBuyerVals = name => e => {
 		this.setState({
 			[name]: e.target.value
 		})
 	}
 
-	async queryBuyer(e) {
+	queryBuyer = async e => {
 		e.preventDefault()
 		if (this.isEmpObj(this.props.promoInstance)) return
 		const [

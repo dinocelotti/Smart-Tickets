@@ -22,14 +22,14 @@ export default class BuyerQueryForm extends Component {
 						type="text"
 						id="tixType"
 						className="pure-input-3-4"
-						onChange={this.props.setBuyerVals.bind(this, 'tixType')}
+						onChange={this.props.setBuyerVals('tixType')}
 					/>
 					<label htmlFor="buyerAddr"> Buyer Addr </label>
 					<input
 						type="text"
 						id="buyerAddr"
 						className="pure-input-3-4"
-						onChange={this.props.setBuyerVals.bind(this, 'buyerAddr')}
+						onChange={this.props.setBuyerVals('buyerAddr')}
 					/>
 					<label htmlFor="distribFee"> Distrib Fee </label>
 					<input

@@ -24,7 +24,7 @@ export default class PromoDistribCont extends Component {
 		})
 	}
 
-	setDistribVals = (name, e) =>
+	setDistribVals = name => e =>
 		this.setState({
 			[name]: e.target.value
 		})

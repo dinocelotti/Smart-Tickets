@@ -20,7 +20,7 @@ export class PromoSection extends React.Component {
 						type="text"
 						placeholder="Proj Name"
 						className="pure-input-3-4"
-						onChange={this.props.setProjVals.bind(this, 'projName')}
+						onChange={this.props.setProjVals('projName')}
 					/>
 
 					<label htmlFor="totalTixs"> Total number of tixs </label>
@@ -29,7 +29,7 @@ export class PromoSection extends React.Component {
 						type="text"
 						placeholder="Total number of tixs"
 						className="pure-input-3-4"
-						onChange={this.props.setProjVals.bind(this, 'totalTixs')}
+						onChange={this.props.setProjVals('totalTixs')}
 					/>
 
 					<label htmlFor="consumMaxTixs"> Tix buy limit for consums</label>
@@ -38,14 +38,14 @@ export class PromoSection extends React.Component {
 						type="text"
 						placeholder="Tix buy limit for consums"
 						className="pure-input-3-4"
-						onChange={this.props.setProjVals.bind(this, 'consumMaxTixs')}
+						onChange={this.props.setProjVals('consumMaxTixs')}
 					/>
 
 					<label htmlFor="promoAddr"> Your wallet addr </label>
 					<select
 						id="promoAddr"
 						className="pure-input-3-4"
-						onChange={this.props.setProjVals.bind(this, 'promoAddr')}
+						onChange={this.props.setProjVals('promoAddr')}
 					>
 						{this.props.accts.map(addr =>
 							<option key={addr}>

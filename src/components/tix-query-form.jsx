@@ -19,7 +19,7 @@ export default class PromoTixForm extends Component {
 						type="text"
 						id="tixType"
 						className="pure-input-3-4"
-						onChange={this.props.setTixVals.bind(this, 'tixType')}
+						onChange={this.props.setTixVals('tixType')}
 					/>
 					<label htmlFor="tixPrice"> Tix Price </label>
 					<input
