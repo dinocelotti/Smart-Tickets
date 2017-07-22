@@ -1,6 +1,6 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
-import { createReducerFromObj } from './reducer-helpers'
+import { createReducerFromObj, makeNewSet } from './reducer-helpers'
 const { LOAD_PROJS_SUCCESS, LOAD_DISTRIBS_SUCCESS, LOAD_TIX_SUCCESS } = types
 const { CREATED, FINISH_STAGING, START_PUBLIC_FUNDING } = types
 const { ADD_TIX, ADD_DISTRIB } = types
@@ -68,12 +68,9 @@ const byIdObj = {
 }
 
 const idsObj = {
-	[LOAD_PROJS_SUCCESS]: (state, { payload: { projs } }) => [
-		...new Set([...state, ...projs.map(({ addr }) => addr)])
-	],
-	[CREATED]: (state, { payload: { proj } }) => [
-		...new Set([...state, proj.addr])
-	]
+	[LOAD_PROJS_SUCCESS]: (state, { payload: { projs } }) =>
+		makeNewSet(state, projs.map(({ addr }) => addr)),
+	[CREATED]: (state, { payload: { proj } }) => makeNewSet(state, [proj.addr])
 }
 
 const byId = createReducerFromObj(byIdObj, {})

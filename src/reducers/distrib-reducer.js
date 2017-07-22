@@ -1,86 +1,52 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
-/**
- * Tickets {
- *	[distribId]: {
-	 [ticketId]{
-		 allotQuan: 123,
-		 fee: 124
-		 markup: 324
-	 }
- }
- * }
-
- */
-const tixByDistrib = (state = {}, { type, payload: { distrib, tix } = {} }) => {
-	switch (type) {
-		case types.SET_DISTRIB_ALLOT_QUAN:
-			return {
-				...state,
-				[distrib.id]: ticketHandler(
-					state[distrib.id],
-					tix.id,
-					'allotQuan',
-					tix.allotQuan
-				)
-			}
-		/**
-		 *		case types.SET_DISTRIB_FEE:
-			return {
-				...state,
-				[distrib.id]: ticketHandler(state[distrib.id], tix.id, 'fee', tix.fee)
-			}
-		*/
-
-		case types.SET_MARKUP:
-			return {
-				...state,
-				[distrib.id]: ticketHandler(
-					state[distrib.id],
-					tix.id,
-					'markup',
-					tix.markup
-				)
-			}
-		default:
-			return state
-	}
+import { createReducerFromObj, makeNewSet } from './reducer-helpers'
+const { SET_DISTRIB_ALLOT_QUAN, SET_MARKUP } = types
+const { LOAD_DISTRIBS_SUCCESS, SET_DISTRIB_FEE, ADD_DISTRIB } = types
+const ticketHandler = (state = {}, tixId, attrName, attrVal) => ({
+	...state,
+	[tixId]: { ...state[tixId], [attrName]: attrVal }
+})
+const tixByDistribObj = {
+	[SET_DISTRIB_ALLOT_QUAN]: (state, { payload: { distrib, tix } }) => ({
+		...state,
+		[distrib.id]: ticketHandler(
+			state[distrib.id],
+			tix.id,
+			'allotQuan',
+			tix.allotQuan
+		)
+	}),
+	[SET_MARKUP]: (state, { payload: { distrib, tix } }) => ({
+		...state,
+		[distrib.id]: ticketHandler(state[distrib.id], tix.id, 'markup', tix.markup)
+	})
 }
-const ticketHandler = (state = {}, tixId, attrName, attrVal) => {
-	return { ...state, [tixId]: { ...state[tixId], [attrName]: attrVal } }
+const byIdObj = {
+	[LOAD_DISTRIBS_SUCCESS]: (state, { payload: { distribs } }) => ({
+		...state,
+		...distribs.reduce(
+			(obj, distrib) => ({ ...obj, [distrib.id]: distrib }),
+			{}
+		)
+	}),
+	[SET_DISTRIB_FEE]: (state, { payload: { distrib } }) => ({
+		...state,
+		[distrib.id]: { ...state[distrib.id], fee: distrib.fee }
+	}),
+	[ADD_DISTRIB]: (state, { payload: { distrib } }) => ({
+		...state,
+		[distrib.id]: distrib
+	})
 }
-const byId = (state = {}, { type, payload: { distribs, distrib } = {} }) => {
-	switch (type) {
-		case types.LOAD_DISTRIBS_SUCCESS:
-			return {
-				...state,
-				...distribs.reduce(
-					(obj, distrib) => ({ ...obj, [distrib.id]: distrib }),
-					{}
-				)
-			}
-		case types.SET_DISTRIB_FEE:
-			return {
-				...state,
-				[distrib.id]: { ...state[distrib.id], fee: distrib.fee }
-			}
-		case types.ADD_DISTRIB:
-			return { ...state, [distrib.id]: distrib }
-		default:
-			return state
-	}
-}
-const ids = (state = [], { type, payload: { distribs, distrib } = {} }) => {
-	switch (type) {
-		case types.LOAD_DISTRIBS_SUCCESS:
-			return [...new Set([...state, ...distribs.map(({ id }) => id)])]
-
-		case types.ADD_DISTRIB:
-			return [...new Set([...state, distrib.id])]
-
-		default:
-			return state
-	}
+const idsObj = {
+	[LOAD_DISTRIBS_SUCCESS]: (state, { payload: { distribs } }) =>
+		makeNewSet(state, distribs.map(({ id }) => id)),
+	[ADD_DISTRIB]: (state, { payload: { distrib } }) =>
+		makeNewSet(state, [distrib.id])
 }
 
+const tixByDistrib = createReducerFromObj(tixByDistribObj, {})
+const byId = createReducerFromObj(byIdObj, {})
+const ids = createReducerFromObj(idsObj, [])
 export default combineReducers({ tixByDistrib, byId, ids })
