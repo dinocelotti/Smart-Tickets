@@ -39,7 +39,7 @@ export default class PromoTixFormCont extends Component {
 	createTixs = async e => {
 		e.preventDefault()
 		console.log('create tixs called')
-		let res = await this.props.promoInstance.handleTixForm(this.state)
+		const res = await this.props.promoInstance.handleTixForm(this.state)
 		console.log(res)
 		const tixsLeft = await this.props.promoInstance.getTixsLeft()
 		await this.setTixsLeft(tixsLeft)

@@ -24,6 +24,9 @@ export default class API {
 			store.dispatch(web3Actions.web3Connected())
 		}
 	}
+	getProjResolver() {
+		return API.deployed
+	}
 	async getProjAtAddr({ addr }) {
 		console.log('Getting projAtAddr' + addr)
 		if (!API.projsAtAddr[addr]) {

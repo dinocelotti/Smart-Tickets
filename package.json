@@ -56,6 +56,7 @@
 		"jest": "^20.0.4",
 		"lodash": "^4.17.4",
 		"prop-types": "^15.5.10",
+		"raw-loader": "^0.5.1",
 		"react": "^15.4.2",
 		"react-dom": "^15.4.2",
 		"react-redux": "^5.0.4",
@@ -70,7 +71,8 @@
 		"truffle": "^3.3.0",
 		"truffle-blockchain-utils": "0.0.1",
 		"truffle-contract-schema": "0.0.5",
-		"web3": "^0.19.1"
+		"web3": "^0.19.1",
+		"worker-loader": "^0.8.1"
 	},
 	"scripts": {
 		"start": "node scripts/start.js",

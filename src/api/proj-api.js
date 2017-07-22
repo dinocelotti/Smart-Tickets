@@ -3,8 +3,6 @@ import EthApi from './eth-api'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
-import store from '../store'
-import * as actionCreator from '../actions/proj-actions'
 const ethApi = new EthApi()
 const mapLength = (len, map) =>
 	Promise.all(
@@ -88,41 +86,7 @@ export async function getState(proj) {
 	}
 	return stateMap[state]
 }
-export const loadAppState = async () => {
-	console.log('App state loading...')
-	const projResolver = EthApi.deployed.projResolver
 
-	const logHanderCreator = actionCreators => (err, log) => {
-		if (err) {
-			console.error(err)
-			throw err
-		}
-		let val
-		Object.keys(actionCreators).forEach(key => {
-			if (actionCreators[key][log.event])
-				val = actionCreators[key][log.event](Utils.normalizeArgs(log))
-		})
-		return val
-	}
-	console.log('Uninstalling old filters')
-
-	const logHandler = logHanderCreator({ actionCreator })
-	const filterObj = { fromBlock: 0, toBlock: 'latest' }
-	const projResolverFilter = projResolver.AddProj({}, filterObj)
-	projResolverFilter.stopWatching()
-	console.log('Watching projResolver...')
-	projResolverFilter.watch(async (error, log) => {
-		const normalizedLog = Utils.normalizeArgs(log)
-		console.log('ProjResolver Log found:', normalizedLog)
-		const { data: { proj: projAddr } } = normalizedLog
-		console.log('Creating projInstance...')
-		const projInstance = await ethApi.getProjAtAddr({ addr: projAddr })
-		projInstance.allEvents(filterObj, (err, _log) => {
-			console.log('Proj Log found', _log)
-			store.dispatch(logHandler(err, _log))
-		})
-	})
-}
 class Entity {
 	constructor({ promo: promoAddr, addr: projAddr }) {
 		this.addr = promoAddr

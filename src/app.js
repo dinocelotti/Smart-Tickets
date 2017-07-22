@@ -8,6 +8,9 @@ import Components from './views/Components'
 import Events from './views/Events'
 import * as api from './api/proj-api'
 import EthApi from './api/eth-api'
+import store from './store'
+//eslint-disable-next-line
+const myWorker = require('worker-loader?inline&fallback=false!./api/loadAppState.js')
 import propTypes from 'prop-types'
 import './styles/reset.css'
 import './styles/fonts.css'
@@ -23,6 +26,7 @@ class App extends Component {
 		this.load()
 	}
 	async load() {
+		//TODO: duplicate loading here... due to the WW not sharing the same functions/objects as the bundle
 		const ethApi = new EthApi()
 		await ethApi.loadContracts()
 		await ethApi.deployContract({
@@ -30,7 +34,11 @@ class App extends Component {
 			name: 'projResolver'
 		})
 		//start loading state
-		api.loadAppState()
+		const worker = new myWorker()
+		worker.onmessage = e => {
+			console.log(e.data)
+			store.dispatch(e.data)
+		}
 	}
 	render() {
 		if (this.props.projResolver.deployed) {
