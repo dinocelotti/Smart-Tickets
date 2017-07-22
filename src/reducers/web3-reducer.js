@@ -1,4 +1,4 @@
-import * as types from './../actions/action-types'
+import types from './../actions/action-types'
 import { createReducerFromObj } from './reducer-helpers'
 const { WEB3_CONNECTED, PROJ_RESOLVER_DEPLOYED } = types
 const initialState = {

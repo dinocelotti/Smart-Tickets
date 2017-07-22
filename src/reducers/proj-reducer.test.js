@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import reducer from './proj-reducer'
-import * as types from '../actions/action-types'
+import types from '../actions/action-types'
 
 describe('proj-reducer', () => {
 	it('should return the intial state', () => {

@@ -24,7 +24,7 @@ export function getAcctsAsync() {
 		})
 	})
 }
-
+export default { getAcctsAndBals, getAcctsAsync }
 //wrapper around web3 getBalance
 function getAcctBalanceAsync(acct) {
 	return new Promise((resolve, reject) => {

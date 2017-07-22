@@ -1,4 +1,4 @@
-import * as types from './../actions/action-types'
+import types from './../actions/action-types'
 import { combineReducers } from 'redux'
 import { createReducerFromObj, makeNewSet } from './reducer-helpers'
 const { SET_DISTRIB_ALLOT_QUAN, SET_MARKUP } = types

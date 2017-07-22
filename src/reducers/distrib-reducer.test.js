@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import reducer from './distrib-reducer'
-import * as types from '../actions/action-types'
+import types from '../actions/action-types'
 
 describe('distrib-reducer', () => {
 	it('should return the intial state', () => {

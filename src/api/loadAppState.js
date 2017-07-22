@@ -1,5 +1,5 @@
 import EthApi from './eth-api'
-import * as actionCreator from '../actions/proj-actions'
+import actionCreator from '../actions/proj-actions'
 import Utils from './api-helpers'
 const loadAppState = async () => {
 	const ethApi = new EthApi()

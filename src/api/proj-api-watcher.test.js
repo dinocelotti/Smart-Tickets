@@ -1,13 +1,13 @@
 /* eslint-env jest  */
 /*eslint-env jasmine*/
 import * as deployment from '../../scripts/testHelper'
-import * as api from './proj-api'
-import * as accApi from './acct-api'
+import api from './proj-api'
+import accApi from './acct-api'
 import EthApi from './eth-api'
 import store from '../store'
-import * as actionCreator from '../actions/proj-actions'
+import actionCreator from '../actions/proj-actions'
 import helper from './api-helpers'
-import * as accActions from '../actions/acct-actions'
+import accActions from '../actions/acct-actions'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
 const mapLength = (len, map) => Promise.all(Array.from(Array(len), map))

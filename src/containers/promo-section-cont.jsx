@@ -1,7 +1,7 @@
 import { PromoSection } from './../components/promo-section'
 import React from 'react'
 import { connect } from 'react-redux'
-import * as projApi from '../api/proj-api'
+import projApi from '../api/proj-api'
 import Distrib from './promo-distrib-cont'
 import TixForm from './promo-tix-form-cont'
 import TixQuery from './tix-query-cont'

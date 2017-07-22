@@ -2,7 +2,7 @@
 import store from '../store'
 import reducer from './web3-reducer'
 import actions from '../actions/web3-actions'
-import * as types from '../actions/action-types'
+import types from '../actions/action-types'
 import EthApi from '../api/eth-api'
 describe('web3-reducer', () => {
 	it('should return the initial state', () => {

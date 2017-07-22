@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import * as api from './acct-api'
+import api from './acct-api'
 import * as deployment from '../../scripts/testHelper'
 import EthApi from './eth-api'
 const ethApi = new EthApi()

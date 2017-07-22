@@ -9,12 +9,7 @@ const mapLength = (len, map) =>
 		Array.from(Array(Utils.isBigNumber(len) ? len.toNumber() : len), map)
 	)
 
-export async function createProj({
-	projName,
-	totalTixs,
-	consumMaxTixs,
-	promoAddr
-}) {
+async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
 	const newProj = await EthApi.proj.new(
 		projName,
 		'10',
@@ -52,7 +47,7 @@ const addAddr = (from, addrToAssign) =>
 		from
 	})
 
-export async function getAssocProjs() {
+async function getAssocProjs() {
 	const {
 		getNumProjsOf: _numProjs,
 		getProjsAssoc: _projsAssoc
@@ -75,7 +70,7 @@ export async function getAssocProjs() {
 	return Promise.all(assocProjs)
 }
 
-export async function getState(proj) {
+async function getState(proj) {
 	const state = await proj.currentState()
 	const stateMap = {
 		0: 'Staging',
@@ -147,7 +142,7 @@ class Entity {
 		}
 	}
 }
-export class Promo extends Entity {
+class Promo extends Entity {
 	/**************************
      Phase Setters
      **************************/
@@ -212,7 +207,7 @@ export class Promo extends Entity {
 	}
 }
 
-export class Buyer extends Entity {
+class Buyer extends Entity {
 	constructor(buyerAddr, projAddr, isDistrib = false) {
 		//TODO: refactor name... a buyer is not a promo
 		super({ promo: buyerAddr, addr: projAddr })
@@ -241,4 +236,12 @@ export class Buyer extends Entity {
 			BuyerTypes.buyTixFromDistrib(distribAddr, tixType, quantity)
 		)
 	}
+}
+
+export default {
+	getState,
+	createProj,
+	getAssocProjs,
+	Promo,
+	Buyer
 }
