@@ -34,9 +34,16 @@ class PromoSectionCont extends React.Component {
 		})
 
 	setProjAddr = async e => {
+		console.log('Setting Proj Addr')
 		const projAddr = e.target.value
-		await this.setStateAsync({ projAddr })
-		await this.setPromoInstance()
+		console.log(projAddr)
+		try {
+			await this.setStateAsync({ projAddr })
+			console.log('Setting promo instance')
+			await this.setPromoInstance()
+		} catch (e) {
+			console.error(e)
+		}
 	}
 
 	setPromoAddr = async e => {
@@ -56,7 +63,9 @@ class PromoSectionCont extends React.Component {
 	}
 
 	async setPromoInstance() {
+		console.log(this.state)
 		const { promoAddr, projAddr } = this.state
+		console.log('Checking lengths', promoAddr.length, projAddr.length)
 		//check to see if both fields are set
 		if (promoAddr.length === 0 || projAddr.length === 0) return
 
@@ -73,15 +82,19 @@ class PromoSectionCont extends React.Component {
 		})
 		await promoInstance.init()
 		await this.setStateAsync({ promoInstance })
+		console.log('PromoInstance Set')
 	}
 
 	async componentWillReceiveProps({ projs, projsByAddr, accts }) {
+		console.log('componentWillReceiveProps')
+		console.log(projs.length)
 		if (projs.length > 0) {
 			const defaultProj = projsByAddr[projs[0]]
+			console.log(defaultProj)
 			await this.setProjAddr(this.mockTarget(defaultProj.addr))
 			//check if current owners addrs is the promo of the current proj
-			if (accts.includes(defaultProj.promoAddr)) {
-				await this.setPromoAddr(this.mockTarget(defaultProj.promoAddr))
+			if (accts.includes(defaultProj.promo)) {
+				await this.setPromoAddr(this.mockTarget(defaultProj.promo))
 			}
 		}
 	}

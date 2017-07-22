@@ -64,7 +64,6 @@ function projResolverDeploySuccess(projResolverDeployed) {
 	}
 }
 const getId = (data, addr) => `${data.distrib || data.typeOfTix}_${addr}`
-//TODO: add addr to object
 function Created({ data, addr }) {
 	return { type: types.CREATED, payload: { proj: { ...data, addr } } }
 }
