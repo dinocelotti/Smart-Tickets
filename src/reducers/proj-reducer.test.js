@@ -12,6 +12,7 @@ describe('proj-reducer', () => {
 	const state = {
 		byId: {
 			'0XPROJADDR0': {
+				state: 'Setup',
 				projName: 'TESTPROJ0',
 				totalTix: '100',
 				consumMaxTixs: '2',
@@ -29,6 +30,7 @@ describe('proj-reducer', () => {
 		consumMaxTixs: '2',
 		promoAddr: '0XPROMOADDR0',
 		addr: '0XPROJADDR0',
+		state: 'Setup',
 		tix: [],
 		distribs: ['0XDISTRIB0']
 	}
