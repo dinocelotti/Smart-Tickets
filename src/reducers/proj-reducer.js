@@ -1,11 +1,11 @@
 import * as types from './../actions/action-types'
 import { combineReducers } from 'redux'
+import { createReducerFromObj } from './reducer-helpers'
 const { LOAD_PROJS_SUCCESS, LOAD_DISTRIBS_SUCCESS, LOAD_TIX_SUCCESS } = types
 const { CREATED, FINISH_STAGING, START_PUBLIC_FUNDING } = types
 const { ADD_TIX, ADD_DISTRIB } = types
 const { BUY_TIX_FROM_PROMO, BUY_TIX_FROM_DISTRIB, WITHDRAW } = types
 const { RESOLVER_ADD_ADDR, RESOLVER_ADD_PROJ } = types
-
 const byIdObj = {
 	[LOAD_PROJS_SUCCESS]: (state, { payload: { projs } }) => ({
 		...state,
@@ -75,11 +75,6 @@ const idsObj = {
 		...new Set([...state, proj.addr])
 	]
 }
-
-const createReducerFromObj = (obj, initialState) => (
-	state = initialState,
-	action
-) => (obj[action.type] ? obj[action.type](state, action) : state)
 
 const byId = createReducerFromObj(byIdObj, {})
 const ids = createReducerFromObj(idsObj, [])
