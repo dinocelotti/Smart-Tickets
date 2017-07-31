@@ -12,9 +12,9 @@ export class PromoSection extends React.Component {
 				className="pure-form pure-form-stacked"
 				onSubmit={this.props.createProj}
 			>
-				<legend> An Proj Creation Form</legend>
+				<legend> A Project Creation Form</legend>
 				<fieldset className="pure-group">
-					<label htmlFor="projName"> Proj Name </label>
+					<label htmlFor="projName"> Project Name </label>
 					<input
 						id="projName"
 						type="text"
@@ -23,7 +23,7 @@ export class PromoSection extends React.Component {
 						onChange={this.props.setProjVals('projName')}
 					/>
 
-					<label htmlFor="totalTixs"> Total number of tixs </label>
+					<label htmlFor="totalTixs"> Total Number of Tickets </label>
 					<input
 						id="totalTixs"
 						type="text"
@@ -32,7 +32,7 @@ export class PromoSection extends React.Component {
 						onChange={this.props.setProjVals('totalTixs')}
 					/>
 
-					<label htmlFor="consumMaxTixs"> Tix buy limit for consums</label>
+					<label htmlFor="consumMaxTixs"> Ticket Buy Limit for Consumers</label>
 					<input
 						id="consumMaxTixs"
 						type="text"
@@ -41,7 +41,9 @@ export class PromoSection extends React.Component {
 						onChange={this.props.setProjVals('consumMaxTixs')}
 					/>
 
-					<label htmlFor="promoAddr"> Your wallet addr </label>
+					<label htmlFor="promoAddr">
+						Wallet Address to Set as the Promoter for this Project
+					</label>
 					<select
 						id="promoAddr"
 						className="pure-input-3-4"

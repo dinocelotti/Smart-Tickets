@@ -26,6 +26,9 @@ class Layout extends Component {
 			padding: 24px;
 		}
 	`
+	Content = styled.div`
+		padding: 2em;
+	`
 	render() {
 		return (
 			<div>
@@ -34,7 +37,9 @@ class Layout extends Component {
 					<this.TopNav>
 						<h5>Heading</h5>
 					</this.TopNav>
-					{this.props.children}
+					<this.Content>
+						{this.props.children}
+					</this.Content>
 				</this.View>
 			</div>
 		)

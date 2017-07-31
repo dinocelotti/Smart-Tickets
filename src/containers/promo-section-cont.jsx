@@ -158,16 +158,16 @@ class PromoSectionCont extends React.Component {
 					<br />
 				</form>
 				<div className="pure-u-1-4">
-					<Distrib promoInstance={this.state.promoInstance} />
-				</div>
-				<div className="pure-u-1-4">
-					<BuyerQuery promoInstance={this.state.promoInstance} />
-				</div>
-				<div className="pure-u-1-4">
 					<TixForm promoInstance={this.state.promoInstance} />
 				</div>
 				<div className="pure-u-1-4">
+					<Distrib promoInstance={this.state.promoInstance} />
+				</div>
+				<div className="pure-u-1-4">
 					<TixQuery promoInstance={this.state.promoInstance} />
+				</div>
+				<div className="pure-u-1-4">
+					<BuyerQuery promoInstance={this.state.promoInstance} />
 				</div>
 			</div>
 		)
