@@ -10,24 +10,6 @@ describe('distrib-reducer', () => {
 			tixByDistrib: {}
 		})
 	})
-	it(`should handle ${types.LOAD_DISTRIBS_SUCCESS}`, () => {
-		expect(
-			reducer(undefined, {
-				type: types.LOAD_DISTRIBS_SUCCESS,
-				payload: {
-					distribs: [{ id: '0XDISTRIB1' }, { id: '0XDISTRIB2' }],
-					projAddr: '0XPROJADDR1'
-				}
-			})
-		).toEqual({
-			byId: {
-				'0XDISTRIB1': { id: '0XDISTRIB1' },
-				'0XDISTRIB2': { id: '0XDISTRIB2' }
-			},
-			ids: ['0XDISTRIB1', '0XDISTRIB2'],
-			tixByDistrib: {}
-		})
-	})
 	it(`should handle ${types.ADD_DISTRIB}`, () => {
 		expect(
 			reducer(undefined, {

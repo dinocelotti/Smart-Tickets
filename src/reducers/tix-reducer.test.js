@@ -66,33 +66,4 @@ describe('tix-reducer', () => {
 			})
 		).toEqual(state4)
 	})
-	it(`should handle ${types.LOAD_TIX_SUCCESS}`, () => {
-		expect(
-			reducer(
-				{
-					byId: { TIXID00: { id: 'TIXID00' } },
-					ids: ['TIXID00']
-				},
-				{
-					type: types.LOAD_TIX_SUCCESS,
-					payload: {
-						tix: [{ id: 'TIXID00' }, { id: 'TIXID01' }, { id: 'TIXID02' }]
-					}
-				}
-			)
-		).toEqual({
-			byId: {
-				TIXID00: {
-					id: 'TIXID00'
-				},
-				TIXID01: {
-					id: 'TIXID01'
-				},
-				TIXID02: {
-					id: 'TIXID02'
-				}
-			},
-			ids: ['TIXID00', 'TIXID01', 'TIXID02']
-		})
-	})
 })

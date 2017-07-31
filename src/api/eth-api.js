@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* eslint-env node */
 import Web3 from 'web3'
 import contract from 'truffle-contract'
 import store from '../store'
@@ -28,7 +28,7 @@ export default class API {
 		return API.deployed
 	}
 	async getProjAtAddr({ addr }) {
-		console.log('Getting projAtAddr' + addr)
+		console.log('Getting projAtAddr ' + addr)
 		if (!API.projsAtAddr[addr]) {
 			console.log('Instance not created, making...')
 			const p = await API.proj.at(addr)

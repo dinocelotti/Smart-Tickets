@@ -9,7 +9,7 @@ export default class PromoDistribCont extends Component {
 	state = {
 		distribAddr: '',
 		distribAllotQuan: '',
-		distribFee: '',
+		promoFee: '',
 		tixType: ''
 	}
 

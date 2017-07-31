@@ -24,8 +24,6 @@ export default class PromoTixFormCont extends Component {
 	}
 
 	async componentWillReceiveProps({ promoInstance }) {
-		console.log('Tix form received props', promoInstance)
-
 		if (this.isEmpObj(promoInstance)) return
 
 		const tixsLeft = await promoInstance.getTixsLeft()

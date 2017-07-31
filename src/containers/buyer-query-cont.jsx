@@ -41,7 +41,7 @@ export default class BuyerQueryCont extends Component {
 			promoFee
 		] = await this.props.promoInstance.queryBuyer(this.state)
 		await this.setStateAsync({
-			isDistrib,
+			isDistrib: `${isDistrib}`, //cast into string
 			distribAllotQuan,
 			distribFee,
 			promoFee

@@ -34,11 +34,11 @@ export default class PromoDistribForm extends Component {
 					className="pure-input-3-4"
 					onChange={this.props.setDistribVals('tixType')}
 				/>
-				<label htmlFor="distribFee"> Fee for Distrib Buyer </label>
+				<label htmlFor="promoFee"> Fee for Distrib Buyer </label>
 				<input
 					type="text"
-					id="distribFee"
-					onChange={this.props.setDistribVals('distribFee')}
+					id="promoFee"
+					onChange={this.props.setDistribVals('promoFee')}
 					className="pure-input-3-4"
 					placeholder="Fee in Percent"
 				/>

@@ -12,7 +12,7 @@ contract Proj {
     * Done -> Sale has finished and is finalized, tix transfers enabled for public 
     */
     enum State {Staging, AwaitingApproval, PrivateFunding, PublicFunding, Done}
-    State public currentState;
+    State public currentState; //hold state of contract to function as state machine
 
     string public projName; //name of the event to be created
 
@@ -20,14 +20,12 @@ contract Proj {
     address public promo; //wallet of the promo
     address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, hardcoded
 
-    uint public tixsLeft; //number of tixs to be sold at this event 
-    uint public totalTixs;
+    uint public tixsLeft; //number of tixs left to be sold at this event 
+    uint public totalTixs; //total number of tixs
     uint public comsumMaxTixs; //limit of the number of tixs a non-Distrib buyer can own 
     uint membranFee; //the fee that membran takes for this event
     uint tixTypes = 0; //the number of tix types we have
     
-    uint[] public tixsArr;
-    address[] public distribs;
     mapping(address => Buyer) buyers; // address of the buyer => {isDistrib, quantity allowed to buy}
     mapping(uint => Tix) tixs; // type of tix => {price, quantity}
     mapping(address => mapping(uint => uint)) tixsOf;
@@ -73,14 +71,6 @@ contract Proj {
 **************************/
     function isDistrib() constant returns(bool){
         return buyers[msg.sender].isDistrib;
-    }
-    
-    function getTixsLen() constant  returns (uint){
-        return tixsArr.length;
-    }
-    
-    function getDistribsLen() constant  returns (uint){
-        return distribs.length;
     }
 
     function getTixVals(uint _tixType) constant returns (uint, uint, uint){
@@ -193,7 +183,6 @@ contract Proj {
         //make sure we havent added the same tix twice
         require(tixs[_typeOfTix].created == false);
         tixs[_typeOfTix].created = true;
-        tixsArr.push(_typeOfTix);
         
         AddTix(msg.sender, _typeOfTix);
         setTixPrice(_typeOfTix, _priceInWei);
@@ -230,7 +219,6 @@ contract Proj {
     **************************/
     function addDistrib(address _buyer) onlyPromo() stagingPhase() {
         buyers[_buyer].isDistrib = true;
-        distribs.push(_buyer);
         AddDistrib(msg.sender, _buyer);
     }
 

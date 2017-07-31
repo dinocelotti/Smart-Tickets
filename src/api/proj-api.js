@@ -1,14 +1,8 @@
-import { getAcctsAsync } from './acct-api'
 import EthApi from './eth-api'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoTypes } from './proj-types'
 const ethApi = new EthApi()
-const mapLength = (len, map) =>
-	Promise.all(
-		Array.from(Array(Utils.isBigNumber(len) ? len.toNumber() : len), map)
-	)
-
 async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
 	const newProj = await EthApi.proj.new(
 		projName,
@@ -29,57 +23,10 @@ async function createProj({ projName, totalTixs, consumMaxTixs, promoAddr }) {
 		projAddr: newProj.address
 	}
 
-	//add the contract
-	await addProj(newProj.address, promoAddr)
-	//assign promo to proj resolver
-	await addAddr(promoAddr, newProj.address)
-
+	const projResolver = EthApi.deployed.projResolver
+	await projResolver.addProj(newProj.address, { from: promoAddr })
+	await projResolver.addAddr(newProj.address, { from: promoAddr })
 	return newProjEntry
-}
-
-const addProj = (projAddr, promoAddr) =>
-	EthApi.deployed.projResolver.addProj(projAddr, {
-		from: promoAddr
-	})
-
-const addAddr = (from, addrToAssign) =>
-	EthApi.deployed.projResolver.addAddr(addrToAssign, {
-		from
-	})
-
-async function getAssocProjs() {
-	const {
-		getNumProjsOf: _numProjs,
-		getProjsAssoc: _projsAssoc
-	} = EthApi.deployed.projResolver
-
-	const mapNumProjs = async from => {
-		const len = await _numProjs.call({ from })
-		return mapLength(len, (val, idx) =>
-			_projsAssoc.call(idx, {
-				from
-			})
-		)
-	}
-
-	const accts = await getAcctsAsync()
-	const assocProjs = accts.map(async acct => ({
-		acct,
-		assocProjs: await mapNumProjs(acct)
-	}))
-	return Promise.all(assocProjs)
-}
-
-async function getState(proj) {
-	const state = await proj.currentState()
-	const stateMap = {
-		0: 'Staging',
-		1: 'AwaitingApproval',
-		2: 'PrivateFunding',
-		3: 'PublicFunding',
-		4: 'Done'
-	}
-	return stateMap[state]
 }
 
 class Entity {
@@ -182,27 +129,32 @@ class Promo extends Entity {
 	async addDistrib(buyer) {
 		return this.wrapTx(PromoTypes.addDistrib(buyer))
 	}
-	async setDistribAllotQuan({ distrib, tixType, tixQuantity }) {
-		console.error(distrib, tixType, tixQuantity)
+	async setDistribAllotQuan({ distrib, tixType, distribAllotQuan }) {
 		return this.wrapTx(
-			PromoTypes.setDistribAllotQuan(distrib, tixType, tixQuantity)
+			PromoTypes.setDistribAllotQuan(distrib, tixType, distribAllotQuan)
 		)
 	}
-	async setDistribFee({ distrib, promosFee }) {
-		return this.wrapTx(PromoTypes.setDistribFee(distrib, promosFee))
+	async setDistribFee({ distrib, distribFee }) {
+		return this.wrapTx(PromoTypes.setDistribFee(distrib, distribFee))
 	}
 
 	async handleDistribForm({
 		distribAddr,
 		tixType,
 		distribAllotQuan,
-		distribFee
+		promoFee
 	}) {
 		//TODO: Bundle these transactions, setDistrib should be run first before others
 		const txArr = []
 		txArr.push(this.addDistrib(distribAddr))
-		txArr.push(this.setDistribAllotQuan(distribAddr, tixType, distribAllotQuan))
-		txArr.push(this.setDistribFee(distribAddr, distribFee))
+		txArr.push(
+			this.setDistribAllotQuan({
+				distrib: distribAddr,
+				tixType,
+				distribAllotQuan
+			})
+		)
+		txArr.push(this.setDistribFee({ distrib: distribAddr, promoFee }))
 		return Promise.all(txArr)
 	}
 }
@@ -239,9 +191,7 @@ class Buyer extends Entity {
 }
 
 export default {
-	getState,
 	createProj,
-	getAssocProjs,
 	Promo,
 	Buyer
 }

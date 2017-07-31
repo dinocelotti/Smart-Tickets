@@ -2,7 +2,6 @@ import types from './../actions/action-types'
 import { combineReducers } from 'redux'
 import { createReducerFromObj, makeNewSet } from './reducer-helpers'
 
-const { LOAD_TIX_SUCCESS } = types
 const { ADD_TIX, ADD_IPFS_DETAILS_TO_TIX } = types
 const { SET_TIX_PRICE, SET_TIX_QUANTITY } = types
 
@@ -13,10 +12,6 @@ const tixSetHelper = ({ attr, tixAttr }) => ({ state, tix }) => {
 }
 
 const byIdObj = {
-	[LOAD_TIX_SUCCESS]: (state, { payload: { tix } }) => ({
-		...state,
-		...tix.reduce((obj, t) => ({ ...obj, [t.id]: t }), {})
-	}),
 	[ADD_TIX]: (state, { payload: { tix } }) => ({ ...state, [tix.id]: tix }),
 	[ADD_IPFS_DETAILS_TO_TIX]: (state, { payload: { tix } }) => {
 		const addIpfs = tixSetHelper({ attr: 'ipfsHash', tixAttr: 'ipfsHash' })
@@ -35,8 +30,6 @@ const byIdObj = {
 	}
 }
 const idsObj = {
-	[LOAD_TIX_SUCCESS]: (state, { payload: { tix } }) =>
-		makeNewSet(state, tix.map(({ id }) => id)),
 	[ADD_TIX]: (state, { payload: { tix } }) => makeNewSet(state, [tix.id])
 }
 
