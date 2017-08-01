@@ -40,7 +40,9 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
 
   Because a centralized server will handle the management of Projects and white-listing, it is also able to cache data such as relevant Event Logs from the blockchain and serve them to the client to boot-strap the initial state, significantly reducing the time needed to load the newest blockchain state.
 
-### TBD
+### No ICO
+
+  We're moving to a product that's selling point is back-end infrastructure improvements + increase customer satisfaction by reducing ticketing fraud and greater ease of use. Revenue will instead be generated through ticket sales rather than ICO tokens.
 
 ## Proj.sol future specification
 
@@ -101,23 +103,4 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
 - Private Funding
 - Public Funding
 - Done
-
-## Roadmap
-
-## Initial Smart Contract Work
-
-- Implement creation of events
-- Allow promoter to approve certain buyers as approved buyers
-- Implement sectioning of states in the contract into "phases", this allows the contract to resemble different timeframes of an event
-- Be able to buy tokens that resemble tickets as the approved buyer / customer
-
-## Initial UI work
-
-- Be able to see all of user's current wallet addresses and their ether balances
-- Be able to create an event as a promoter on the UI
-- Be able to view details of the event after it is created
-- Be able to allocate different ticket types after creation as the promoter with their price/type/fee
-- Be able to approve buyers from the UI
-- End consumers should be able to buy tickets from either the promoter or approved buyer 
-- Approved buyers should be able to buy tickets from the promoter and set their own markup
 
