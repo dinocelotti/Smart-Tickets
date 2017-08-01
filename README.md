@@ -1,6 +1,11 @@
 # Smart-tickets
 
-Membran Smart-Tickets provides a platform for the management and sales of tickets. 
+Membran Smart-Tickets provides a platform for the management and sales of tickets.
+
+## Installing dependencies
+
+      npm -i && npm install -g truffle ethereumjs-testrpc
+      (optional) redux-dev-tools chrome extension
 
 ## Running tests
 
@@ -12,14 +17,30 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
       (In a seperate window) truffle compile && truffle migrate && npm start
       (Optional) Have redux-dev-tools chrome extension installed to see reducer states/actions
 
-#### The dApp focuses on these main elements:
+### The dApp focuses on these main elements:
 
-  - Using the blockchain to achieve consensus on the validity of ticket transactions in a distributed manner
-  - Leveraging smart contracts to automate the creation of events, and manangement of the tickets associated to a particular event
-  - Provide high flexibility in the creation and operation of such events
-  - Low costs and fees compared to existing ticketing solutions on the market today
-  - High reliability and availability in terms of accessing and interacting with the event sales due to the distributed nature of blockchain + smart contracts
-  - Reduction of second-hand market profiting and ticket fraud
+- Using the blockchain to achieve consensus on the validity of ticket transactions in a distributed manner
+- Leveraging smart contracts to automate the creation of events, and manangement of the tickets associated to a particular event
+- Provide high flexibility in the creation and operation of such events
+- Low costs and fees compared to existing ticketing solutions on the market today
+- High reliability and availability in terms of accessing and interacting with the event sales due to the distributed nature of blockchain + smart contracts
+- Reduction of second-hand market profiting and ticket fraud
+
+## Recent specification changes
+
+  Instead of focusing on a completely decentralized ticketing application, the target ecosystem for this application will to offer a "step-up" from conventional methods of ticket management rather than completely re-vamping how it the industry works. Because of this, a server will now be used to host the smart contracts instead of individual clients launching their own Projects onto the network. By doing this, our system will be more compatible with conventional infrastructure while still offering benefits such as double-spend protection, digitalized ticketing (tickets are created, validated, modified and used all on-chain, allowing much more functionality to be built into them), and reduced operating fees.
+
+  The main changes so far will be:
+
+### Project validation
+
+  Before, any client could create their own Project and claim themselves as the Promoter to the Project. This meant that an additional validation componenent was needed to eliminate Project spam / false projects as there was no requirements to creating one. Moving forward, only our server will host the Proj smart contract, and future Promoter's of Projects need to have their addresses white-listed by us (so there will be a KYC process or some sort beforehand) before those addresses are able to create their own Projects
+
+### Log/Node caching
+
+  Because a centralized server will handle the management of Projects and white-listing, it is also able to cache data such as relevant Event Logs from the blockchain and serve them to the client to boot-strap the initial state, significantly reducing the time needed to load the newest blockchain state.
+
+### TBD
 
 ## Proj.sol future specification
 
@@ -81,14 +102,17 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
 - Public Funding
 - Done
 
-# Roadmap
-### Initial Smart Contract Work
+## Roadmap
+
+## Initial Smart Contract Work
+
 - Implement creation of events
 - Allow promoter to approve certain buyers as approved buyers
 - Implement sectioning of states in the contract into "phases", this allows the contract to resemble different timeframes of an event
 - Be able to buy tokens that resemble tickets as the approved buyer / customer
 
-### Initial UI work 
+## Initial UI work
+
 - Be able to see all of user's current wallet addresses and their ether balances
 - Be able to create an event as a promoter on the UI
 - Be able to view details of the event after it is created
