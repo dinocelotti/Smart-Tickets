@@ -2,6 +2,16 @@
 
 Membran Smart-Tickets provides a platform for the management and sales of tickets. 
 
+## Running tests
+
+      jest -i
+
+## Starting app
+
+      testrpc
+      (In a seperate window) truffle compile && truffle migrate && npm start
+      (Optional) Have redux-dev-tools chrome extension installed to see reducer states/actions
+
 #### The dApp focuses on these main elements:
 
   - Using the blockchain to achieve consensus on the validity of ticket transactions in a distributed manner
