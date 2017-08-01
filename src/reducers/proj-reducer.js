@@ -7,7 +7,7 @@ const { BUY_TIX_FROM_PROMO, BUY_TIX_FROM_DISTRIB, WITHDRAW } = types
 const byIdObj = {
 	[CREATED]: (state, { payload: { proj } }) => ({
 		...state,
-		[proj.addr]: { state: 'Setup', tix: [], distribs: [], ...proj }
+		[proj.addr]: { state: 'Staging', tix: [], distribs: [], ...proj }
 	}),
 	[FINISH_STAGING]: (state, { payload: { proj } }) => ({
 		...state,

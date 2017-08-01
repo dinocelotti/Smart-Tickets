@@ -36,13 +36,13 @@ class Entity {
 		this.projInstance = {}
 	}
 	async init() {
-		console.log('initializing entity')
+		console.group('Entity Constructor')
 		try {
 			this.projInstance = await ethApi.getProjAtAddr({ addr: this.projAddr })
 		} catch (e) {
 			console.error(e)
 		}
-		console.log('done')
+		console.groupEnd()
 		return this.projInstance
 	}
 
@@ -134,8 +134,8 @@ class Promo extends Entity {
 			PromoTypes.setDistribAllotQuan(distrib, tixType, distribAllotQuan)
 		)
 	}
-	async setDistribFee({ distrib, distribFee }) {
-		return this.wrapTx(PromoTypes.setDistribFee(distrib, distribFee))
+	async setDistribFee({ distrib, promoFee }) {
+		return this.wrapTx(PromoTypes.setDistribFee(distrib, promoFee))
 	}
 
 	async handleDistribForm({
@@ -144,18 +144,13 @@ class Promo extends Entity {
 		distribAllotQuan,
 		promoFee
 	}) {
-		//TODO: Bundle these transactions, setDistrib should be run first before others
-		const txArr = []
-		txArr.push(this.addDistrib(distribAddr))
-		txArr.push(
-			this.setDistribAllotQuan({
-				distrib: distribAddr,
-				tixType,
-				distribAllotQuan
-			})
-		)
-		txArr.push(this.setDistribFee({ distrib: distribAddr, promoFee }))
-		return Promise.all(txArr)
+		await this.addDistrib(distribAddr)
+		await this.setDistribAllotQuan({
+			distrib: distribAddr,
+			tixType,
+			distribAllotQuan
+		})
+		await this.setDistribFee({ distrib: distribAddr, promoFee })
 	}
 }
 

@@ -28,13 +28,16 @@ export default class API {
 		return API.deployed
 	}
 	async getProjAtAddr({ addr }) {
+		console.group('GetProjAtAddr')
 		console.log('Getting projAtAddr ' + addr)
 		if (!API.projsAtAddr[addr]) {
-			console.log('Instance not created, making...')
+			console.warn('Instance not created, making...')
 			const p = await API.proj.at(addr)
 			API.projsAtAddr[addr] = p
+		} else {
+			console.log('Instance already exists, return cached proj')
 		}
-		console.log('Returning instance')
+		console.groupEnd()
 		return API.projsAtAddr[addr]
 	}
 	readJSON(module) {

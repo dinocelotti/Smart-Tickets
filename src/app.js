@@ -35,13 +35,14 @@ class App extends Component {
 		//start loading state
 		const worker = new myWorker()
 		worker.onmessage = e => {
+			console.groupCollapsed('app WW message')
 			console.log(e.data)
+			console.groupEnd()
 			store.dispatch(e.data)
 		}
 	}
 	render() {
 		if (this.props.projResolver.deployed) {
-			console.log(this.props.projResolver, 'rendered')
 			return (
 				<ConnectedRouter history={history}>
 					<div>
