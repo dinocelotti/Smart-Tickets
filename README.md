@@ -17,7 +17,35 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
       (In a seperate window) truffle compile && truffle migrate && npm start
       (Optional) Have redux-dev-tools chrome extension installed to see reducer states/actions
 
-### The dApp focuses on these main elements:
+## Preface
+
+### The problem
+
+Ticket sales information in the live events industry is currently stored and managed across disparate systems, proprietary standards, and individually centralized databases. A small number of large competitors dominate the primary market, including Ticketmaster and Eventbrite. Fraud and artificially distorted markets plague the industry, resulting in inefficient market economics, rent-seeking, and an overall frustrated user experience.
+
+### Current Solutions
+
+Some are trying to take action, but each solution thus far has significant drawbacks. We acknowledge that there are other blockchain-based ticket startups in existence. However, we believe they are approaching the problem in a way that directly competes with giants of industry, such as Live Nation and Ticketmaster. These current blockchain-based ticket startups do not provide a foundation service where industry leaders can improve their offering. MembranLive, on the other hand, acts as the gears on which that chain can more efficiently operate, rather than being a “part” of the value chain itself, and fosters greater coordination and accessibility of data throughout the whole ticket industry. 
+
+Existing primary and secondary market competitors: Ticketmaster, Eventbrite, SeatGeek, StubHub
+
+Non blockchain-based solutions: Songkick, Twickets
+
+Blockchain-based solutions: Aventus, Blocktix, LAVA, HelloSugoi
+
+Our key opposition is secondary ticket sellers whose business we are directly eroding. In some cases, primary ticket sellers have purchased secondary platforms in an attempt to protect and capture previously lost value. Here, too, we erode the secondary platform’s business, but only insofar as this value is redirected and more immediately captured by the parent.
+
+Our major barrier to entry is the size and scope of the existing systems in place. It is essential to communicate to large stakeholders the significance of the value we are adding if we hope for them to change their current entrenched behavior. By providing easily adopted minor integrations to existing data feeds that deliver valuable analytics to the creators, we can offer modular software alternatives that will be gradually adopted to replace existing infrastructure.
+
+### Benefits of utilizing smart contracts and the blockchain
+
+Any transaction between two or more “official” parties (i.e. not including scalpers) that is based on the volume or value of tickets sold for an event can benefit from the MembranLive platform by having better and faster data, and by knowing they are minimizing potential losses to rent-seekers and fraudsters. However, we are initially targeting the aforementioned three key stakeholders, as they will likely be the most interested in analytics, security, and secondary market protection that the MembranLive platform affords.
+
+Later, we plan to develop analytical solutions integrated to the transaction ledger, which will increase efficiency with regards to accounting, transaction data and analytics, and venue or collection society reporting. Fans will benefit from fraud protection and convenient ticket authentication, and will also be able to effortlessly transfer their ticket to another user or reissue their ticket to the primary market. Transacting parties will also be able to see a transaction almost immediately, and can trust in their purchase or sale, as it is impossible for double-spend or other fraudulent transactions to take place between two parties on the network.
+
+MembranLive provides a platform to consolidate ticket transactions to a single shared distributed ledger. Dashboards for creators and sellers allow for the creation, tracking, and distribution of tickets. Similarly, performers, venues, and other stakeholders interface with the platform in order to have reports, statements, and other analytics at their fingertips.
+
+## Main elements
 
 - Using the block chain to achieve consensus on the validity of ticket transactions in a distributed manner
 - Leveraging smart contracts to automate the creation of events, and management of the tickets associated to a particular event
@@ -26,43 +54,49 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
 - High reliability and availability in terms of accessing and interacting with the event sales due to the distributed nature of block chain + smart contracts
 - Reduction of second-hand market profiting and ticket fraud
 
-## Becoming a promoter
+### Promoter Process
+
+  Promoters (herein “Creators”) who create events, and coordinate with venues, performers, and ticket sellers. Creators set the face value and ticket categories and are also able to sell tickets on their own.
 
   Becoming a promoter will involve a KYC process where off-chain verification will be done on the promoter. Once the promoter is verified their address can be white-listed into a verification smart contract that we own. Then, they are able to create Projects under their white-listed address. Addresses that create Projects but are not white-listed on our verification smart contract are simply ignored by the system and deemed invalid.
 
-## Becoming a distributor
+### Distributor Process
+
+  Primary ticket sellers who operate the platforms through which fans can purchase their tickets and process payment.
 
   Becoming a distributor involves being added/white-listed into a specific Project that a white-listed Promoter has created. Once added, the distributor is now valid for that Project.
 
-## Becoming an end-consumer
+### End-consumer Process
+
+  Fans who spend the money to attend the event and interact with ticket sellers.
 
   Becoming an end-consumer simply involves having an Ethereum wallet
 
-## Ticket Purchases
+### Ticket Purchases
 
 All ticket purchases, when permitted by the contract, can only flow "downwards". That is, in the hierarchy of Promoter -> Distributor -> End-consumer, the flow of ticket purchases can only occur in the same direction as the arrows. This is done to eliminate cycles in the purchase chain, reducing complexity on keeping track of where tickets are and enforcing the right restrictions appropriately. Although the smart contracts themselves deal with purchases in Ether only, additional mechanisms can be built to allow fiat purchasing of tickets by proxy. An example would be the user of Status's "Teller network" which allows for fiat-crypto exchange.
 
-### Staging phase
+- #### Staging phase
 
-During the staging phase, all ticket transfers are prohibited
+  - During the staging phase, all ticket transfers are prohibited
 
-### Private Funding phase
+- #### Private Funding phase
 
-During the private funding phase, only distributors can purchase tickets, and only from the Promoter.
+  - During the private funding phase, only distributors can purchase tickets, and only from the Promoter.
 
-### Public Funding phase
+- #### Public Funding phase
 
-During the public funding phase, end-consumers may purchase from distributors at their marked-up price or from Promoters at face value.
+  - During the public funding phase, end-consumers may purchase from distributors at their marked-up price or from Promoters at face value.
 
-### After
+- #### After
 
-After ticket purchases are finished, end-consumers may transfer tickets between other end-consumers
+  - After ticket purchases are finished, end-consumers may transfer tickets between other end-consumers
 
-## Ticket transfers between end-consumers and alleviation of scalping
+### Ticket transfers between end-consumers and alleviation of scalping
 
 Programmatic and social properties can be introduced into the ticket transfer mechanism to reduce scalping potential vs today's techniques while still providing a smooth user experience.
 
-### Restrictive properties
+#### Restrictive properties
 
 Restrictions that can be placed on ticket transfers include but are not limited to:
 
@@ -73,11 +107,11 @@ Restrictions that can be placed on ticket transfers include but are not limited 
 - Limit what addresses can transfer tickets, so an address would have to be white-listed to transfer a ticket
 - If the user wants to purchase a ticket with fiat currency, their banking information can be used to cross-reference accounts and see if the user is maliciously buying tickets for scalping use
 
-### Social properties
+#### Social properties
 
 Assuming that the customer will own a single address for their ticket purchasing / Project participation, social gamification features can be built in to reduce scalping. On the client side, the dApp can keep track of what Projects the end-consumer has participated in, and along with user input such as friends addresses. Then, the dApp can provide features such as: Projects friends are participating in, social chatting with friends, discounts or deals on relevant Projects, etc. A lot of these features relate to what Status can provide so tight integration with their platform would be beneficial for us.
 
-## Door Admission (Taken from issue #7)
+### Door Admission (Taken from issue #7)
 
 Door admission and verification would be done via a QR code provided by the mobile version of the dApp
 
@@ -87,34 +121,34 @@ Door admission and verification would be done via a QR code provided by the mobi
 
 So the QR code would encode x+y+z, the key here is parameter z. The next block header hash should be nearly impossible to guess due to the variables of the nonce, included transactions, time stamp etc. The only guessable portion of the next block hash would be the difficulty (e.g How many leading zeros will be included in the block hash). The QR code would change in the time interval equivalent to the block time of Ethereum. This makes it extremely improbable that a screenshot of a scalped ticket would be valid as the User would have to try and get into the event and verified in < 15 seconds at current block time.
 
-## Overview of current progress + future goals
+### Overview of current progress + future goals
 
 - Most of the event watching / state updating part of the UI is implemented, meaning that any relevant events being fired on the blockchain will be captured by the dApp and updated in the Redux store
 - Things such as start/end dates and time based modifiers, distributor-ticket specific fees, and ticket transfers need to be implemented and tested
 - IPFS storage is implemented in the smart contracts for the storage of buyer/ticket off-chain information but needs to be implemented on client-side and tested
-- The actual UI of the application has its functionality in /components. The components inside are only for testing the functionality of the dApp itself, which is why there's forms for querying the status of buyers/tickets
+- The UI of the application has its functionality in /components. The components inside are only for testing the functionality of the dApp itself, which is why there's forms for querying the status of buyers/tickets
 - Once the above is finished, a server needs to be made to contain the smart contracts. Block chain transactions and queries will still be done on the client-side, but the client will have the option of having their application state "boot-strapped" by our server which will offer event log caching for relevant Projects.
 - Then, mobile versions of the dApp would be made for our implementation of door admissions and for general ease of use regarding the client, the recent Status application can possibly be used to host our dApp and provide users with a smooth dApp experience
 
-## Recent specification changes
+### Recent specification changes
 
   Instead of focusing on a completely decentralised ticketing application, the target ecosystem for this application will to offer a "step-up" from conventional methods of ticket management rather than completely re-vamping how it the industry works. Because of this, a server will now be used to host the smart contracts instead of individual clients launching their own Projects onto the network. By doing this, our system will be more compatible with conventional infrastructure while still offering benefits such as double-spend protection, digital ticketing (tickets are created, validated, modified and used all on-chain, allowing much more functionality to be built into them), and reduced operating fees.
 
   The main changes so far will be:
 
-### Project validation
+#### Project validation
 
   Before, any client could create their own Project and claim themselves as the Promoter to the Project. This meant that an additional validation component was needed to eliminate Project spam / false projects as there was no requirements to creating one. Moving forward,  our server will host the Project smart contract, and future Promoter's of Projects need to have their addresses white-listed by us (so there will be a KYC process or some sort beforehand) before those addresses are able to create their own Projects
 
-### Log/Node caching
+#### Log/Node caching
 
   Because a centralised server will handle the management of Projects and white-listing, it is also able to cache data such as relevant Event Logs from the block chain and serve them to the client to boot-strap the initial state, significantly reducing the time needed to load the newest block chain state.
 
-### No ICO
+#### No ICO
 
   We're moving to a product that's selling point is back-end infrastructure improvements + increase customer satisfaction by reducing ticketing fraud and greater ease of use. Revenue will instead be generated through ticket sales rather than ICO tokens.
 
-## Proj.sol future specification
+### Proj.sol specification
 
   This is the main smart contract, responsible for the creation of "projects" which describe any type of event that needs ticket distribution and sales 
 
