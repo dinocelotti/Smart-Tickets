@@ -3,7 +3,7 @@ import reducer from './acct-reducer'
 import types from '../actions/action-types'
 import { accData } from './testData'
 describe('acct-reducer', () => {
-	it('should return the intial state', () => {
+	it('should return the initial state', () => {
 		expect(reducer(undefined, {})).toEqual(accData.initial)
 	})
 	it(`should handle ${types.GET_ACCTS_SUCCESS}`, () => {
