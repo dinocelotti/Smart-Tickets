@@ -206,8 +206,11 @@ So the QR code would encode x+y+z, the key here is parameter z. The next block h
   - 8 Wei (10% of 100 Wei - 20% of that value) goes to the distributor, 2 Wei to the Promoter
 
 - Private Funding
+
   This phase is specifically for Distributors to buy from the Promoters. Distributors need to purchase tickets in able to re-sell them to end-consumers later on.
 - Public Funding
+
   This phase is for end-consumers to buy from the Promoters and/or Distributors
 - Done
+
   This phase is when all functionality of the contract is stopped with the exception of withdrawls for the Promoter/Distributors/Membran, at the end of the Done phase, the contract will self destruct with all remaining Ether being sent to Membran.
