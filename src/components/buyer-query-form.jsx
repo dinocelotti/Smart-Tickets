@@ -4,10 +4,10 @@ export default class BuyerQueryForm extends Component {
 	static propTypes = {
 		queryBuyer: propTypes.func,
 		setBuyerVals: propTypes.func,
-		distribFee: propTypes.string,
-		promoFee: propTypes.string,
-		distribAllotQuan: propTypes.string,
-		isDistrib: propTypes.string
+		distributorFee: propTypes.string,
+		promoterFee: propTypes.string,
+		distributorAllottedQuantity: propTypes.string,
+		isDistributor: propTypes.string
 	}
 
 	render() {
@@ -22,50 +22,52 @@ export default class BuyerQueryForm extends Component {
 						type, including if they are a distributor, and if so what attributes
 						have been set on their profile
 					</legend>
-					<label htmlFor="tixType"> Ticket Type</label>
+					<label htmlFor="ticketType"> Ticket Type</label>
 					<input
 						type="text"
-						id="tixType"
+						id="ticketType"
 						className="pure-input-1"
-						onChange={this.props.setBuyerVals('tixType')}
+						onChange={this.props.setBuyerVals('ticketType')}
 					/>
-					<label htmlFor="buyerAddr"> Buyer Address </label>
+					<label htmlFor="buyerAddress"> Buyer Address </label>
 					<input
 						type="text"
-						id="buyerAddr"
+						id="buyerAddress"
 						className="pure-input-1"
-						onChange={this.props.setBuyerVals('buyerAddr')}
+						onChange={this.props.setBuyerVals('buyerAddress')}
 					/>
-					<label htmlFor="isDistrib"> Buyer is Distributor </label>
+					<label htmlFor="isDistributor"> Buyer is Distributor </label>
 					<input
 						type="text"
-						id="isDistrib"
+						id="isDistributor"
 						className="pure-input-1"
-						value={this.props.isDistrib}
+						value={this.props.isDistributor}
 						readOnly
 					/>
-					<label htmlFor="distribFee"> Distributor Fee </label>
+					<label htmlFor="distributorFee"> Distributor Fee </label>
 					<input
 						type="text"
-						id="distribFee"
+						id="distributorFee"
 						className="pure-input-1"
-						value={this.props.distribFee}
+						value={this.props.distributorFee}
 						readOnly
 					/>
-					<label htmlFor="promoFee"> Promoter Fee </label>
+					<label htmlFor="promoterFee"> Promoter Fee </label>
 					<input
 						type="text"
-						id="promoFee"
+						id="promoterFee"
 						className="pure-input-1"
-						value={this.props.promoFee}
+						value={this.props.promoterFee}
 						readOnly
 					/>
-					<label htmlFor="distribAllotQuan"> Allotted Quantity </label>
+					<label htmlFor="distributorAllottedQuantity">
+						{' '}Allotted Quantity{' '}
+					</label>
 					<input
 						type="text"
-						id="distribAllotQuan"
+						id="distributorAllottedQuantity"
 						className="pure-input-1"
-						value={this.props.distribAllotQuan}
+						value={this.props.distributorAllottedQuantity}
 						readOnly
 					/>
 

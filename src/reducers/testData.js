@@ -3,24 +3,30 @@ const initial = {
 	byId: {},
 	ids: []
 }
-const getAccts = {
+const getAccounts = {
 	action: {
-		type: types.GET_ACCTS_SUCCESS,
+		type: types.GET_ACCOUNTS_SUCCESS,
 		payload: {
-			accts: [
-				{ addr: '0x0088063e1748489D4a5D2CC63e50e3159c005Fd4', balance: '1500' },
-				{ addr: '0x1234563e1748489D4a5D2CC63e50e315SAD05Fd4', balance: '1243' }
+			accounts: [
+				{
+					address: '0x0088063e1748489D4a5D2CC63e50e3159c005Fd4',
+					balance: '1500'
+				},
+				{
+					address: '0x1234563e1748489D4a5D2CC63e50e315SAD05Fd4',
+					balance: '1243'
+				}
 			]
 		}
 	},
 	state: {
 		byId: {
 			'0x0088063e1748489D4a5D2CC63e50e3159c005Fd4': {
-				addr: '0x0088063e1748489D4a5D2CC63e50e3159c005Fd4',
+				address: '0x0088063e1748489D4a5D2CC63e50e3159c005Fd4',
 				balance: '1500'
 			},
 			'0x1234563e1748489D4a5D2CC63e50e315SAD05Fd4': {
-				addr: '0x1234563e1748489D4a5D2CC63e50e315SAD05Fd4',
+				address: '0x1234563e1748489D4a5D2CC63e50e315SAD05Fd4',
 				balance: '1243'
 			}
 		},
@@ -30,17 +36,17 @@ const getAccts = {
 		]
 	}
 }
-const getAssocProjs = {
+const getAssocProjects = {
 	action: {
-		type: types.GET_ASSOC_PROJS_SUCCESS,
+		type: types.GET_ASSOCIATED_PROJECTS_SUCCESS,
 		payload: {
-			assocProjs: [
+			assocProjects: [
 				{
-					assocProjs: [
+					assocProjects: [
 						'0x886759a2104C091446d91597F22EBb264F31995F',
 						'0xC27F4E671019eD54fCB82BbC702CAE1347385B4F'
 					],
-					acct: '0x86cd5715b19a2a279a5bd5d33590b37b9587954b'
+					account: '0x86cd5715b19a2a279a5bd5d33590b37b9587954b'
 				}
 			]
 		}
@@ -48,7 +54,7 @@ const getAssocProjs = {
 	state: {
 		byId: {
 			'0x86cd5715b19a2a279a5bd5d33590b37b9587954b': {
-				assocProjs: [
+				assocProjects: [
 					'0x886759a2104C091446d91597F22EBb264F31995F',
 					'0xC27F4E671019eD54fCB82BbC702CAE1347385B4F'
 				]
@@ -59,7 +65,7 @@ const getAssocProjs = {
 }
 const accData = {
 	initial,
-	getAccts,
-	getAssocProjs
+	getAccounts,
+	getAssocProjects
 }
 export { accData }

@@ -1,17 +1,17 @@
 import EthApi from './eth-api'
-import actionCreator from '../actions/proj-actions'
+import actionCreator from '../actions/project-actions'
 import Utils from './api-helpers'
 const loadAppState = async () => {
 	const ethApi = new EthApi()
-	console.groupCollapsed('loadAppState')
+	//console.groupCollapsed('loadAppState')
 	console.log('Loading and deploying contracts')
 	await ethApi.loadContracts()
 	await ethApi.deployContract({
-		_contract: EthApi.projResolver,
-		name: 'projResolver'
+		_contract: EthApi.projectResolver,
+		name: 'projectResolver'
 	})
 	console.log('App state loading...')
-	const projResolver = EthApi.deployed.projResolver
+	const projectResolver = EthApi.deployed.projectResolver
 
 	const logHanderCreator = actionCreators => (err, log) => {
 		if (err) {
@@ -29,25 +29,27 @@ const loadAppState = async () => {
 
 	const logHandler = logHanderCreator({ actionCreator })
 	const filterObj = { fromBlock: 0, toBlock: 'latest' }
-	const projResolverFilter = projResolver.AddProj({}, filterObj)
-	projResolverFilter.stopWatching()
-	console.log('Watching projResolver...')
-	console.groupEnd()
-	projResolverFilter.watch(async (error, log) => {
-		console.groupCollapsed('projResolverFilter')
+	const projectResolverFilter = projectResolver.AddProject({}, filterObj)
+	projectResolverFilter.stopWatching()
+	console.log('Watching projectResolver...')
+	//console.groupEnd()
+	projectResolverFilter.watch(async (error, log) => {
+		//console.groupCollapsed('projectResolverFilter')
 		const normalizedLog = Utils.normalizeArgs(log)
-		console.log('ProjResolver Log found:', normalizedLog)
-		const { data: { proj: projAddr } } = normalizedLog
-		console.log('Creating projInstance...')
-		console.groupEnd()
-		const projInstance = await ethApi.getProjAtAddr({ addr: projAddr })
-		projInstance.allEvents(filterObj, (err, _log) => {
-			console.groupCollapsed('projInstance.allEvents')
-			console.log('Proj Log found', _log)
+		console.log('ProjectResolver Log found:', normalizedLog)
+		const { data: { project: projectAddress } } = normalizedLog
+		console.log('Creating projectInstance...')
+		//console.groupEnd()
+		const projectInstance = await ethApi.getProjectAtAddress({
+			address: projectAddress
+		})
+		projectInstance.allEvents(filterObj, (err, _log) => {
+			//console.groupCollapsed('projectInstance.allEvents')
+			console.log('Project Log found', _log)
 			const action = logHandler(err, _log)
 			console.log('Posting action back to main script...')
 			postMessage(action)
-			console.groupEnd()
+			//console.groupEnd()
 		})
 	})
 }

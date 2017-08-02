@@ -19,7 +19,7 @@ import '!style!css!./styles/pure-min.css'
 
 class App extends Component {
 	static propTypes = {
-		projResolver: propTypes.shape({ deployed: propTypes.bool })
+		projectResolver: propTypes.shape({ deployed: propTypes.bool })
 	}
 	componentDidMount() {
 		this.load()
@@ -29,20 +29,20 @@ class App extends Component {
 		const ethApi = new EthApi()
 		await ethApi.loadContracts()
 		await ethApi.deployContract({
-			_contract: EthApi.projResolver,
-			name: 'projResolver'
+			_contract: EthApi.projectResolver,
+			name: 'projectResolver'
 		})
 		//start loading state
 		const worker = new myWorker()
 		worker.onmessage = e => {
-			console.groupCollapsed('app WW message')
+			//console.groupCollapsed('app WW message')
 			console.log(e.data)
-			console.groupEnd()
+			//console.groupEnd()
 			store.dispatch(e.data)
 		}
 	}
 	render() {
-		if (this.props.projResolver.deployed) {
+		if (this.props.projectResolver.deployed) {
 			return (
 				<ConnectedRouter history={history}>
 					<div>
@@ -56,8 +56,8 @@ class App extends Component {
 		return null
 	}
 }
-function mapStateToProps({ web3State: { projResolver } }) {
-	return { projResolver }
+function mapStateToProps({ web3State: { projectResolver } }) {
+	return { projectResolver }
 }
 
 export default connect(mapStateToProps)(App)

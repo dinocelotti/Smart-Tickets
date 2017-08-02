@@ -1,50 +1,54 @@
 import React, { Component } from 'react'
 import propTypes from 'prop-types'
-export default class PromoDistribForm extends Component {
+export default class PromoterDistributorForm extends Component {
 	static propTypes = {
-		createDistrib: propTypes.func,
-		setDistribVals: propTypes.func
+		createDistributor: propTypes.func,
+		setDistributorVals: propTypes.func
 	}
 	render() {
 		return (
 			<form
 				className="pure-form pure-form-stacked"
-				onSubmit={this.props.createDistrib}
+				onSubmit={this.props.createDistributor}
 			>
 				<fieldset className="pure-group pure-u-3-4">
 					<legend> Form for setting allotted quantity for a distributor</legend>
 
-					<label htmlFor="distribAddr"> Distributor Buyer Address</label>
+					<label htmlFor="distributorAddress"> Distributor Buyer Address</label>
 					<input
 						type="text"
-						id="distribAddr"
-						onChange={this.props.setDistribVals('distribAddr')}
+						id="distributorAddress"
+						onChange={this.props.setDistributorVals('distributorAddress')}
 						className="pure-input-1"
-						placeholder="Buyer addr"
+						placeholder="Buyer address"
 					/>
-					<label htmlFor="distribAllotQuan">
+					<label htmlFor="distributorAllottedQuantity">
 						{' '}Set Allotted Quantity of Tickets for Distributor{' '}
 					</label>
 					<input
 						type="text"
-						id="distribAllotQuan"
-						onChange={this.props.setDistribVals('distribAllotQuan')}
+						id="distributorAllottedQuantity"
+						onChange={this.props.setDistributorVals(
+							'distributorAllottedQuantity'
+						)}
 						className="pure-input-1"
 						placeholder="Allotted Quantities"
 					/>
-					<label htmlFor="tixType"> Ticket Type</label>
+					<label htmlFor="ticketType"> Ticket Type</label>
 					<input
 						type="text"
-						id="tixType"
+						id="ticketType"
 						className="pure-input-1"
-						onChange={this.props.setDistribVals('tixType')}
+						onChange={this.props.setDistributorVals('ticketType')}
 						placeholder="Ticket Type"
 					/>
-					<label htmlFor="promoFee"> Set Promoters Fee for Distributor </label>
+					<label htmlFor="promoterFee">
+						{' '}Set Promoters Fee for Distributor{' '}
+					</label>
 					<input
 						type="text"
-						id="promoFee"
-						onChange={this.props.setDistribVals('promoFee')}
+						id="promoterFee"
+						onChange={this.props.setDistributorVals('promoterFee')}
 						className="pure-input-1"
 						placeholder="Fee in Percent"
 					/>

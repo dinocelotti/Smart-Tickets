@@ -1,46 +1,46 @@
 import React, { Component } from 'react'
 import propTypes from 'prop-types'
-export default class PromoTixForm extends Component {
+export default class PromoterTicketForm extends Component {
 	static propTypes = {
-		queryTix: propTypes.func,
-		setTixVals: propTypes.func,
-		tixPrice: propTypes.string,
-		tixQuantity: propTypes.string
+		queryTicket: propTypes.func,
+		setTicketVals: propTypes.func,
+		ticketPrice: propTypes.string,
+		ticketQuantity: propTypes.string
 	}
 	render() {
 		return (
 			<form
 				className="pure-form pure-form-stacked"
-				onSubmit={this.props.queryTix}
+				onSubmit={this.props.queryTicket}
 			>
 				<fieldset className="pure-group pure-u-3-4">
 					<legend>
 						A form for querying a type of ticket and seeing what the price and
 						quantity set on it was{' '}
 					</legend>
-					<label htmlFor="tixType"> Ticket Type</label>
+					<label htmlFor="ticketType"> Ticket Type</label>
 					<input
 						type="text"
-						id="tixType"
+						id="ticketType"
 						className="pure-input-1"
 						placeholder="Ticket Type"
-						onChange={this.props.setTixVals('tixType')}
+						onChange={this.props.setTicketVals('ticketType')}
 					/>
-					<label htmlFor="tixPrice"> Ticket Price </label>
+					<label htmlFor="ticketPrice"> Ticket Price </label>
 					<input
 						type="text"
-						id="tixPrice"
+						id="ticketPrice"
 						className="pure-input-1"
-						value={this.props.tixPrice}
+						value={this.props.ticketPrice}
 						placeholder="Ticket Price"
 						readOnly
 					/>
-					<label htmlFor="tixQuantity"> Ticket Quantity </label>
+					<label htmlFor="ticketQuantity"> Ticket Quantity </label>
 					<input
 						type="text"
-						id="tixQuantity"
+						id="ticketQuantity"
 						className="pure-input-1"
-						value={this.props.tixQuantity}
+						value={this.props.ticketQuantity}
 						placeholder="Ticket Quantity"
 						readOnly
 					/>

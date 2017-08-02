@@ -1,4 +1,4 @@
-let ProjResolver = artifacts.require('./ProjResolver.sol');
+const ProjResolver = artifacts.require('./ProjectResolver.sol')
 module.exports = function(deployer) {
-	deployer.deploy(ProjResolver, 'Default_Event_Resolver');
-};
+	deployer.deploy(ProjResolver, 'Default_Event_Resolver')
+}

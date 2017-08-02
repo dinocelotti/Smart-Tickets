@@ -8,19 +8,19 @@ describe('web3-reducer', () => {
 	it('should return the initial state', () => {
 		expect(reducer(undefined, {})).toEqual({
 			web3: { connected: false },
-			projResolver: { deployed: false }
+			projectResolver: { deployed: false }
 		})
 	})
 	it(`should handle ${types.WEB3_CONNECTED}`, () => {
 		expect(reducer(undefined, actions.web3Connected())).toEqual({
 			web3: { connected: true },
-			projResolver: { deployed: false }
+			projectResolver: { deployed: false }
 		})
 	})
-	it(`should handle ${types.PROJ_RESOLVER_DEPLOYED}`, () => {
-		expect(reducer(undefined, actions.projResolverDeployed())).toEqual({
+	it(`should handle ${types.PROJECT_RESOLVER_DEPLOYED}`, () => {
+		expect(reducer(undefined, actions.projectResolverDeployed())).toEqual({
 			web3: { connected: false },
-			projResolver: { deployed: true }
+			projectResolver: { deployed: true }
 		})
 	})
 	/*
@@ -29,8 +29,8 @@ describe('web3-reducer', () => {
 		let ethApi = new EthApi()
 		await ethApi.loadContracts()
 		await ethApi.deployContract({
-			_contract: EthApi.projResolver,
-			name: 'projResolver'
+			_contract: EthApi.projectResolver,
+			name: 'projectResolver'
 		})
 		console.log(store.getState())
 	})*/

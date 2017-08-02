@@ -14,27 +14,27 @@ function tdElement(element) {
 		</td>
 	)
 }
-//{this.props.accts.map(acc => theadElement(acc.addr))}
-export class AcctTableEth extends React.Component {
+//{this.props.accounts.map(acc => theadElement(acc.address))}
+export class AccountTableEth extends React.Component {
 	static propTypes = {
-		accts: propTypes.array,
-		acctsByAddr: propTypes.object
+		accounts: propTypes.array,
+		accountsByAddress: propTypes.object
 	}
 	render() {
 		const thead = (
 			<thead>
 				<tr>
-					{theadElement('Acct addrs')}
+					{theadElement('Account addresss')}
 					{theadElement('Ether Balance')}
 				</tr>
 			</thead>
 		)
 		const tbody = (
 			<tbody>
-				{this.props.accts.map(addr =>
-					<tr key={addr}>
-						{tdElement(addr)}
-						{tdElement(this.props.acctsByAddr[addr].balance)}
+				{this.props.accounts.map(address =>
+					<tr key={address}>
+						{tdElement(address)}
+						{tdElement(this.props.accountsByAddress[address].balance)}
 					</tr>
 				)}
 			</tbody>

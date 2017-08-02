@@ -7,7 +7,7 @@ function isBigNumber(object) {
 	)
 }
 const normalizeArgs = ({ args, address }) => {
-	//logs.args._proj
+	//logs.args._project
 	return {
 		data: Object.keys(args).reduce((obj, key) => {
 			return {
@@ -17,7 +17,7 @@ const normalizeArgs = ({ args, address }) => {
 					: args[key]
 			}
 		}, {}),
-		addr: address
+		address: address
 	}
 }
 

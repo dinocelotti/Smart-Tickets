@@ -1,56 +1,56 @@
 import React, { Component } from 'react'
 import propTypes from 'prop-types'
-export default class PromoTixForm extends Component {
+export default class PromoterTicketForm extends Component {
 	static propTypes = {
-		createTixs: propTypes.func,
-		setTixVals: propTypes.func,
-		tixsLeft: propTypes.string
+		createTickets: propTypes.func,
+		setTicketVals: propTypes.func,
+		ticketsLeft: propTypes.string
 	}
 	static defaultProps = {
-		tixsLeft: '0'
+		ticketsLeft: '0'
 	}
 	render() {
 		return (
 			<form
 				className="pure-form pure-form-stacked"
-				onSubmit={this.props.createTixs}
+				onSubmit={this.props.createTickets}
 			>
 				<fieldset className="pure-group pure-u-3-4">
 					<legend>
 						{' '}A Form for assigning a ticket type from the pool of unassigned
 						tickets, along with its price and quantity
 					</legend>
-					<label htmlFor="tixsLeft"> Remaining tickets left </label>
+					<label htmlFor="ticketsLeft"> Remaining tickets left </label>
 					<input
 						type="text"
-						id="tixsLeft"
+						id="ticketsLeft"
 						className="pure-input-1"
-						value={this.props.tixsLeft}
+						value={this.props.ticketsLeft}
 						readOnly
 					/>
-					<label htmlFor="tixType"> Ticket Type</label>
+					<label htmlFor="ticketType"> Ticket Type</label>
 					<input
 						type="text"
-						id="tixType"
+						id="ticketType"
 						className="pure-input-1"
 						placeholder="Ticket Type"
-						onChange={this.props.setTixVals('tixType')}
+						onChange={this.props.setTicketVals('ticketType')}
 					/>
-					<label htmlFor="tixPrice"> Ticket Price </label>
+					<label htmlFor="ticketPrice"> Ticket Price </label>
 					<input
 						type="text"
-						id="tixPrice"
+						id="ticketPrice"
 						className="pure-input-1"
 						placeholder="Ticket Price"
-						onChange={this.props.setTixVals('tixPrice')}
+						onChange={this.props.setTicketVals('ticketPrice')}
 					/>
-					<label htmlFor="tixQuantity"> Ticket Quantity </label>
+					<label htmlFor="ticketQuantity"> Ticket Quantity </label>
 					<input
 						type="text"
-						id="tixQuantity"
+						id="ticketQuantity"
 						className="pure-input-1"
 						placeholder="Ticket Quantity"
-						onChange={this.props.setTixVals('tixQuantity')}
+						onChange={this.props.setTicketVals('ticketQuantity')}
 					/>
 					<br />
 					<button type="submit" className="pure-button pure-button-primary">

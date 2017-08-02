@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import api from './acct-api'
+import api from './account-api'
 import * as deployment from '../../scripts/testHelper'
 import EthApi from './eth-api'
 const ethApi = new EthApi()
@@ -7,16 +7,16 @@ beforeAll(async () => {
 	await deployment.init()
 	await ethApi.reloadContracts()
 	await ethApi.deployContract({
-		_contract: EthApi.projResolver,
-		name: 'projResolver'
+		_contract: EthApi.projectResolver,
+		name: 'projectResolver'
 	})
 })
 it('returns all accounts', async () => {
-	await expect(api.getAcctsAndBals()).resolves.toEqual(
+	await expect(api.getAccountsAndBals()).resolves.toEqual(
 		expect.objectContaining({
-			accts: expect.arrayContaining([
+			accounts: expect.arrayContaining([
 				expect.objectContaining({
-					addr: expect.any(String),
+					address: expect.any(String),
 					balance: expect.any(String)
 				})
 			])

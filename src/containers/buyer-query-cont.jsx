@@ -3,15 +3,15 @@ import React, { Component } from 'react'
 import propTypes from 'prop-types'
 export default class BuyerQueryCont extends Component {
 	static propTypes = {
-		promoInstance: propTypes.object
+		promoterInstance: propTypes.object
 	}
 	state = {
-		buyerAddr: '',
-		tixType: '',
-		distribFee: '',
-		distribAllotQuan: '',
-		isDistrib: 'false',
-		promoFee: ''
+		buyerAddress: '',
+		ticketType: '',
+		distributorFee: '',
+		distributorAllottedQuantity: '',
+		isDistributor: 'false',
+		promoterFee: ''
 	}
 
 	isEmpObj(obj) {
@@ -33,18 +33,18 @@ export default class BuyerQueryCont extends Component {
 
 	queryBuyer = async e => {
 		e.preventDefault()
-		if (this.isEmpObj(this.props.promoInstance)) return
+		if (this.isEmpObj(this.props.promoterInstance)) return
 		const [
-			isDistrib,
-			distribAllotQuan,
-			distribFee,
-			promoFee
-		] = await this.props.promoInstance.queryBuyer(this.state)
+			isDistributor,
+			distributorAllottedQuantity,
+			distributorFee,
+			promoterFee
+		] = await this.props.promoterInstance.queryBuyer(this.state)
 		await this.setStateAsync({
-			isDistrib: `${isDistrib}`, //cast into string
-			distribAllotQuan,
-			distribFee,
-			promoFee
+			isDistributor: `${isDistributor}`, //cast into string
+			distributorAllottedQuantity,
+			distributorFee,
+			promoterFee
 		})
 	}
 	render() {
@@ -52,10 +52,10 @@ export default class BuyerQueryCont extends Component {
 			<BuyerQueryForm
 				queryBuyer={this.queryBuyer}
 				setBuyerVals={this.setBuyerVals}
-				distribFee={this.state.distribFee}
-				promoFee={this.state.promoFee}
-				distribAllotQuan={this.state.distribAllotQuan}
-				isDistrib={this.state.isDistrib}
+				distributorFee={this.state.distributorFee}
+				promoterFee={this.state.promoterFee}
+				distributorAllottedQuantity={this.state.distributorAllottedQuantity}
+				isDistributor={this.state.isDistributor}
 			/>
 		)
 	}
