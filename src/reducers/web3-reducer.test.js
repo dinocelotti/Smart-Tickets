@@ -23,5 +23,4 @@ describe('web3-reducer', () => {
 			projectResolver: { deployed: true }
 		})
 	})
-	/*
 })
