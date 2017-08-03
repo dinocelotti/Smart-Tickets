@@ -3,6 +3,7 @@ import { combineReducers } from 'redux'
 import { createReducerFromObj, makeNewSet } from './reducer-helpers'
 const { CREATED, FINISH_STAGING, START_PUBLIC_FUNDING } = types
 const { ADD_TICKET, ADD_DISTRIBUTOR } = types
+const { SET_TICKET_QUANTITY } = types
 const {
 	BUY_TICKET_FROM_PROMOTER,
 	BUY_TICKET_FROM_DISTRIBUTOR,
@@ -13,7 +14,7 @@ const byIdObj = {
 		...state,
 		[project.address]: {
 			state: 'Staging',
-			ticket: [],
+			tickets: [],
 			distributors: [],
 			...project
 		}
@@ -28,10 +29,19 @@ const byIdObj = {
 	}),
 	[ADD_TICKET]: (state, { payload: { project, ticket: ticketToAdd } }) => {
 		const prevProject = state[project.address]
-		const prevTicket = prevProject.ticket
-		const nextTicket = [...prevTicket, ticketToAdd.id]
-		const projectToAdd = { ...prevProject, ticket: nextTicket }
+		const prevTickets = prevProject.tickets
+		const nextTicket = [...prevTickets, ticketToAdd.id]
+		const projectToAdd = { ...prevProject, tickets: nextTicket }
 		return { ...state, [project.address]: projectToAdd }
+	},
+	[SET_TICKET_QUANTITY]: (state, { payload: { ticket } }) => {
+		const projectAddress = ticket.id.split('_')[1] // [0] => type of ticket [1] => project address
+		const projectToChange = state[projectAddress]
+		//convert to number then back to string
+		const newTicketsLeft =
+			parseInt(projectToChange.ticketsLeft, 10) - parseInt(ticket.quantity, 10)
+		projectToChange.ticketsLeft = newTicketsLeft.toString()
+		return { ...state, [projectAddress]: projectToChange }
 	},
 	[ADD_DISTRIBUTOR]: (
 		state,

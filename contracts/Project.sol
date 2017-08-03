@@ -100,7 +100,7 @@ contract Project {
         Event Firers  
 **************************/
 
-     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketLeft, uint totalTickets, uint consumerMaxTickets);
+     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
      event FinishStaging();
      event StartPrivateFunding();
      event StartPublicFunding();

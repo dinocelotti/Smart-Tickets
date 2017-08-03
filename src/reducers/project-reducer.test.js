@@ -14,11 +14,12 @@ describe('project-reducer', () => {
 			'0XPROJECTADDR0': {
 				state: 'Staging',
 				projectName: 'TESTPROJECT0',
-				totalTicket: '100',
+				totalTickets: '100',
+				ticketsLeft: '100',
 				consumerMaxTickets: '2',
 				promoterAddress: '0XPROMOTERADDR0',
 				address: '0XPROJECTADDR0',
-				ticket: [],
+				tickets: [],
 				distributors: ['0XDISTRIBUTOR0']
 			}
 		},
@@ -26,12 +27,13 @@ describe('project-reducer', () => {
 	}
 	const project = {
 		projectName: 'TESTPROJECT0',
-		totalTicket: '100',
+		totalTickets: '100',
+		ticketsLeft: '100',
 		consumerMaxTickets: '2',
 		promoterAddress: '0XPROMOTERADDR0',
 		address: '0XPROJECTADDR0',
 		state: 'Staging',
-		ticket: [],
+		tickets: [],
 		distributors: ['0XDISTRIBUTOR0']
 	}
 	it(`should handle ${types.CREATED}`, () => {
@@ -79,7 +81,7 @@ describe('project-reducer', () => {
 						...state.byId,
 						'0XPROJECTADDR0': {
 							...state.byId['0XPROJECTADDR0'],
-							ticket: ['TICKET0', 'TICKET1']
+							tickets: ['TICKET0', 'TICKET1']
 						}
 					}
 				},
@@ -94,12 +96,31 @@ describe('project-reducer', () => {
 				...state.byId,
 				'0XPROJECTADDR0': {
 					...state.byId['0XPROJECTADDR0'],
-					ticket: ['TICKET0', 'TICKET1', 'TICKET2']
+					tickets: ['TICKET0', 'TICKET1', 'TICKET2']
 				}
 			}
 		})
 	})
-
+	it(`should handle ${types.SET_TICKET_QUANTITY}`, () => {
+		expect(
+			reducer(
+				{ ...state },
+				{
+					type: types.SET_TICKET_QUANTITY,
+					payload: {
+						project,
+						ticket: { id: 'TICKET0_0XPROJECTADDR0', quantity: '5' }
+					}
+				}
+			)
+		).toEqual({
+			...state,
+			byId: {
+				...state.byId,
+				'0XPROJECTADDR0': { ...state.byId['0XPROJECTADDR0'], ticketsLeft: '95' }
+			}
+		})
+	})
 	it(`should handle ${types.ADD_DISTRIBUTOR}`, () => {
 		expect(
 			reducer(
