@@ -24,14 +24,4 @@ describe('web3-reducer', () => {
 		})
 	})
 	/*
-	it('should test EthApi', async () => {
-		console.log(store.getState())
-		let ethApi = new EthApi()
-		await ethApi.loadContracts()
-		await ethApi.deployContract({
-			_contract: EthApi.projectResolver,
-			name: 'projectResolver'
-		})
-		console.log(store.getState())
-	})*/
 })

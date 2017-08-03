@@ -1,10 +1,5 @@
 import types from './action-types'
 export default {
-	event_createProject,
-	loadProjectsSuccess,
-	loadDistributorsSuccess,
-	loadTicketSuccess,
-	getAssocProjectsSuccess,
 	projectResolverDeploySuccess,
 	Created,
 	FinishStaging,
@@ -23,40 +18,6 @@ export default {
 	ResolverAddAddress,
 	ResolverAddProject
 }
-function event_createProject({ project }) {
-	return {
-		type: types.CREATED,
-		payload: { project }
-	}
-}
-function loadProjectsSuccess({ projects }) {
-	return {
-		type: types.LOAD_PROJECTS_SUCCESS,
-		payload: { projects }
-	}
-}
-function loadDistributorsSuccess({ projectAddress, distributors }) {
-	return {
-		type: types.LOAD_DISTRIBUTORS_SUCCESS,
-		distributors,
-		project: { address: projectAddress }
-	}
-}
-
-function loadTicketSuccess({ projectAddress, ticket }) {
-	return {
-		type: types.LOAD_TICKET_SUCCESS,
-		ticket,
-		project: { address: projectAddress }
-	}
-}
-
-function getAssocProjectsSuccess(assocProjects) {
-	return {
-		type: types.GET_ASSOCIATED_PROJECTS_SUCCESS,
-		assocProjects
-	}
-}
 function projectResolverDeploySuccess(projectResolverDeployed) {
 	return {
 		type: types.PROJECT_RESOLVER_DEPLOYED_SUCCESS,
@@ -65,6 +26,7 @@ function projectResolverDeploySuccess(projectResolverDeployed) {
 }
 const getId = (data, address) =>
 	`${data.distributor || data.typeOfTicket}_${address}`
+
 function Created({ data, address }) {
 	return { type: types.CREATED, payload: { project: { ...data, address } } }
 }
