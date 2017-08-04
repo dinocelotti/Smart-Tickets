@@ -55,6 +55,7 @@
 		"history": "^4.6.3",
 		"jest": "^20.0.4",
 		"lodash": "^4.17.4",
+		"prettyjson": "^1.2.1",
 		"prop-types": "^15.5.10",
 		"raw-loader": "^0.5.1",
 		"react": "^15.4.2",
@@ -80,8 +81,13 @@
 		"test": "node scripts/test.js --env=jsdom"
 	},
 	"jest": {
-		"collectCoverageFrom": ["src/**/*.{js,jsx}", "test/**/*.{js,jsx}"],
-		"setupFiles": ["<rootDir>/config/polyfills.js"],
+		"collectCoverageFrom": [
+			"src/**/*.{js,jsx}",
+			"test/**/*.{js,jsx}"
+		],
+		"setupFiles": [
+			"<rootDir>/config/polyfills.js"
+		],
 		"testPathIgnorePatterns": [
 			"<rootDir>[/\\\\](build|docs|node_modules|scripts)[/\\\\]",
 			"/node_modules/",
@@ -103,7 +109,9 @@
 		}
 	},
 	"babel": {
-		"presets": ["react-app"]
+		"presets": [
+			"react-app"
+		]
 	},
 	"eslintConfig": {
 		"extends": "react-app"
