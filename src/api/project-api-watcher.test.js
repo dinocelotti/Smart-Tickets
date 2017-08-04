@@ -10,6 +10,13 @@ import helper from './api-helpers'
 import accActions from '../actions/account-actions'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
+const ethApi = new EthApi(),
+	accounts = [],
+	testProjects = [],
+	sampleTickets = []
+
+let project, projectResolver
+
 const mapLength = (len, map) => Promise.all(Array.from(Array(len), map))
 const logHanderCreator = actionCreators => (err, log) => {
 	if (err) {
@@ -23,24 +30,21 @@ const logHanderCreator = actionCreators => (err, log) => {
 	})
 	return val
 }
+
 const logHandler = logHanderCreator({ actionCreator })
-let accounts = []
-const testProjects = []
-const sampleTickets = []
 const projectState = () => store.getState().projectState
-const ethApi = new EthApi()
-let project, projectResolver
+
 const sampleProjectGen = (function* sampleProjectGen() {
 	let index = 0
 	const projectName = num => `Sample Project ${num}`
 	const randomNumGen = seed => () => Math.floor(Math.random() * seed + 6)
-	const totalTicket = randomNumGen(100)
+	const totalTickets = randomNumGen(100)
 	const consumerMaxTickets = randomNumGen(5)
 	//eslint-disable-next-line
 	while (true) {
 		yield {
 			projectName: projectName(index),
-			totalTickets: totalTicket(),
+			totalTickets: totalTickets(),
 			consumerMaxTickets: consumerMaxTickets(),
 			promoterAddress: ''
 		}
