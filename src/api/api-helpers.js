@@ -19,6 +19,8 @@ const normalizeArgs = log => {
 	delete metadata.address
 
 	return {
+		address,
+
 		data: Object.keys(args).reduce(
 			(obj, key) => ({
 				...obj,
@@ -29,7 +31,6 @@ const normalizeArgs = log => {
 			}),
 			{}
 		),
-		address,
 		metadata
 	}
 }
