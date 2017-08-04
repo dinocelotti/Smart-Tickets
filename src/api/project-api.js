@@ -214,7 +214,7 @@ class Buyer extends Entity {
 	/**************************
      Staging Phase
      **************************/
-	async setMarkup(markup, ticketType) {
+	async setMarkup({ markup, ticketType }) {
 		return this.isDistributor
 			? this.wrapTx(BuyerTypes.setMarkup(markup, ticketType))
 			: ApiErrs.NOT_DISTRIBUTOR
@@ -223,17 +223,23 @@ class Buyer extends Entity {
 	/**************************
      Funding Phase
      **************************/
-	async buyTicketFromPromoter(ticketType, quantity) {
+	async buyTickestFromPromoter({ ticketType, ticketQuantity }) {
 		//get phase to check to see if its valid
-		return this.wrapTx(BuyerTypes.buyTicketFromPromoter(ticketType, quantity))
+		return this.wrapTx(
+			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity)
+		)
 	}
 
-	async buyTicketFromDistributor(distributorAddress, ticketType, quantity) {
+	async buyTicketFromDistributor({
+		distributorAddress,
+		ticketType,
+		ticketQuantity
+	}) {
 		return this.wrapTx(
 			BuyerTypes.buyTicketFromDistributor(
 				distributorAddress,
 				ticketType,
-				quantity
+				ticketQuantity
 			)
 		)
 	}
