@@ -205,7 +205,7 @@ class Promoter extends Entity {
 }
 
 class Buyer extends Entity {
-	constructor(buyerAddress, projectAddress, isDistributor = false) {
+	constructor({ buyerAddress, projectAddress, isDistributor = false }) {
 		//TODO: refactor name... a buyer is not a promoter
 		super({ promoter: buyerAddress, address: projectAddress })
 		this.isDistributor = isDistributor
