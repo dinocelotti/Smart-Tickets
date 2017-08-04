@@ -6,18 +6,31 @@ function isBigNumber(object) {
 		(object && object.constructor && object.constructor.name === 'BigNumber')
 	)
 }
-const normalizeArgs = ({ args, address }) => {
-	//logs.args._project
+
+/**
+ * Takes an event and normalizes the arguments inside it, converting any big numbers into their string equivalents
+ * @param {object, string}  
+ */
+const normalizeArgs = log => {
+	const { args, address } = log
+	const metadata = { ...log }
+	//remove redundant information
+	delete metadata.args
+	delete metadata.address
+
 	return {
-		data: Object.keys(args).reduce((obj, key) => {
-			return {
+		data: Object.keys(args).reduce(
+			(obj, key) => ({
 				...obj,
+				//remove any underscores from the argument and check if its a big number
 				[key[0] === '_' ? key.slice(1) : key]: isBigNumber(args[key])
-					? args[key].toString()
-					: args[key]
-			}
-		}, {}),
-		address: address
+					? args[key].toString() //if its a big number then convert it into a string
+					: args[key] //else just return the original property
+			}),
+			{}
+		),
+		address,
+		metadata
 	}
 }
 
