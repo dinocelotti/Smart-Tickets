@@ -223,7 +223,7 @@ class Buyer extends Entity {
 	/**************************
      Funding Phase
      **************************/
-	async buyTickestFromPromoter({ ticketType, ticketQuantity }) {
+	async buyTicketFromPromoter({ ticketType, ticketQuantity }) {
 		//get phase to check to see if its valid
 		return this.wrapTx(
 			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity)
