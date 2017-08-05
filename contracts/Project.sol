@@ -4,17 +4,15 @@ contract Project {
 
     /*
     * Staging -> The promoter is still setting up the project details
-    * AwaitingApproval -> Contract is awaiting to be authenticated by a 3rd party as legitimate
     * PrivateFunding -> Contract is Distributor and ready to sell tickets to Distributor sellers, all ticket transfers frozen
     * PublicFunding -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
     * Done -> Sale has finished and is finalized, ticket transfers enabled for public 
     */
-    enum State {Staging, AwaitingApproval, PrivateFunding, PublicFunding, Done}
+    enum State {Staging, PrivateFunding, PublicFunding, Done}
     State public currentState; //hold state of contract to function as state machine
 
     string public projectName; //name of the project to be created
 
-    address public approver = 0x2222222222222222222222222222222222222222; //trusted 3rd party to approve this event, placeholder
     address public promoter; //wallet of the promoter
     address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, placeholder
 
@@ -138,10 +136,6 @@ contract Project {
         require(currentState == State.PublicFunding);
         _;
     }
-    modifier approvalPhase(){
-        require(currentState == State.AwaitingApproval);
-        _;
-    }
     modifier donePhase(){
         require(currentState == State.Done);
         _;
@@ -150,19 +144,14 @@ contract Project {
 /**************************
     Phase Setters
 **************************/
-    /** @dev Move state forward from staging to awaiting approval, can only be done by the promoter */
+    /** @dev Move state forward from staging to private funding, can only be done by the promoter */
      function finishStaging() onlyPromoter() {
          require(ticketsLeft == 0);  //Require the promoter properly allocated all tickets into their respective types
          require(currentState == State.Staging); //Require the previous state to be Staging to move on
-         currentState = State.AwaitingApproval; 
+         currentState = State.PrivateFunding; 
          FinishStaging();
      }
-    /** @dev Move state forward from awaiting approval to private funding, can only be done by the approver */     
-     function startPrivateFunding() onlyApprover() {
-        require(currentState == State.AwaitingApproval); //Require the previous state to be awaiting approval
-        currentState = State.PrivateFunding;
-        StartPrivateFunding();
-     }
+
     /** @dev Move state forward from private funding to public funding, can only by done by the promoter */     
      function startPublicFunding() onlyPromoter() {
          require(currentState == State.PrivateFunding);
@@ -176,10 +165,6 @@ contract Project {
 **************************/
     modifier onlyPromoter() {
         require(msg.sender == promoter);
-        _;
-    }
-    modifier onlyApprover(){
-        require(msg.sender == approver);
         _;
     }
     modifier onlyDistributor(){
@@ -296,15 +281,13 @@ Funding Phase - Ticketing
     /**************************
         Modifiers
     **************************/
-    /**@dev An address is a valid buyer if they're not membran/promoter/approver and we're in a phase where buying is valid*/
+    /**@dev An address is a valid buyer if they're not membran/promoter and we're in a phase where buying is valid*/
     modifier validBuyer() {
         //check what phase we're in and see if the buyer is valid for that phase 
         if (!buyers[msg.sender].isDistributor && currentState != State.PublicFunding) throw; //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
         if (buyers[msg.sender].isDistributor && currentState != State.PrivateFunding) throw; //if they are a distributor and its not the private funding phase, throw
         //make sure theyre an end comsumer or a distributor
-        require(msg.sender != membran
-                && msg.sender != approver 
-                && msg.sender != promoter);
+        require(msg.sender != membran && msg.sender != promoter);
         _;
     }
 
@@ -381,7 +364,6 @@ Funding Phase - Ticketing
         //CONDITION CHECKS
         //check that they are indeed an end comsumer
         require(msg.sender != membran
-                && msg.sender != approver 
                 && msg.sender != promoter 
                 && !_buyer.isDistributor);
         require(_quantity > 0);
