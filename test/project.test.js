@@ -152,7 +152,22 @@ describe('Project', () => {
 		const res = await promoterInstance.finishStaging()
 		printLogsFromEvent(res)
 	})
-	it('should let the distributor buy all of the tickets', async () => {})
+	it('should let the distributor buy all of the tickets', async () => {
+		console.error('Ticket price: ', {
+			...ticketsToAdd[0],
+			txObj: {
+				value: ticketsToAdd[0].ticketQuantity * ticketsToAdd[0].ticketPrice
+			}
+		})
+		const res = await distributorInstance.buyTicketFromPromoter({
+			...ticketsToAdd[0],
+			txObj: {
+				value:
+					ticketsToAdd[0].ticketQuantity * ticketsToAdd[0].ticketPrice + 100
+			}
+		})
+		printLogsFromEvent(res)
+	})
 })
 afterAll(async () => {
 	await deployment.end()
