@@ -70,16 +70,18 @@ class Entity {
 	 * @returns 
 	 * @memberof Entity
 	 */
-	async wrapTx({ methodName, params }) {
+	async wrapTx({ methodName, params, txObj = null }) {
+		const defaultParams = {
+			from: this.address, //set msg.sender to this entity
+			gas: 200000 //placeholder gas value for the transaction to pass,
+		}
+
 		//call the project instance with the given method name and parameters, if any
 		return this.projectInstance[methodName](
 			...[
 				// same as using func.apply to spread parameters
 				...params, // spread parameters if any
-				{
-					from: this.address, //set msg.sender to this entity
-					gas: 200000 //placeholder gas value for the transaction to pass
-				}
+				txObj ? { ...defaultParams, ...txObj } : defaultParams //override or include extra transaction parameters
 			]
 		)
 	}
@@ -223,10 +225,10 @@ class Buyer extends Entity {
 	/**************************
      Funding Phase
      **************************/
-	async buyTicketFromPromoter({ ticketType, ticketQuantity }) {
+	async buyTicketFromPromoter({ ticketType, ticketQuantity, txObj }) {
 		//get phase to check to see if its valid
 		return this.wrapTx(
-			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity)
+			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity, txObj)
 		)
 	}
 

@@ -1,7 +1,19 @@
 import Web3 from 'web3'
 const web3 = new Web3()
 function makeMethod(methodName, ...params) {
-	console.log(`makeMethod: ${methodName} ${params}`)
+	const checkTxObjIncluded = params[params.length - 1]
+	if (typeof checkTxObjIncluded === 'object' && checkTxObjIncluded !== null) {
+		const txObj = params.pop()
+		console.log(
+			`makeMethod: ${methodName} ${params} ${JSON.stringify(txObj, null, 1)}`
+		)
+		return {
+			methodName,
+			params,
+			txObj
+		}
+	}
+	console.log(`makeMethod: ${methodName} ${params} `)
 	return {
 		methodName,
 		params
@@ -61,8 +73,13 @@ export const BuyerTypes = {
 	setMarkup: (_markup, _typeOfTicket) =>
 		makeMethod('setMarkup', _markup, encodeString(_typeOfTicket)),
 
-	buyTicketFromPromoter: (_typeOfTicket, _quantity) =>
-		makeMethod('buyTicketFromPromoter', encodeString(_typeOfTicket), _quantity),
+	buyTicketFromPromoter: (_typeOfTicket, _quantity, txObj) =>
+		makeMethod(
+			'buyTicketFromPromoter',
+			encodeString(_typeOfTicket),
+			_quantity,
+			txObj
+		),
 
 	buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity) =>
 		makeMethod(
