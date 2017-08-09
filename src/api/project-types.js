@@ -81,11 +81,12 @@ export const BuyerTypes = {
 			txObj
 		),
 
-	buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity) =>
+	buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity, txObj) =>
 		makeMethod(
 			'buyTicketFromDistributor',
 			_distributor,
 			encodeString(_typeOfTicket),
-			_quantity
+			_quantity,
+			txObj
 		)
 }

@@ -117,6 +117,7 @@ contract Project {
 
      event BuyTicketFromPromoter(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket, uint quantity, uint weiSent);
      event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket,  uint quantity, uint weiSent);
+     event FundsReceived(address indexed from, uint amount);
 
      event Withdraw(address indexed from, uint amount);
 
@@ -350,7 +351,13 @@ Funding Phase - Ticketing
         pendingWithdrawls[membran] += _membranFee;
         pendingWithdrawls[promoter] += _total - _membranFee;
 
-        BuyTicketFromPromoter(promoter, msg.sender, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
+        //alert of funds split 
+        FundsReceived(msg.sender, _netValue);
+        FundsReceived(membran, _membranFee);
+        FundsReceived(promoter, _total - _membranFee);
+        
+
+        BuyTicketFromPromoter(msg.sender, promoter, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
     }
 
     /** @dev Allow purchases from the distributor given that it's a valid buyer (end-consumer only) and valid phase (public funding)
@@ -389,6 +396,11 @@ Funding Phase - Ticketing
         pendingWithdrawls[promoter] +=  _promotersFee;
         pendingWithdrawls[_distributor]  += _total - _promotersFee; 
 
+        //alert of funds split 
+        FundsReceived(msg.sender, _netValue);
+        FundsReceived(promoter, _promotersFee);
+        FundsReceived(_distributor, _total - _promotersFee);
+        
         BuyTicketFromDistributor(_distributor, msg.sender, buyers[msg.sender].isDistributor, _typeOfTicket, _quantity, msg.value);
     }
 /**************************

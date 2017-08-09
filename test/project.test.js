@@ -15,7 +15,8 @@ let project,
 	projectResolver,
 	accounts,
 	promoterInstance,
-	distributorInstance
+	distributorInstance,
+	buyerInstance
 
 const ticketsToAdd = []
 const printLogsFromEvent = ({ logs }) =>
@@ -160,6 +161,28 @@ describe('Project', () => {
 			}
 		})
 		const res = await distributorInstance.buyTicketFromPromoter({
+			...ticketsToAdd[0],
+			txObj: {
+				value:
+					ticketsToAdd[0].ticketQuantity * ticketsToAdd[0].ticketPrice + 100
+			}
+		})
+		printLogsFromEvent(res)
+	})
+	it('should start the public funding phase', async () => {
+		const res = await promoterInstance.startPublicFunding()
+		printLogsFromEvent(res)
+	})
+	it('should buy all the tickets from the distributor', async () => {
+		buyerInstance = new projectApi.Buyer({
+			buyerAddress: accounts[2],
+			projectAddress: projectInstance.address,
+			isDistributor: false
+		})
+		await buyerInstance.init()
+
+		const res = await buyerInstance.buyTicketFromDistributor({
+			distributorAddress: accounts[1],
 			...ticketsToAdd[0],
 			txObj: {
 				value:

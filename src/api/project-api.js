@@ -235,13 +235,15 @@ class Buyer extends Entity {
 	async buyTicketFromDistributor({
 		distributorAddress,
 		ticketType,
-		ticketQuantity
+		ticketQuantity,
+		txObj
 	}) {
 		return this.wrapTx(
 			BuyerTypes.buyTicketFromDistributor(
 				distributorAddress,
 				ticketType,
-				ticketQuantity
+				ticketQuantity,
+				txObj
 			)
 		)
 	}
