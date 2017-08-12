@@ -23,13 +23,13 @@ const Nav = () => {
 		<Navbar>
 			<Logo src={logo} alt="" />
 			<NavLink to="/">
-				<MaterialIcon>home</MaterialIcon> <span>Home</span>
+				<MaterialIcon>supervisor_account</MaterialIcon> <span>Promoter</span>
 			</NavLink>
-			<NavLink to="/events">
-				<MaterialIcon>event</MaterialIcon> <span>Events</span>
+			<NavLink to="/distributor">
+				<MaterialIcon>wifi_tethering</MaterialIcon> <span>Distributor</span>
 			</NavLink>
-			<NavLink to="/components">
-				<MaterialIcon>code</MaterialIcon> <span>Components</span>
+			<NavLink to="/endconsumer">
+				<MaterialIcon>face</MaterialIcon> <span>End Consumer</span>
 			</NavLink>
 		</Navbar>
 	)

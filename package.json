@@ -67,6 +67,8 @@
 		"redux": "^3.6.0",
 		"redux-devtools-extension": "^2.13.2",
 		"redux-thunk": "^2.2.0",
+		"semantic-ui-css": "^2.2.12",
+		"semantic-ui-react": "^0.71.4",
 		"styled-components": "^2.1.1",
 		"tail": "^1.2.2",
 		"truffle": "^3.3.0",

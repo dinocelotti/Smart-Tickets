@@ -5,6 +5,7 @@ import propTypes from 'prop-types'
 
 class Layout extends Component {
 	static propTypes = {
+		heading: propTypes.string,
 		children: propTypes.any
 	}
 	View = styled.div`
@@ -35,7 +36,9 @@ class Layout extends Component {
 				<Nav />
 				<this.View>
 					<this.TopNav>
-						<h5>Heading</h5>
+						<h5>
+							{this.props.heading || 'Default Heading'}
+						</h5>
 					</this.TopNav>
 					<this.Content>
 						{this.props.children}

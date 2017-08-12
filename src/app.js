@@ -3,11 +3,12 @@ import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
 import { ConnectedRouter } from 'react-router-redux'
 import history from './util/history'
-import Home from './views/Home'
-import Components from './views/Components'
-import Events from './views/Events'
+import Promoter from './containers/promoter-container'
+import Distributor from './containers/distributor-container'
+import EndConsumer from './containers/end-consumer-container'
 import EthApi from './api/eth-api'
 import store from './store'
+import { getAccounts } from './actions/account-actions'
 //eslint-disable-next-line
 const myWorker = require('worker-loader?inline&fallback=false!./api/loadAppState.js')
 import propTypes from 'prop-types'
@@ -32,6 +33,8 @@ class App extends Component {
 			_contract: EthApi.projectResolver,
 			name: 'projectResolver'
 		})
+		//get accounts
+		this.props.getAccounts()
 		//start loading state
 		const worker = new myWorker()
 		worker.onmessage = e => {
@@ -44,13 +47,19 @@ class App extends Component {
 	render() {
 		if (this.props.projectResolver.deployed) {
 			return (
-				<ConnectedRouter history={history}>
-					<div>
-						<Route exact path="/" component={Home} />
-						<Route path="/events" component={Events} />
-						<Route path="/components" component={Components} />
-					</div>
-				</ConnectedRouter>
+				<div>
+					<link
+						rel="stylesheet"
+						href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.11/semantic.min.css"
+					/>
+					<ConnectedRouter history={history}>
+						<div>
+							<Route exact path="/" component={Promoter} />
+							<Route path="/distributor" component={Distributor} />
+							<Route path="/endconsumer" component={EndConsumer} />
+						</div>
+					</ConnectedRouter>
+				</div>
 			)
 		}
 		return null
@@ -59,5 +68,8 @@ class App extends Component {
 function mapStateToProps({ web3State: { projectResolver } }) {
 	return { projectResolver }
 }
+const mapDispatchToProps = dispatch => ({
+	getAccounts: () => dispatch(getAccounts())
+})
 
-export default connect(mapStateToProps)(App)
+export default connect(mapStateToProps, mapDispatchToProps)(App)
