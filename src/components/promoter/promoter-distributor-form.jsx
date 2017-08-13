@@ -1,6 +1,8 @@
 import React from 'react'
 import propTypes from 'prop-types'
 import FormTemplate from '../../util/formUtils'
+import projectApi from '../../api/project-api'
+
 import { Form, Dropdown, Button, Header, Segment } from 'semantic-ui-react'
 const formFields = {
 	distributorAllottedQuantity: {},
@@ -14,6 +16,13 @@ export default class PromoterDistributorForm extends FormTemplate {
 			value: id,
 			text: id
 		}))
+	}
+	handleSubmit = async () => {
+		const { promoter, address } = this.props
+
+		const promoterInstance = new projectApi.Promoter({ promoter, address })
+		await promoterInstance.init()
+		promoterInstance.handleDistributorForm(this.state)
 	}
 	render() {
 		const accountAddressFormField = (

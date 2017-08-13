@@ -7,7 +7,7 @@ const ticketHandler = (state = {}, ticketId, attrName, attrVal) => ({
 	...state,
 	[ticketId]: { ...state[ticketId], [attrName]: attrVal }
 })
-const ticketByDistributorObj = {
+const ticketsByDistributorObj = {
 	[SET_DISTRIBUTOR_ALLOTTED_QUANTITY]: (
 		state,
 		{ payload: { distributor, ticket } }
@@ -45,7 +45,7 @@ const idsObj = {
 		makeNewSet(state, [distributor.id])
 }
 
-const ticketByDistributor = createReducerFromObj(ticketByDistributorObj, {})
+const ticketsByDistributor = createReducerFromObj(ticketsByDistributorObj, {})
 const byId = createReducerFromObj(byIdObj, {})
 const ids = createReducerFromObj(idsObj, [])
-export default combineReducers({ ticketByDistributor, byId, ids })
+export default combineReducers({ ticketsByDistributor, byId, ids })

@@ -12,6 +12,8 @@ class ProjectsContainer extends Component {
 			<Projects
 				projects={this.props.projects}
 				accounts={this.props.accounts}
+				tickets={this.props.tickets}
+				distributors={this.props.distributors}
 				currentUser={this.props.currentUser}
 			/>
 		)
@@ -19,8 +21,15 @@ class ProjectsContainer extends Component {
 }
 
 export default connect(
-	({ projectState: projects, accountState: accounts }) => ({
+	({
+		projectState: projects,
+		accountState: accounts,
+		ticketState: tickets,
+		distributorState: distributors
+	}) => ({
 		projects,
-		accounts
+		accounts,
+		tickets,
+		distributors
 	})
 )(ProjectsContainer)

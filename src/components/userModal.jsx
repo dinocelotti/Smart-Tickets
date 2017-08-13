@@ -19,7 +19,7 @@ export default ({ project, accounts, currentUser }) => {
 			Display: () =>
 				<div>
 					<TicketForm {...{ promoter, address }} />
-					<DistributorForm accounts={accounts} />
+					<DistributorForm {...{ promoter, address, accounts }} />
 				</div>
 		},
 		distributor: {
@@ -70,7 +70,7 @@ export default ({ project, accounts, currentUser }) => {
 							<strong> Total Tickets: </strong> {totalTickets}
 						</List.Item>
 						<List.Item>
-							<strong> Ticket's Left: </strong>
+							<strong> Tickets Left: </strong>
 							{ticketsLeft}
 						</List.Item>
 						<List.Item>

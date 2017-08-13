@@ -7,7 +7,7 @@ describe('distributor-reducer', () => {
 		expect(reducer(undefined, {})).toEqual({
 			byId: {},
 			ids: [],
-			ticketByDistributor: {}
+			ticketsByDistributor: {}
 		})
 	})
 	it(`should handle ${types.ADD_DISTRIBUTOR}`, () => {
@@ -22,7 +22,7 @@ describe('distributor-reducer', () => {
 		).toEqual({
 			byId: { '0XDISTRIBUTOR00': { id: '0XDISTRIBUTOR00' } },
 			ids: ['0XDISTRIBUTOR00'],
-			ticketByDistributor: {}
+			ticketsByDistributor: {}
 		})
 	})
 	it(`should handle ${types.SET_DISTRIBUTOR_ALLOTTED_QUANTITY}`, () => {
@@ -40,7 +40,7 @@ describe('distributor-reducer', () => {
 		).toEqual({
 			byId: {},
 			ids: [],
-			ticketByDistributor: {
+			ticketsByDistributor: {
 				'0XDISTRIBUTOR00': { '0XTICKETID': { allottedQuantity: '50' } }
 			}
 		})
@@ -57,7 +57,7 @@ describe('distributor-reducer', () => {
 			byId: {
 				'0XDISTRIBUTOR00': { fee: '20' }
 			},
-			ticketByDistributor: {},
+			ticketsByDistributor: {},
 			ids: []
 		})
 	})
@@ -76,7 +76,7 @@ describe('distributor-reducer', () => {
 		).toEqual({
 			byId: {},
 			ids: [],
-			ticketByDistributor: {
+			ticketsByDistributor: {
 				'0XDISTRIBUTOR00': { '0XTICKETID': { markup: '75' } }
 			}
 		})
