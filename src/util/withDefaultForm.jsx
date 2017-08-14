@@ -1,17 +1,8 @@
 import React, { Component } from 'react'
 import { Form, Input } from 'semantic-ui-react'
+import camelToHuman from './stringUtils'
 function withDefaultForm(WrappedComponent, formFields) {
 	return class extends Component {
-		camelToHuman = str =>
-			[...str]
-				.map(
-					(char, index) =>
-						index === 0
-							? char.toUpperCase()
-							: char === char.toUpperCase() ? ` ${char}` : char
-				)
-				.join('')
-
 		handleChange = itemToSet => (event, { value }) => {
 			this.setState(prevState => {
 				console.log('Previous state:', prevState, '\nForm value set:', {
@@ -23,7 +14,7 @@ function withDefaultForm(WrappedComponent, formFields) {
 
 		makeDefaultInputs = inputNames => {
 			return inputNames.reduce((inputsObj, inputKey) => {
-				const humanField = this.camelToHuman(inputKey)
+				const humanField = camelToHuman(inputKey)
 				const inputToAdd = {
 					label: humanField,
 					placeholder: humanField,

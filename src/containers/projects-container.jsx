@@ -1,4 +1,4 @@
-import Projects from './../components/projects'
+import Projects from '../components/projects/projects'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import propTypes from 'prop-types'
