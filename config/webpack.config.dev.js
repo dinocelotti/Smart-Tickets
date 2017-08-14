@@ -1,3 +1,4 @@
+/* eslint-env node */
 var autoprefixer = require('autoprefixer')
 var webpack = require('webpack')
 var HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -6,7 +7,7 @@ var InterpolateHtmlPlugin = require('react-dev-utils/InterpolateHtmlPlugin')
 var WatchMissingNodeModulesPlugin = require('react-dev-utils/WatchMissingNodeModulesPlugin')
 var getClientEnvironment = require('./env')
 var paths = require('./paths')
-
+var path = require('path')
 // Webpack uses `publicPath` to determine where the app is being served from.
 // In development, we always serve from the root. This makes config easier.
 var publicPath = '/'
@@ -74,6 +75,7 @@ module.exports = {
 		alias: {
 			// Support React Native Web
 			// https://www.smashingmagazine.com/2016/08/a-glimpse-into-the-future-with-react-native-for-web/
+			src: path.resolve(__dirname, '../src'),
 			'react-native': 'react-native-web'
 		}
 	},

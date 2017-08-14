@@ -10,7 +10,7 @@ import {
 	Accordion,
 	Icon
 } from 'semantic-ui-react'
-import UserModal from './userModal'
+import ProjectModal from './project-modal/project-modal'
 import propTypes from 'prop-types'
 
 export default class Projects extends React.Component {
@@ -167,7 +167,7 @@ export default class Projects extends React.Component {
 											{this.TicketsFromProject(project)}
 										</Item.Description>
 										<Item.Extra>
-											<UserModal
+											<ProjectModal
 												project={project}
 												accounts={this.props.accounts}
 												currentUser={this.props.currentUser}

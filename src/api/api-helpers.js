@@ -12,11 +12,7 @@ function isBigNumber(object) {
  * @param {object, string}  
  */
 const normalizeArgs = log => {
-	const { args, address } = log
-	const metadata = { ...log }
-	//remove redundant information
-	delete metadata.args
-	delete metadata.address
+	const { args, address, ...metadata } = log
 
 	return {
 		address,

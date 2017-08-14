@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {
 	Form,
 	Dropdown,
@@ -8,17 +8,18 @@ import {
 	Segment
 } from 'semantic-ui-react'
 import propTypes from 'prop-types'
-import FormTemplate from '../../util/formUtils'
 import projectApi from '../../api/project-api'
-const formFields = {
+import withDefaultForm from 'src/util/withDefaultForm'
+const formGeneratorFields = {
 	projectName: {},
 	totalTickets: {},
 	consumerMaxTickets: {}
 }
-export default class Promoter extends FormTemplate {
+class Promoter extends Component {
 	static propTypes = {
 		accounts: propTypes.object
 	}
+	handleChange = this.props.handleChange
 	state = {}
 	createDropdownItems() {
 		return this.props.accounts.ids.map(id => ({
@@ -30,7 +31,7 @@ export default class Promoter extends FormTemplate {
 
 	handleSubmit = async () => {
 		this.setState(() => ({ loading: true }))
-		await projectApi.createProject(this.state)
+		await projectApi.createProject(this.props.data)
 		this.setState(() => ({ loading: false }))
 	}
 
@@ -58,13 +59,11 @@ export default class Promoter extends FormTemplate {
 					loading={!this.props.accounts || this.state.loading}
 					onSubmit={this.handleSubmit}
 				>
-					{[
-						accountAddressFormField,
-						...this.generateInputFormFields(formFields)
-					]}
+					{[accountAddressFormField, ...this.props.generatedForm]}
 					<Button type="submit"> Submit </Button>
 				</Form>
 			</Segment>
 		)
 	}
 }
+export default withDefaultForm(Promoter, formGeneratorFields)

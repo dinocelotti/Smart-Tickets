@@ -1,6 +1,6 @@
 import { List, Grid, Segment, Modal, Button, Header } from 'semantic-ui-react'
-import TicketForm from './promoter/promoter-ticket-form'
-import DistributorForm from './promoter/promoter-distributor-form'
+import TicketForm from './components/promoter/ticket-form'
+import DistributorForm from './components/promoter/distributor-form'
 
 import React from 'react'
 export default ({ project, accounts, currentUser }) => {
