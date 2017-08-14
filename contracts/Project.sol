@@ -233,6 +233,7 @@ contract Project {
       * @param _buyer Address of the buyer
       */
     function addDistributor(address _buyer) onlyPromoter() stagingPhase() {
+        require(_buyer != promoter); 
         if(buyers[_buyer].isDistributor == true) return; //dont want to throw, just return early instead
         buyers[_buyer].isDistributor = true;
         AddDistributor(msg.sender, _buyer);
