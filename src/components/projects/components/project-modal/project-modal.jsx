@@ -3,7 +3,14 @@ import TicketForm from './components/ticket-form'
 import DistributorForm from './components/distributor-form'
 import TicketTable from '../ticket-table'
 import React from 'react'
-export default ({ project, accounts, currentUser, tickets, distributors }) => {
+import PromoterMenu from './components/promoter-menu'
+export default ({
+	project,
+	accounts,
+	currentUser,
+	tickets: ticketState,
+	distributors: distributorState
+}) => {
 	const {
 		projectName,
 		totalTickets,
@@ -18,10 +25,16 @@ export default ({ project, accounts, currentUser, tickets, distributors }) => {
 			button: 'Edit Project',
 			Display: () =>
 				<div>
-					<TicketTable {...{ project, tickets, distributors }} />
-					<TicketForm {...{ promoter, address }} />
-					<DistributorForm
-						{...{ promoter, address, accounts, tickets: project.tickets }}
+					<PromoterMenu
+						{...{
+							project,
+							ticketState,
+							distributorState,
+							promoter,
+							address,
+							accounts,
+							tickets: project.tickets
+						}}
 					/>
 				</div>
 		},

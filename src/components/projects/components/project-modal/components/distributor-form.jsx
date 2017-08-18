@@ -8,7 +8,8 @@ const formGeneratorFields = {
 	distributorAllottedQuantity: {},
 	promoterFee: {}
 }
-class PromoterDistributorForm extends Component {
+
+class DistributorForm extends Component {
 	handleChange = this.props.handleChange
 	state = { distributorAddress: '' }
 
@@ -62,7 +63,7 @@ class PromoterDistributorForm extends Component {
 			</Form.Field>
 		)
 		const ticketTypeDropDown = (
-			<Form.Field>
+			<Form.Field key="ticketTypeDropDown">
 				<Dropdown
 					placeholder="Select ticket type to assign to the distributor"
 					fluid
@@ -93,4 +94,4 @@ class PromoterDistributorForm extends Component {
 	}
 }
 
-export default withDefaultForm(PromoterDistributorForm, formGeneratorFields)
+export default withDefaultForm(DistributorForm, formGeneratorFields)

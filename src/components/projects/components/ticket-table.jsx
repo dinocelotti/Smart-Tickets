@@ -4,7 +4,7 @@ import camelToHuman from 'src/util/stringUtils'
 
 export default class TicketTable extends Component {
 	distributorBreakdownPerTicket = (distributors, ticketId) => {
-		const { ticketsByDistributor } = this.props.distributors
+		const { ticketsByDistributor } = this.props.distributorState
 
 		const breakdown = distributors.reduce(
 			(ticketBreakdown, currentDistributor) => {
@@ -59,8 +59,8 @@ export default class TicketTable extends Component {
 	createTicketTable = ({ tickets, distributors }) => {
 		const createCell = (key, content) => ({ key, content })
 		const createKey = prefix => rest => `${prefix}${rest ? `-${rest}` : ''}`
-
-		const { byId: ticketsById } = this.props.tickets
+		console.log(this.props)
+		const { byId: ticketsById } = this.props.ticketState
 
 		const headerRow = ['Type', 'Price in Wei', 'Quantity', 'Breakdown']
 
@@ -100,6 +100,8 @@ export default class TicketTable extends Component {
 		)
 	}
 	render() {
-		return this.createTicketTable(this.props.project)
+		return this.props.tickets.length > 0
+			? this.createTicketTable(this.props.project)
+			: null
 	}
 }
