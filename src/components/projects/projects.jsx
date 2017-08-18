@@ -1,7 +1,8 @@
 import React from 'react'
 import { Item, List, Step, Grid, Segment, Header } from 'semantic-ui-react'
 import TicketTable from './components/ticket-table'
-import ProjectModal from '../project-modal/project-modal'
+import ProjectModal from './components/project-modal/project-modal'
+import DistributorList from './components/distributor-list'
 import propTypes from 'prop-types'
 import camelToHuman from 'src/util/stringUtils'
 export default class Projects extends React.Component {
@@ -69,12 +70,18 @@ export default class Projects extends React.Component {
 												distributors={this.props.distributors}
 												project={project}
 											/>
+											<DistributorList
+												project={project}
+												distributorState={this.props.distributors}
+											/>
 										</Item.Description>
 										<Item.Extra>
 											<ProjectModal
 												project={project}
 												accounts={this.props.accounts}
 												currentUser={this.props.currentUser}
+												tickets={this.props.tickets}
+												distributors={this.props.distributors}
 											/>
 										</Item.Extra>
 									</Item.Content>

@@ -1,9 +1,9 @@
 import { List, Grid, Segment, Modal, Button, Header } from 'semantic-ui-react'
-import TicketForm from './components/promoter/ticket-form'
-import DistributorForm from './components/promoter/distributor-form'
-
+import TicketForm from './components/ticket-form'
+import DistributorForm from './components/distributor-form'
+import TicketTable from '../ticket-table'
 import React from 'react'
-export default ({ project, accounts, currentUser }) => {
+export default ({ project, accounts, currentUser, tickets, distributors }) => {
 	const {
 		projectName,
 		totalTickets,
@@ -18,8 +18,11 @@ export default ({ project, accounts, currentUser }) => {
 			button: 'Edit Project',
 			Display: () =>
 				<div>
+					<TicketTable {...{ project, tickets, distributors }} />
 					<TicketForm {...{ promoter, address }} />
-					<DistributorForm {...{ promoter, address, accounts }} />
+					<DistributorForm
+						{...{ promoter, address, accounts, tickets: project.tickets }}
+					/>
 				</div>
 		},
 		distributor: {

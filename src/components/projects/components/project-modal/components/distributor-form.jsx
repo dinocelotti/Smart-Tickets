@@ -6,7 +6,6 @@ import projectApi from 'src/api/project-api'
 import { Form, Dropdown, Button, Header, Segment } from 'semantic-ui-react'
 const formGeneratorFields = {
 	distributorAllottedQuantity: {},
-	ticketType: {},
 	promoterFee: {}
 }
 class PromoterDistributorForm extends Component {
@@ -19,7 +18,14 @@ class PromoterDistributorForm extends Component {
 			text: id
 		}))
 	}
+	createDropDownTickets() {
+		console.log(this.props.tickets)
 
+		return this.props.tickets.map(id => ({
+			value: id.split('_')[0],
+			text: id.split('_')[0]
+		}))
+	}
 	handleSubmit = async () => {
 		const { promoter, address } = this.props
 
@@ -55,6 +61,18 @@ class PromoterDistributorForm extends Component {
 				</Segment>
 			</Form.Field>
 		)
+		const ticketTypeDropDown = (
+			<Form.Field>
+				<Dropdown
+					placeholder="Select ticket type to assign to the distributor"
+					fluid
+					search
+					selection
+					options={this.createDropDownTickets()}
+					onChange={this.handleChange('ticketType')}
+				/>
+			</Form.Field>
+		)
 
 		return (
 			<Segment>
@@ -63,7 +81,11 @@ class PromoterDistributorForm extends Component {
 					loading={!this.props.accounts || this.state.loading}
 					onSubmit={this.handleSubmit}
 				>
-					{[accountAddressFormField, ...this.props.generatedForm]}
+					{[
+						accountAddressFormField,
+						ticketTypeDropDown,
+						...this.props.generatedForm
+					]}
 					<Button type="submit"> Submit </Button>
 				</Form>
 			</Segment>
