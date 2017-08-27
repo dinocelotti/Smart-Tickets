@@ -1,6 +1,6 @@
 # Smart-tickets
 
-Membran Smart-Tickets provides a platform for the management and sales of tickets.
+Membran Smart-Tickets provides a platform for the management and sales of events.
 
 ## Installing dependencies
 
@@ -21,7 +21,7 @@ Membran Smart-Tickets provides a platform for the management and sales of ticket
 
 ### The problem
 
-Ticket sales information in the live events industry is currently stored and managed across disparate systems, proprietary standards, and individually centralized databases. A small number of large competitors dominate the primary market, including Ticketmaster and Eventbrite. Fraud and artificially distorted markets plague the industry, resulting in inefficient market economics, rent-seeking, and an overall frustrated user experience.
+Ticket sales information in the live events industry is currently stored and managed across disparate systems, proprietary standards, and individually centralized databases. Fraud and artificially distorted markets plague the industry, resulting in inefficient market economics, rent-seeking, and an overall frustrated user experience.
 
 ### Current Solutions
 
@@ -33,7 +33,7 @@ Non blockchain-based solutions: Songkick, Twickets
 
 Blockchain-based solutions: Aventus, Blocktix, LAVA, HelloSugoi
 
-Our key opposition is secondary ticket sellers whose business we are directly eroding. In some cases, primary ticket sellers have purchased secondary platforms in an attempt to protect and capture previously lost value. Here, too, we erode the secondary platform’s business, but only insofar as this value is redirected and more immediately captured by the parent.
+Our key opposition is secondary market sellers whose business we are directly eroding. In some cases, primary ticket sellers have purchased secondary platforms in an attempt to protect and capture previously lost value. Here, too, we erode the secondary platform’s business, but only insofar as this value is redirected and more immediately captured by the parent.
 
 Our major barrier to entry is the size and scope of the existing systems in place. It is essential to communicate to large stakeholders the significance of the value we are adding if we hope for them to change their current entrenched behavior. By providing easily adopted minor integrations to existing data feeds that deliver valuable analytics to the creators, we can offer modular software alternatives that will be gradually adopted to replace existing infrastructure.
 
@@ -41,7 +41,7 @@ Our major barrier to entry is the size and scope of the existing systems in plac
 
 Any transaction between two or more “official” parties (i.e. not including scalpers) that is based on the volume or value of tickets sold for an event can benefit from the MembranLive platform by having better and faster data, and by knowing they are minimizing potential losses to rent-seekers and fraudsters. However, we are initially targeting the aforementioned three key stakeholders, as they will likely be the most interested in analytics, security, and secondary market protection that the MembranLive platform affords.
 
-Later, we plan to develop analytical solutions integrated to the transaction ledger, which will increase efficiency with regards to accounting, transaction data and analytics, and venue or collection society reporting. Fans will benefit from fraud protection and convenient ticket authentication, and will also be able to effortlessly transfer their ticket to another user or reissue their ticket to the primary market. Transacting parties will also be able to see a transaction almost immediately, and can trust in their purchase or sale, as it is impossible for double-spend or other fraudulent transactions to take place between two parties on the network.
+Later, we plan to develop analytics solutions integrated to the transaction ledger, which will increase efficiency with regards to accounting, transaction data and analytics, and venue or collection society reporting. Fans will benefit from fraud protection and convenient ticket authentication, and will also be able to effortlessly transfer their ticket to another user or reissue their ticket to the primary market. Transacting parties will also be able to see a transaction almost immediately, and can trust in their purchase or sale, as it is impossible for double-spend or other fraudulent transactions to take place between two parties on the network.
 
 MembranLive provides a platform to consolidate ticket transactions to a single shared distributed ledger. Dashboards for creators and sellers allow for the creation, tracking, and distribution of tickets. Similarly, performers, venues, and other stakeholders interface with the platform in order to have reports, statements, and other analytics at their fingertips.
 
@@ -100,9 +100,9 @@ Programmatic and social properties can be introduced into the ticket transfer me
 
 Restrictions that can be placed on ticket transfers include but are not limited to:
 
-- Limit amount of ticket transfers an address can make
-- Limit amount of tickets an address can hold
-- Limit when ticket transfers are enabled, and allow for transfer freezing
+- Control amount of ticket transfers an address can make
+- Control amount of tickets an address can hold
+- Control when ticket transfers are enabled, and allow for transfer freezing
 - Make ticket transfers value-less so additional mechanisms for transferring the value of tickets would have to be implemented by scalping services
 - Limit what addresses can transfer tickets, so an address would have to be white-listed to transfer a ticket
 - If the user wants to purchase a ticket with fiat currency, their banking information can be used to cross-reference accounts and see if the user is maliciously buying tickets for scalping use
@@ -119,7 +119,7 @@ Door admission and verification would be done via a QR code provided by the mobi
 - let y be the information needed to verify the event details such as location, time, ticket holder, etc
 - let z be the next block header hash (once it is solved)
 
-So the QR code would encode x+y+z, the key here is parameter z. The next block header hash should be nearly impossible to guess due to the variables of the nonce, included transactions, time stamp etc. The only guessable portion of the next block hash would be the difficulty (e.g How many leading zeros will be included in the block hash). The QR code would change in the time interval equivalent to the block time of Ethereum. This makes it extremely improbable that a screenshot of a scalped ticket would be valid as the User would have to try and get into the event and verified in < 15 seconds at current block time.
+So the QR code would encode x+y+z, the key here is parameter z. The next block header hash is nearly impossible to guess due to the variables of the nonce, included transactions, time stamp etc. The only guessable portion of the next block hash would be the difficulty (e.g How many leading zeros will be included in the block hash). The QR code would change in the time interval equivalent to the block time of Ethereum. This makes it extremely improbable that a screenshot of a scalped ticket would be valid as the User would have to try and get into the event and verified in < 15 seconds at current block time.
 
 ### Overview of current progress + future goals
 
