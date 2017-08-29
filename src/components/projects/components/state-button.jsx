@@ -30,7 +30,9 @@ export default class StateButton extends Component {
 		/>
 	)
 	render() {
-		const { nextState, ticketsLeft } = this.props
-		return ticketsLeft === '0' ? this.stateButton() : this.ticketsLeftPopUp()
+		const { ticketsLeft } = this.props
+		return ticketsLeft === '0'
+			? this.stateButton()
+			: this.ticketsLeftPopUp(ticketsLeft)
 	}
 }

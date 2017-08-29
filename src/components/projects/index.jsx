@@ -9,7 +9,7 @@ import camelToHuman from 'src/util/stringUtils'
 
 export default class Projects extends React.Component {
 	makeStateSteps(state) {
-		const states = ['Staging', 'PrivateSale', 'PublicSale', 'Done']
+		const states = ['Staging', 'Private Funding', 'Public Funding', 'Done']
 		const descriptions = [
 			'The promoter is still setting up the project details',
 			'Project details have been finalized by the promoters and is now ready to sell tickets to the distributors',
