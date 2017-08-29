@@ -20,7 +20,6 @@ export default class DistributorList extends Component {
 				distributor: currentDistributor.distributor,
 				ticketValues: this.formatTicketData(currentTickets)
 			}
-			console.log('CurrentDistributor', obj, currentTickets)
 		}, {})
 	}
 	render() {

@@ -14,9 +14,7 @@ export default {
 	SetMarkup,
 	BuyTicketFromPromoter,
 	BuyTicketFromDistributor,
-	Withdraw,
-	ResolverAddAddress,
-	ResolverAddProject
+	Withdraw
 }
 function projectResolverDeploySuccess(projectResolverDeployed) {
 	return {
@@ -121,19 +119,36 @@ function SetMarkup({ data, address }) {
 		}
 	}
 }
-function BuyTicketFromPromoter(event) {
-	return { type: types.BUY_TICKET_FROM_PROMOTER, event }
+function BuyTicketFromPromoter({ data, address }) {
+	const { typeOfTicket, quantity, weiSent, from } = data
+	return {
+		type: types.BUY_TICKET_FROM_PROMOTER,
+		payload: {
+			project: { address },
+			purchaseData: {
+				from,
+				typeOfTicket,
+				quantity,
+				weiSent
+			}
+		}
+	}
 }
-function BuyTicketFromDistributor(event) {
-	return { type: types.BUY_TICKET_FROM_DISTRIBUTOR, event }
+function BuyTicketFromDistributor({ data, address }) {
+	const { from, typeOfTicket, quantity, weiSent } = data
+	return {
+		type: types.BUY_TICKET_FROM_DISTRIBUTOR,
+		payload: {
+			project: { address },
+			purchaseData: {
+				from,
+				typeOfTicket,
+				quantity,
+				weiSent
+			}
+		}
+	}
 }
 function Withdraw(event) {
 	return { type: types.WITHDRAW, event }
-}
-
-function ResolverAddAddress(event) {
-	return { type: types.CREATE_PROJECT_SUCCESS, event }
-}
-function ResolverAddProject(event) {
-	return { type: types.CREATE_PROJECT_SUCCESS, event }
 }

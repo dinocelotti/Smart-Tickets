@@ -3,14 +3,15 @@ import { Form, Input } from 'semantic-ui-react'
 import camelToHuman from './stringUtils'
 function withDefaultForm(WrappedComponent, formFields) {
 	return class extends Component {
-		handleChange = itemToSet => (event, { value }) => {
-			this.setState(prevState => {
-				console.log('Previous state:', prevState, '\nForm value set:', {
-					[itemToSet]: value
-				})
-				return { [itemToSet]: value }
-			})
-		}
+		handleChange = itemToSet => (event, { value }) =>
+			new Promise(resolve =>
+				this.setState(prevState => {
+					console.log('Previous state:', prevState, '\nForm value set:', {
+						[itemToSet]: value
+					})
+					return { [itemToSet]: value }
+				}, resolve)
+			)
 
 		makeDefaultInputs = inputNames => {
 			return inputNames.reduce((inputsObj, inputKey) => {

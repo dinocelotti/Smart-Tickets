@@ -1,8 +1,7 @@
-import EthApi from './eth-api'
+import ethApi from './eth-api'
 import Utils from './api-helpers'
 import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoterTypes } from './project-types'
-const ethApi = new EthApi()
 
 /**
  * 
@@ -16,7 +15,7 @@ async function createProject({
 	promoterAddress
 }) {
 	//Create the new project
-	const newProject = await EthApi.project.new(
+	const newProject = await ethApi.project.new(
 		projectName,
 		'10', // Place holder for membran fee
 		totalTickets,
@@ -26,7 +25,7 @@ async function createProject({
 			gas: 4306940 // Do not know how much gas will be used yet
 		}
 	)
-	const projectResolver = EthApi.deployed.projectResolver
+	const projectResolver = ethApi.deployed.projectResolver
 	await projectResolver.addProject(newProject.address, {
 		from: promoterAddress
 	}) // Add the Project to the resolver contract
@@ -227,6 +226,7 @@ class Buyer extends Entity {
      **************************/
 	async buyTicketFromPromoter({ ticketType, ticketQuantity, txObj }) {
 		//get phase to check to see if its valid
+		console.log('buyTicketFromPromoter:', this.address)
 		return this.wrapTx(
 			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity, txObj)
 		)

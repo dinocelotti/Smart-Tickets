@@ -22,7 +22,7 @@ class DistributorForm extends Component {
 	createDropDownTickets() {
 		console.log(this.props.tickets)
 
-		return this.props.tickets.map(id => ({
+		return this.props.project.tickets.map(id => ({
 			value: id.split('_')[0],
 			text: id.split('_')[0]
 		}))

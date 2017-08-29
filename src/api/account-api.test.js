@@ -1,13 +1,12 @@
 /* eslint-env jest */
 import api from './account-api'
 import * as deployment from '../../scripts/testHelper'
-import EthApi from './eth-api'
-const ethApi = new EthApi()
+import ethApi from './eth-api'
 beforeAll(async () => {
 	await deployment.init()
 	await ethApi.reloadContracts()
 	await ethApi.deployContract({
-		_contract: EthApi.projectResolver,
+		_contract: ethApi.projectResolver,
 		name: 'projectResolver'
 	})
 })

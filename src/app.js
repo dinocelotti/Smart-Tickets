@@ -6,7 +6,7 @@ import history from './util/history'
 import Promoter from './containers/promoter-container'
 import Distributor from './containers/distributor-container'
 import EndConsumer from './containers/end-consumer-container'
-import EthApi from './api/eth-api'
+import ethApi from './api/eth-api'
 import store from './store'
 import { getAccounts } from './actions/account-actions'
 //eslint-disable-next-line
@@ -27,10 +27,9 @@ class App extends Component {
 	}
 	async load() {
 		//TODO: duplicate loading here... due to the WW not sharing the same functions/objects as the bundle
-		const ethApi = new EthApi()
 		await ethApi.loadContracts()
 		await ethApi.deployContract({
-			_contract: EthApi.projectResolver,
+			_contract: ethApi.projectResolver,
 			name: 'projectResolver'
 		})
 		//get accounts

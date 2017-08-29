@@ -16,6 +16,8 @@ const byIdObj = {
 			state: 'Staging',
 			tickets: [],
 			distributors: [],
+			purchasesFromPromoter: [],
+			purchasesFromDistributor: [],
 			...project
 		}
 	}),
@@ -53,13 +55,50 @@ const byIdObj = {
 		const projectToAdd = { ...prevProject, distributors: nextDistributors }
 		return { ...state, [project.address]: projectToAdd }
 	},
-	[BUY_TICKET_FROM_PROMOTER]: (state, action) => {
-		return { ...state }
+	[BUY_TICKET_FROM_PROMOTER]: (
+		state,
+		{
+			payload: {
+				project,
+				purchaseData: { from, typeOfTicket, quantity, weiSent }
+			}
+		}
+	) => {
+		const prevProject = state[project.address]
+		const prevPurchases = prevProject.purchasesFromPromoter
+		const nextPurchases = [
+			...prevPurchases,
+			{ from, typeOfTicket, quantity, weiSent }
+		]
+		const projectToAdd = {
+			...prevProject,
+			purchasesFromPromoter: nextPurchases
+		}
+		return { ...state, [project.address]: projectToAdd }
+	},
+
+	[BUY_TICKET_FROM_DISTRIBUTOR]: (
+		state,
+		{
+			payload: {
+				project,
+				purchaseData: { from, typeOfTicket, quantity, weiSent }
+			}
+		}
+	) => {
+		const prevProject = state[project.address]
+		const prevPurchases = prevProject.purchasesFromDistributor
+		const nextPurchases = [
+			...prevPurchases,
+			{ from, typeOfTicket, quantity, weiSent }
+		]
+		const projectToAdd = {
+			...prevProject,
+			purchasesFromDistributor: nextPurchases
+		}
+		return { ...state, [project.address]: projectToAdd }
 	},
 	[WITHDRAW]: (state, action) => {
-		return { ...state }
-	},
-	[BUY_TICKET_FROM_DISTRIBUTOR]: (state, action) => {
 		return { ...state }
 	}
 }

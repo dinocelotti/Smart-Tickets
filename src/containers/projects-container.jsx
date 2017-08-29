@@ -1,19 +1,16 @@
-import Projects from '../components/projects/projects'
+import Projects from '../components/projects'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import propTypes from 'prop-types'
 
 class ProjectsContainer extends Component {
-	static propTypes = {
-		projectState: propTypes.object
-	}
 	render() {
 		return (
 			<Projects
-				projects={this.props.projects}
+				projectState={this.props.projectState}
 				accounts={this.props.accounts}
-				tickets={this.props.tickets}
-				distributors={this.props.distributors}
+				ticketState={this.props.ticketState}
+				distributorState={this.props.distributorState}
 				currentUser={this.props.currentUser}
 			/>
 		)
@@ -22,14 +19,14 @@ class ProjectsContainer extends Component {
 
 export default connect(
 	({
-		projectState: projects,
+		projectState,
 		accountState: accounts,
-		ticketState: tickets,
-		distributorState: distributors
+		ticketState,
+		distributorState
 	}) => ({
-		projects,
+		projectState,
 		accounts,
-		tickets,
-		distributors
+		ticketState,
+		distributorState
 	})
 )(ProjectsContainer)

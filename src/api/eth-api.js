@@ -13,33 +13,33 @@ let ProjectResolver = require('../../build/contracts/ProjectResolver')
  * 
  * @export
  * @class API
- * This class is used to hold and create instances of contracts and web3. Caching mechanisms are used to reduce the lengthy load times of making instances of contracts. Static properties are used to share the same instance across modules.
+ * This class is used to hold and create instances of contracts and web3. Caching mechanisms are used to reduce the lengthy load times of making instances of contracts. 
  */
-export default class API {
-	static project
-	static projectResolver
-	static provider
-	static web3
-	static deployed = { projectResolver: {} } // Used for caching the instantiated projectResolver
-	static projectsAtAddress = {} // Used for caching projects that have been instantiated with .at() beforehand
+class API {
+	project
+	projectResolver
+	provider
+	web3
+	deployed = { projectResolver: {} } // Used for caching the instantiated projectResolver
+	projectsAtAddress = {} // Used for caching projects that have been instantiated with .at() beforehand
 
 	/**
 	 * Creates an instance of API. 
 	 * @memberof API
 	 */
 	constructor() {
-		if (!API.provider) {
+		if (!this.provider) {
 			// Create a provider if one does not exist yet.
-			API.provider = new Web3.providers.HttpProvider('http://localhost:8545')
+			this.provider = new Web3.providers.HttpProvider('http://localhost:8545')
 		}
-		if (!API.web3) {
+		if (!this.web3) {
 			// Create web3 instance if one does not exist yet.
-			API.web3 = new Web3(API.provider)
+			this.web3 = new Web3(this.provider)
 			store.dispatch(web3Actions.web3Connected())
 		}
 	}
 	getProjectResolver() {
-		return API.deployed
+		return this.deployed
 	}
 	/**
 	 * @param {string} { address } Address of the project to retrieve, if it's already been made then the cached instance will be returned
@@ -49,15 +49,15 @@ export default class API {
 	async getProjectAtAddress({ address }) {
 		//console.group('GetProjectAtAddress')
 		console.log('Getting projectAtAddress ' + address)
-		if (!API.projectsAtAddress[address]) {
+		if (!this.projectsAtAddress[address]) {
 			console.warn('Instance not created, making...')
-			const p = await API.project.at(address)
-			API.projectsAtAddress[address] = p
+			const p = await this.project.at(address)
+			this.projectsAtAddress[address] = p
 		} else {
 			console.log('Instance already exists, return cached project')
 		}
 		//console.groupEnd()
-		return API.projectsAtAddress[address]
+		return this.projectsAtAddress[address]
 	}
 	/**
 	 *  Used for Jest testing to load the newly deployed smart contract files
@@ -79,7 +79,7 @@ export default class API {
 	 * @memberof API
 	 */
 	async deployContract({ _contract, name }) {
-		API.deployed[name] = await _contract.deployed()
+		this.deployed[name] = await _contract.deployed()
 		//if its projectResolver then dispatch the action
 		if (name === 'projectResolver')
 			store.dispatch(web3Actions.projectResolverDeployed())
@@ -94,7 +94,7 @@ export default class API {
 	 */
 	changeProvider(_provider) {
 		//TODO: will need to dispatch an action for changed providers
-		API.provider = new Web3.providers.HttpProvider(_provider)
+		this.provider = new Web3.providers.HttpProvider(_provider)
 	}
 
 	/**
@@ -119,11 +119,13 @@ export default class API {
 	 * @memberof API
 	 */
 	async loadContracts() {
-		if (!API.project || !API.projectResolver) {
-			API.project = await contract(Project)
-			API.projectResolver = await contract(ProjectResolver)
-			await API.project.setProvider(API.provider)
-			await API.projectResolver.setProvider(API.provider)
+		if (!this.project || !this.projectResolver) {
+			this.project = await contract(Project)
+			this.projectResolver = await contract(ProjectResolver)
+			await this.project.setProvider(this.provider)
+			await this.projectResolver.setProvider(this.provider)
 		}
 	}
 }
+
+export default new API()

@@ -1,17 +1,16 @@
-import EthApi from './eth-api'
+import ethApi from './eth-api'
 import actionCreator from '../actions/project-actions'
 import Utils from './api-helpers'
 const loadAppState = async () => {
-	const ethApi = new EthApi()
 	//console.groupCollapsed('loadAppState')
 	console.log('Loading and deploying contracts')
 	await ethApi.loadContracts()
 	await ethApi.deployContract({
-		_contract: EthApi.projectResolver,
+		_contract: ethApi.projectResolver,
 		name: 'projectResolver'
 	})
 	console.log('App state loading...')
-	const projectResolver = EthApi.deployed.projectResolver
+	const projectResolver = ethApi.deployed.projectResolver
 
 	const logHanderCreator = actionCreators => (err, log) => {
 		if (err) {
@@ -47,8 +46,8 @@ const loadAppState = async () => {
 			//console.groupCollapsed('projectInstance.allEvents')
 			console.log('Project Log found', _log)
 			const action = logHandler(err, _log)
-			console.log('Posting action back to main script...')
-			postMessage(action)
+			console.log('Posting action back to main script...', action)
+			action && postMessage(action)
 			//console.groupEnd()
 		})
 	})

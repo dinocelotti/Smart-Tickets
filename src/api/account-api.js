@@ -1,4 +1,4 @@
-import EthApi from './eth-api'
+import ethApi from './eth-api'
 export async function getAccountsAndBals() {
 	const accounts = await getAccountsAsync()
 	const balances = await Promise.all(
@@ -18,7 +18,7 @@ export async function getAccountsAndBals() {
 //wrapper around web3 getAccounts
 export function getAccountsAsync() {
 	return new Promise((resolve, reject) => {
-		EthApi.web3.eth.getAccounts((err, accounts) => {
+		ethApi.web3.eth.getAccounts((err, accounts) => {
 			if (err) {
 				reject(err)
 			} else {
@@ -31,7 +31,7 @@ export default { getAccountsAndBals, getAccountsAsync }
 //wrapper around web3 getBalance
 function getAccountBalanceAsync(account) {
 	return new Promise((resolve, reject) => {
-		EthApi.web3.eth.getBalance(account, (err, balance) => {
+		ethApi.web3.eth.getBalance(account, (err, balance) => {
 			if (err) {
 				reject(err)
 			} else {

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../components/Layout'
 import { connect } from 'react-redux'
 import propTypes from 'prop-types'
-import Promoter from '../components/promoter/promoter'
+import Promoter from '../components/promoter'
 import Projects from './projects-container'
 class PromoterContainer extends Component {
 	static propTypes = {

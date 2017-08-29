@@ -30,36 +30,34 @@ export default class TicketTable extends Component {
 		return breakdown
 	}
 	createBreakdownListItems = (type, breakdown) =>
-		breakdown.map(({ distributor, ticketBreakdown }) =>
+		breakdown.map(({ distributor, ticketBreakdown }) => (
 			<List.Item key={`${type}-breakdown-${distributor}`}>
 				{distributor.split('_')[0]}
 				<List.List>
-					{Object.keys(ticketBreakdown).map((breakdownParam, index) =>
+					{Object.keys(ticketBreakdown).map((breakdownParam, index) => (
 						<List.Item key={index}>
 							{camelToHuman(breakdownParam)}: {ticketBreakdown[breakdownParam]}
 						</List.Item>
-					)}
+					))}
 				</List.List>
 			</List.Item>
-		)
+		))
 
-	createBreakdownAccordion = (type, breakdown) =>
+	createBreakdownAccordion = (type, breakdown) => (
 		<Accordion>
 			<Accordion.Title>
 				<Icon name="dropdown" />
 				Distributor Breakdown
 			</Accordion.Title>
 			<Accordion.Content>
-				<List>
-					{this.createBreakdownListItems(type, breakdown)}
-				</List>
+				<List>{this.createBreakdownListItems(type, breakdown)}</List>
 			</Accordion.Content>
 		</Accordion>
+	)
 
 	createTicketTable = ({ tickets, distributors }) => {
 		const createCell = (key, content) => ({ key, content })
 		const createKey = prefix => rest => `${prefix}${rest ? `-${rest}` : ''}`
-		console.log(this.props)
 		const { byId: ticketsById } = this.props.ticketState
 
 		const headerRow = ['Type', 'Price in Wei', 'Quantity', 'Breakdown']
@@ -100,7 +98,7 @@ export default class TicketTable extends Component {
 		)
 	}
 	render() {
-		return this.props.tickets.length > 0
+		return this.props.project.tickets.length > 0
 			? this.createTicketTable(this.props.project)
 			: null
 	}

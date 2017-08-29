@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Grid, Menu, Segment } from 'semantic-ui-react'
+import { Grid, Menu } from 'semantic-ui-react'
 import TicketForm from './ticket-form'
 import DistributorForm from './distributor-form'
-import TicketTable from '../../ticket-table'
+import TicketTable from '../../../ticket-table'
 
 export default class MenuExampleTabularOnRight extends Component {
 	state = { activeItem: 'ticket-form' }
@@ -21,9 +21,12 @@ export default class MenuExampleTabularOnRight extends Component {
 				</Grid.Row>
 				<Grid.Row>
 					<Grid.Column stretched width={12}>
-						{activeItem === 'ticket-form'
-							? <TicketForm {...this.props} />
-							: <DistributorForm {...this.props} />}
+						{console.log('Passing to ticketForm:', this.props)}
+						{activeItem === 'ticket-form' ? (
+							<TicketForm {...this.props} />
+						) : (
+							<DistributorForm {...this.props} />
+						)}
 					</Grid.Column>
 
 					<Grid.Column width={4}>

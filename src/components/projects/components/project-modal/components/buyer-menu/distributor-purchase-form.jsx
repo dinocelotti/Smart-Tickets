@@ -4,10 +4,11 @@ import projectApi from 'src/api/project-api'
 import withDefaultForm from 'src/util/withDefaultForm'
 
 import { Form, Dropdown, Button, Segment, Input } from 'semantic-ui-react'
+
 const formGeneratorFields = {
 	ticketQuantity: {}
 }
-class PromoterForm extends Component {
+class DistributorForm extends Component {
 	handleChange = this.props.handleChange
 	state = { buyerAddress: '', ticketCost: 0 }
 
@@ -23,6 +24,12 @@ class PromoterForm extends Component {
 			text: id.split('_')[0]
 		}))
 	}
+	createDropDownDistributors() {
+		return this.props.project.distributors.map(id => ({
+			value: id.split('_')[0],
+			text: id.split('_')[0]
+		}))
+	}
 
 	calculateTicketCost(
 		{ ticketState, data: { ticketType = null, ticketQuantity = 0 } } = {}
@@ -35,7 +42,12 @@ class PromoterForm extends Component {
 
 	handleSubmit = async () => {
 		const { address, isDistributor } = this.props
-		const { buyerAddress, ticketType, ticketQuantity } = this.props.data
+		const {
+			buyerAddress,
+			ticketType,
+			ticketQuantity,
+			distributorToBuyFrom
+		} = this.props.data
 		const buyerInstance = new projectApi.Buyer({
 			buyerAddress,
 			projectAddress: address,
@@ -47,7 +59,8 @@ class PromoterForm extends Component {
 			ticketType.split('_')[0],
 			typeof ticketType.split('_')[0]
 		)
-		buyerInstance.buyTicketFromPromoter({
+		buyerInstance.buyTicketFromDistributor({
+			distributorAddress: distributorToBuyFrom,
 			ticketType: ticketType.split('_')[0],
 			ticketQuantity,
 			txObj: { value: this.state.ticketCost }
@@ -82,6 +95,18 @@ class PromoterForm extends Component {
 				/>
 			</Form.Field>
 		)
+		const distributorDropDown = (
+			<Form.Field key="distributorDropDown">
+				<Dropdown
+					placeholder="Select distributor to purchase from "
+					fluid
+					search
+					selection
+					options={this.createDropDownDistributors()}
+					onChange={this.handleChange('distributorToBuyFrom')}
+				/>
+			</Form.Field>
+		)
 		const ticketCost = (
 			<Form.Field>
 				<Input disabled label="Ticket cost:" value={this.state.ticketCost} />
@@ -95,6 +120,7 @@ class PromoterForm extends Component {
 				>
 					{accountAddressFormField}
 					{console.log(this.props)} {ticketTypeDropDown}
+					{distributorDropDown}
 					{this.props.generatedForm}
 					{ticketCost}
 					<Button type="submit"> Submit </Button>
@@ -104,4 +130,4 @@ class PromoterForm extends Component {
 	}
 }
 
-export default withDefaultForm(PromoterForm, formGeneratorFields)
+export default withDefaultForm(DistributorForm, formGeneratorFields)

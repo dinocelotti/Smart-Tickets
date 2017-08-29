@@ -3,17 +3,16 @@
 import * as deployment from '../../scripts/testHelper'
 import api from './project-api'
 import accApi from './account-api'
-import EthApi from './eth-api'
+import ethApi from './eth-api'
 import store from '../store'
 import actionCreator from '../actions/project-actions'
 import helper from './api-helpers'
 import accActions from '../actions/account-actions'
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
 
-const ethApi = new EthApi(),
-	accounts = [],
-	testProjects = [],
-	sampleTickets = []
+let accounts = []
+const testProjects = []
+const sampleTickets = []
 
 let project, projectResolver
 
@@ -78,11 +77,11 @@ beforeAll(async () => {
 		await deployment.init()
 		await ethApi.reloadContracts()
 		await ethApi.deployContract({
-			_contract: EthApi.projectResolver,
+			_contract: ethApi.projectResolver,
 			name: 'projectResolver'
 		})
-		project = EthApi.project
-		projectResolver = EthApi.deployed.projectResolver
+		project = ethApi.project
+		projectResolver = ethApi.deployed.projectResolver
 	} catch (e) {
 		console.log(e.stack)
 	}

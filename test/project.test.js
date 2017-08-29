@@ -2,14 +2,13 @@
 //eslint-disable-next-line
 import * as deployment from '../scripts/testHelper'
 import accApi from '../src/api/account-api'
-import EthApi from '../src/api/eth-api'
+import ethApi from '../src/api/eth-api'
 import projectApi from '../src/api/project-api'
 import utils from '../src/api/api-helpers'
 import prettyjson from 'prettyjson'
 
 //eslint-disable-next-line
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000000
-const ethApi = new EthApi()
 let project,
 	projectInstance,
 	projectResolver,
@@ -61,11 +60,11 @@ beforeAll(async () => {
 		await deployment.init()
 		await ethApi.reloadContracts()
 		await ethApi.deployContract({
-			_contract: EthApi.projectResolver,
+			_contract: ethApi.projectResolver,
 			name: 'projectResolver'
 		})
-		project = EthApi.project
-		projectResolver = EthApi.deployed.projectResolver
+		project = ethApi.project
+		projectResolver = ethApi.deployed.projectResolver
 	} catch (e) {
 		console.log(e.stack)
 	}

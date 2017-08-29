@@ -1,15 +1,13 @@
-import { List, Grid, Segment, Modal, Button, Header } from 'semantic-ui-react'
-import TicketForm from './components/ticket-form'
-import DistributorForm from './components/distributor-form'
-import TicketTable from '../ticket-table'
+import { List, Grid, Modal, Button, Header } from 'semantic-ui-react'
+import BuyerMenu from './components/buyer-menu'
 import React from 'react'
 import PromoterMenu from './components/promoter-menu'
-export default ({
+const ProjectModal = ({
 	project,
 	accounts,
 	currentUser,
-	tickets: ticketState,
-	distributors: distributorState
+	ticketState,
+	distributorState
 }) => {
 	const {
 		projectName,
@@ -23,7 +21,7 @@ export default ({
 	const userTypeMapping = {
 		promoter: {
 			button: 'Edit Project',
-			Display: () =>
+			Display: (
 				<div>
 					<PromoterMenu
 						{...{
@@ -32,39 +30,51 @@ export default ({
 							distributorState,
 							promoter,
 							address,
-							accounts,
-							tickets: project.tickets
+							accounts
 						}}
 					/>
 				</div>
+			)
 		},
 		distributor: {
 			button: 'Purchase Tickets',
-			Display: () =>
+			Display: (
 				<div>
-					<TicketForm />
-					<DistributorForm accounts={accounts} />
+					<BuyerMenu
+						{...{
+							address,
+							isDistributor: true,
+							project,
+							accounts,
+							ticketState,
+							distributorState
+						}}
+					/>
 				</div>
+			)
 		},
 		endConsumer: {
 			button: 'Purchase Tickets',
-			Display: () =>
+			Display: (
 				<div>
-					<TicketForm />
-					<DistributorForm accounts={accounts} />
+					<BuyerMenu
+						{...{
+							address,
+							isDistributor: false,
+							project,
+							accounts,
+							ticketState,
+							distributorState
+						}}
+					/>
 				</div>
+			)
 		}
 	}
 	const thisUser = userTypeMapping[currentUser]
 
 	return (
-		<Modal
-			trigger={
-				<Button>
-					{thisUser.button}
-				</Button>
-			}
-		>
+		<Modal trigger={<Button>{thisUser.button}</Button>}>
 			<Modal.Header>
 				<Grid columns={2}>
 					<Grid.Column width="4">
@@ -102,9 +112,10 @@ export default ({
 							{state}
 						</List.Item>
 					</List>
-					<thisUser.Display />
+					{thisUser.Display}
 				</Modal.Description>
 			</Modal.Content>
 		</Modal>
 	)
 }
+export default ProjectModal

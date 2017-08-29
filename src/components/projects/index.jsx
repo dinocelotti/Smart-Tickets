@@ -1,54 +1,63 @@
 import React from 'react'
 import { Item, List, Step, Grid, Segment, Header } from 'semantic-ui-react'
 import TicketTable from './components/ticket-table'
-import ProjectModal from './components/project-modal/project-modal'
+import ProjectModal from './components/project-modal'
+import StateButton from './components/state-button'
 import DistributorList from './components/distributor-list'
 import propTypes from 'prop-types'
 import camelToHuman from 'src/util/stringUtils'
+
 export default class Projects extends React.Component {
-	static propTypes = {
-		projectState: propTypes.arrayOf(
-			propTypes.shape({
-				projectName: propTypes.string,
-				totalTickets: propTypes.string,
-				consumerMaxTickets: propTypes.string,
-				promoter: propTypes.string,
-				address: propTypes.string,
-				state: propTypes.string
-			})
-		)
-	}
 	makeStateSteps(state) {
-		const stages = ['Staging', 'PrivateSale', 'PublicSale', 'Done']
+		const states = ['Staging', 'PrivateSale', 'PublicSale', 'Done']
 		const descriptions = [
 			'The promoter is still setting up the project details',
 			'Project details have been finalized by the promoters and is now ready to sell tickets to the distributors',
 			'  Distributors have finalized their ticket purchases from the promoters and now the promoters and distributors are ready to sell tickets to public',
 			'Sale has finished and is finalized, ticket transfers enabled for public'
 		]
-		return stages.map((stage, idx) => ({
-			...(stages.indexOf(state) >= idx
+		return states.map((currentState, idx) => ({
+			...(states.indexOf(state) >= idx
 				? { completed: true }
 				: { active: true }),
-			title: stage,
+			title: currentState,
 			description: descriptions[idx]
 		}))
 	}
-	createList({ tickets, distributors, address, state, ...projectObj }) {
-		const listItems = Object.keys(projectObj).map(attribute =>
+	showNextStateButton(state, ticketsLeft, address, promoter) {
+		const states = ['Staging', 'Private Funding', 'Public Funding', 'Done']
+		const currentStateIdx = states.indexOf(state)
+		const nextState =
+			currentStateIdx < states.length ? states[currentStateIdx + 1] : null
+		return nextState && this.props.currentUser === 'promoter' ? (
+			<StateButton
+				nextState={nextState}
+				ticketsLeft={ticketsLeft}
+				promoter={promoter}
+				address={address}
+			/>
+		) : null
+	}
+	createList({
+		/* eslint-disable */
+		purchasesFromPromoter,
+		purchasesFromDistributor,
+		tickets,
+		distributors,
+		address,
+		state /* eslint-enable */,
+		...projectObj
+	}) {
+		const listItems = Object.keys(projectObj).map(attribute => (
 			<List.Item key={attribute}>
 				<strong> {camelToHuman(attribute)}:</strong> {projectObj[attribute]}
 			</List.Item>
-		)
-		return (
-			<List>
-				{listItems}
-			</List>
-		)
+		))
+		return <List>{listItems}</List>
 	}
 
 	createItemFromProject(project) {
-		const { projectName, address, state } = project
+		const { projectName, address, state, ticketsLeft, promoter } = project
 		return (
 			<Segment raised key={address}>
 				<Grid relaxed>
@@ -57,32 +66,24 @@ export default class Projects extends React.Component {
 							<Item.Group>
 								<Item>
 									<Item.Content>
-										<Item.Header>
-											{projectName}
-										</Item.Header>
-										<Item.Meta>
-											Contract Address: {address}
-										</Item.Meta>
+										<Item.Header>{projectName}</Item.Header>
+										<Item.Meta>Contract Address: {address}</Item.Meta>
 										<Item.Description>
 											{this.createList(project)}
-											<TicketTable
-												tickets={this.props.tickets}
-												distributors={this.props.distributors}
-												project={project}
-											/>
+											<TicketTable project={project} {...this.props} />
 											<DistributorList
 												project={project}
-												distributorState={this.props.distributors}
+												distributorState={this.props.distributorState}
 											/>
 										</Item.Description>
 										<Item.Extra>
-											<ProjectModal
-												project={project}
-												accounts={this.props.accounts}
-												currentUser={this.props.currentUser}
-												tickets={this.props.tickets}
-												distributors={this.props.distributors}
-											/>
+											<ProjectModal project={project} {...this.props} />
+											{this.showNextStateButton(
+												state,
+												ticketsLeft,
+												address,
+												promoter
+											)}
 										</Item.Extra>
 									</Item.Content>
 								</Item>
@@ -99,14 +100,13 @@ export default class Projects extends React.Component {
 		)
 	}
 	createItems() {
-		const projectIds = this.props.projects.ids
-		const projects = this.props.projects.byId
-		return projectIds.map(id => this.createItemFromProject(projects[id]))
+		const { byId, ids } = this.props.projectState
+		return ids.map(id => this.createItemFromProject(byId[id]))
 	}
 	render() {
 		return (
 			//TODO: better loading check for projects
-			<Segment loading={!this.props.projects.ids.length > 0}>
+			<Segment loading={!this.props.projectState.ids.length > 0}>
 				<Header as="h2" textAlign="center">
 					Projects on the blockchain
 				</Header>
