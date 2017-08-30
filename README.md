@@ -4,7 +4,7 @@ Membran Smart-Tickets provides a platform for the management and sales of events
 
 ## Installing dependencies
 
-      npm -i && npm install -g truffle ethereumjs-testrpc
+      npm i && npm install -g truffle ethereumjs-testrpc
       (optional) redux-dev-tools chrome extension
 
 ## Running tests
