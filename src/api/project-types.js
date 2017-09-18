@@ -74,13 +74,13 @@ export const BuyerTypes = {
 		makeMethod('setMarkup', _markup, encodeString(_typeOfTicket)),
 
 	buyTicketFromPromoter: (_typeOfTicket, _quantity, txObj) =>
-		makeMethod('buyTicketFromPromoter', _typeOfTicket, _quantity, txObj),
+		makeMethod('buyTicketFromPromoter', encodeString(_typeOfTicket), _quantity, txObj),
 
 	buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity, txObj) =>
 		makeMethod(
 			'buyTicketFromDistributor',
 			_distributor,
-			_typeOfTicket,
+			encodeString(_typeOfTicket),
 			_quantity,
 			txObj
 		)

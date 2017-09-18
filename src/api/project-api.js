@@ -4,9 +4,9 @@ import ApiErrs from './api-errors'
 import { BuyerTypes, EntityTypes, PromoterTypes } from './project-types'
 
 /**
- * 
+ *
  *  Create a new Project given the parameters
- * @param {string, string, string, string} { projectName, totalTickets, consumerMaxTickets, promoterAddress } 
+ * @param {string, string, string, string} { projectName, totalTickets, consumerMaxTickets, promoterAddress }
  */
 async function createProject({
 	projectName,
@@ -35,7 +35,7 @@ async function createProject({
 }
 
 /**
- * 
+ *
  * A base class to inherit from, providing utility functions to the promoter and buyer/distributor
  * @class Entity
  */
@@ -63,10 +63,10 @@ class Entity {
    **************************/
 
 	/**
-	 * 
+	 *
 	 * Wrap a transaction call to simplify calls to the smart contract
-	 * @param {string, string} { methodName, params } 
-	 * @returns 
+	 * @param {string, string} { methodName, params }
+	 * @returns
 	 * @memberof Entity
 	 */
 	async wrapTx({ methodName, params, txObj = null }) {
@@ -90,10 +90,10 @@ class Entity {
    **************************/
 
 	/**
-	 * 
-	 * 
-	 * @param {any} { buyerAddress, ticketType } 
-	 * @returns 
+	 *
+	 *
+	 * @param {any} { buyerAddress, ticketType }
+	 * @returns
 	 * @memberof Entity
 	 */
 	async queryBuyer({ buyerAddress, ticketType }) {
