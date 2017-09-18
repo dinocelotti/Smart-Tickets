@@ -9,11 +9,11 @@ const fs = require('fs')
 let Project = require('../../build/contracts/Project.json')
 let ProjectResolver = require('../../build/contracts/ProjectResolver')
 /**
- * 
- * 
+ *
+ *
  * @export
  * @class API
- * This class is used to hold and create instances of contracts and web3. Caching mechanisms are used to reduce the lengthy load times of making instances of contracts. 
+ * This class is used to hold and create instances of contracts and web3. Caching mechanisms are used to reduce the lengthy load times of making instances of contracts.
  */
 class API {
 	project
@@ -24,7 +24,7 @@ class API {
 	projectsAtAddress = {} // Used for caching projects that have been instantiated with .at() beforehand
 
 	/**
-	 * Creates an instance of API. 
+	 * Creates an instance of API.
 	 * @memberof API
 	 */
 	constructor() {
@@ -35,7 +35,6 @@ class API {
 		if (!this.web3) {
 			// Create web3 instance if one does not exist yet.
 			this.web3 = new Web3(this.provider)
-			store.dispatch(web3Actions.web3Connected())
 		}
 	}
 	getProjectResolver() {
@@ -43,7 +42,7 @@ class API {
 	}
 	/**
 	 * @param {string} { address } Address of the project to retrieve, if it's already been made then the cached instance will be returned
-	 * @returns 
+	 * @returns
 	 * @memberof API
 	 */
 	async getProjectAtAddress({ address }) {
@@ -61,9 +60,9 @@ class API {
 	}
 	/**
 	 *  Used for Jest testing to load the newly deployed smart contract files
-	 * 
-	 * @param {string} module 
-	 * @returns 
+	 *
+	 * @param {string} module
+	 * @returns
 	 * @memberof API
 	 */
 	readJSON(module) {
@@ -73,9 +72,9 @@ class API {
 
 	/**
 	 * Deploy a contract on the network, storing it in this class instance. Dispatch an action when finished to alert the client of the change
-	 * 
-	 * @param {string, string} { _contract, name } 
-	 * @returns 
+	 *
+	 * @param {string, string} { _contract, name }
+	 * @returns
 	 * @memberof API
 	 */
 	async deployContract({ _contract, name }) {
@@ -88,8 +87,8 @@ class API {
 
 	/**
 	 * Change the current web3 provider
-	 * 
-	 * @param {string} _provider 
+	 *
+	 * @param {string} _provider
 	 * @memberof API
 	 */
 	changeProvider(_provider) {
@@ -98,7 +97,7 @@ class API {
 	}
 
 	/**
-	 * If in testing env (node) then read the new contract files in 
+	 * If in testing env (node) then read the new contract files in
 	 * Create new instances of Project and ProjectResolver and set their providers
 	 * @memberof API
 	 */
@@ -115,7 +114,7 @@ class API {
 
 	/**
 	 * Create new instances of Project and ProjectResolver and set their providers
-	 * 
+	 *
 	 * @memberof API
 	 */
 	async loadContracts() {

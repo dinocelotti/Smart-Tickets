@@ -41,8 +41,8 @@ describe('project-reducer', () => {
 			reducer(state, {
 				type: types.CREATED,
 				payload: { project }
-			})
-		).toEqual(state)
+			}).toString()
+		).toEqual(state.toString())
 	})
 	it(`should handle ${types.FINISH_STAGING}`, () => {
 		expect(
