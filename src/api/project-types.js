@@ -20,7 +20,7 @@ function makeMethod(methodName, ...params) {
 	}
 }
 export function encodeString(str) {
-	return web3.toHex(str)
+	return web3.toDecimal(web3.toHex(str))
 }
 export function decodeString(hex) {
 	return web3.toAscii(hex)
@@ -74,13 +74,13 @@ export const BuyerTypes = {
 		makeMethod('setMarkup', _markup, encodeString(_typeOfTicket)),
 
 	buyTicketFromPromoter: (_typeOfTicket, _quantity, txObj) =>
-		makeMethod('buyTicketFromPromoter', encodeString(_typeOfTicket), _quantity, txObj),
+		makeMethod('buyTicketFromPromoter', _typeOfTicket, _quantity, txObj),
 
 	buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity, txObj) =>
 		makeMethod(
 			'buyTicketFromDistributor',
 			_distributor,
-			encodeString(_typeOfTicket),
+			_typeOfTicket,
 			_quantity,
 			txObj
 		)
