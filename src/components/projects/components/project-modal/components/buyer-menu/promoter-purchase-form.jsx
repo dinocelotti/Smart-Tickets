@@ -35,7 +35,9 @@ class PromoterForm extends Component {
 
 	handleSubmit = async () => {
 		const { address, isDistributor } = this.props
-		const { buyerAddress, ticketType, ticketQuantity } = this.props.data
+		const buyerAddress = this.props.data.buyerAddress
+		const ticketType = this.props.data.ticketType
+		const ticketQuantity = parseInt(this.props.data.ticketQuantity)
 		const buyerInstance = new projectApi.Buyer({
 			buyerAddress,
 			projectAddress: address,
@@ -53,6 +55,7 @@ class PromoterForm extends Component {
 			txObj: { value: this.state.ticketCost }
 		})
 	}
+
 	componentWillReceiveProps(nextProps) {
 		this.calculateTicketCost(nextProps)
 	}
