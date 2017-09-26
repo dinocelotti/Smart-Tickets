@@ -22,7 +22,7 @@ const byIdObj = {
 			...prevPurchAddress,
 			TicketPurchases: { from, typeOfTicket, quantity, weiSent }
 		}
-		return { ...state, [prevPurchAddress]: nextPurchAddress }
+		return { ...state, [to]: nextPurchAddress }
 	}
 }
 
