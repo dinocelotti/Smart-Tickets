@@ -35,6 +35,7 @@ function StartPublicFunding(project) {
 	return { type: types.START_PUBLIC_FUNDING, payload: { project } }
 }
 function AddTicket({ data, address }) {
+	console.log('DEBUGGING STAGE 3 - PROJECTACTIONS DATA: ' + data.typeOfTicket)
 	return {
 		type: types.ADD_TICKET,
 		payload: {
@@ -70,7 +71,6 @@ function SetTicketQuantity({ data, address }) {
 		}
 	}
 }
-
 function AddDistributor({ data, address }) {
 	return {
 		type: types.ADD_DISTRIBUTOR,
@@ -135,13 +135,14 @@ function BuyTicketFromPromoter({ data, address }) {
 	}
 }
 function BuyTicketFromDistributor({ data, address }) {
-	const { from, typeOfTicket, quantity, weiSent } = data
+	const { from, to, typeOfTicket, quantity, weiSent } = data
 	return {
 		type: types.BUY_TICKET_FROM_DISTRIBUTOR,
 		payload: {
 			project: { address },
 			purchaseData: {
 				from,
+				to,
 				typeOfTicket,
 				quantity,
 				weiSent
