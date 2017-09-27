@@ -6,7 +6,7 @@ contract Project {
     * Staging -> The promoter is still setting up the project details
     * PrivateFunding -> Contract is Distributor and ready to sell tickets to Distributor sellers, all ticket transfers frozen
     * PublicFunding -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
-    * Done -> Sale has finished and is finalized, ticket transfers enabled for public 
+    * Done -> Sale has finished and is finalized, ticket transfers enabled for public
     */
     enum State {Staging, PrivateFunding, PublicFunding, Done}
     State public currentState; //hold state of contract to function as state machine
@@ -16,24 +16,24 @@ contract Project {
     address public promoter; //wallet of the promoter
     address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, placeholder
 
-    uint public ticketsLeft; //number of tickets left to be sold at this event 
+    uint public ticketsLeft; //number of tickets left to be sold at this event
     uint public totalTickets; //total number of tickets
-    uint public consumerMaxTickets; //limit of the number of tickets a non-Distributor buyer can own 
+    uint public consumerMaxTickets; //limit of the number of tickets a non-Distributor buyer can own
     uint membranFee; //the fee that membran takes for this event
-    
+
     mapping(address => Buyer) buyers; // address of the buyer => buyer struct
     mapping(uint => Ticket) tickets; // type of ticket => ticket struct
     mapping(address => mapping(uint => uint)) ticketsOf; // address => type of ticket => quantity of tickets that address owns
-    mapping(address => uint) pendingWithdrawls; //address => withdraw amount pending 
+    mapping(address => uint) pendingWithdrawls; //address => withdraw amount pending
 
-    //see https://ethereum.stackexchange.com/questions/17094/how-to-store-ipfs-hash-using-bytes/17112 
+    //see https://ethereum.stackexchange.com/questions/17094/how-to-store-ipfs-hash-using-bytes/17112
     //for details on 32 byte IPFS hash
     struct Ticket {
         uint price; //price of the ticket in wei
         uint remaining; //number of tickets left of this particular ticket
-        bool created; //to check for empty values 
+        bool created; //to check for empty values
         bytes32 ipfsHash; //IPFS hash linking to off-chain ticket details
-    } 
+    }
     struct Buyer {
         bool isDistributor;
         mapping(uint => uint) allottedQuantity; //number of tickets they are allowed to buy for that specific ticket type
@@ -53,7 +53,7 @@ contract Project {
             ticketsLeft = _totalTickets;
             totalTickets= _totalTickets;
             consumerMaxTickets = _consumerMaxTickets;
-            promoter = msg.sender;  
+            promoter = msg.sender;
             currentState = State.Staging;
             Created(promoter, projectName, membranFee, ticketsLeft, totalTickets, consumerMaxTickets);
         }
@@ -62,7 +62,7 @@ contract Project {
 /**************************
         Getters
 **************************/
-    /** 
+    /**
       * @dev Checks if the tx sender is a distributor.
       * @return bool If tx sender is a distributor.
       */
@@ -86,8 +86,8 @@ contract Project {
       * @param _ticketType Ticket type.
       * @return  If the queried buyer is a distributor
       * @return  The allotted quantity of that ticket type for the buyer
-      * @return  The markup that the distributor has placed on the face value of the ticket 
-      * @return  The promoter fee to be taken out of the markup      
+      * @return  The markup that the distributor has placed on the face value of the ticket
+      * @return  The promoter fee to be taken out of the markup
       */
     function queryBuyer(address _buyer, uint _ticketType) constant returns (bool, uint, uint, uint){
         Buyer b = buyers[_buyer];
@@ -95,14 +95,14 @@ contract Project {
     }
 
 /**************************
-        Event Firers  
+        Event Firers
 **************************/
 
      event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
      event FinishStaging();
      event StartPrivateFunding();
      event StartPublicFunding();
-     
+
      event AddTicket(address indexed promoter, uint typeOfTicket);
      event AddIpfsDetailsToTicket(address indexed promoter, uint typeOfTicket, bytes32 ipfsHash);
      event SetTicketPrice (address indexed promoter, uint typeOfTicket, uint priceInWei);
@@ -122,7 +122,7 @@ contract Project {
      event Withdraw(address indexed from, uint amount);
 
 /**************************
-    Phase Modifiers  
+    Phase Modifiers
 **************************/
 
     modifier stagingPhase(){
@@ -149,11 +149,11 @@ contract Project {
      function finishStaging() onlyPromoter() {
          require(ticketsLeft == 0);  //Require the promoter properly allocated all tickets into their respective types
          require(currentState == State.Staging); //Require the previous state to be Staging to move on
-         currentState = State.PrivateFunding; 
+         currentState = State.PrivateFunding;
          FinishStaging();
      }
 
-    /** @dev Move state forward from private funding to public funding, can only by done by the promoter */     
+    /** @dev Move state forward from private funding to public funding, can only by done by the promoter */
      function startPublicFunding() onlyPromoter() {
          require(currentState == State.PrivateFunding);
          currentState = State.PublicFunding;
@@ -162,7 +162,7 @@ contract Project {
 
 
 /**************************
-    Access Modifiers  
+    Access Modifiers
 **************************/
     modifier onlyPromoter() {
         require(msg.sender == promoter);
@@ -174,7 +174,7 @@ contract Project {
     }
 
 /**************************
-    Staging Phase 
+    Staging Phase
 **************************/
 
     /**************************
@@ -182,15 +182,15 @@ contract Project {
     **************************/
     /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
       * @param _typeOfTicket Ticket type to create.
-      * @param _priceInWei Price in wei to assign to this ticket type.      
-      * @param _quantity Number of tickets of this type      
+      * @param _priceInWei Price in wei to assign to this ticket type.
+      * @param _quantity Number of tickets of this type
       */
     function addTicket(uint _typeOfTicket, uint _priceInWei, uint _quantity) onlyPromoter() stagingPhase(){
         require(tickets[_typeOfTicket].created == false); //Require that the specific ticket type hasnt been initialized yet
         tickets[_typeOfTicket].created = true;
-        
+
         AddTicket(msg.sender, _typeOfTicket);
-        setTicketPrice(_typeOfTicket, _priceInWei); 
+        setTicketPrice(_typeOfTicket, _priceInWei);
         setTicketQuantity(_typeOfTicket, _quantity); //Set ticket quantity for this type, drawing from the total ticket pool
     }
     /** @dev Add a ipfs hash to a ticket to store off-chain data, can only be done in the staging phase and by the promoter
@@ -220,7 +220,7 @@ contract Project {
     function setTicketQuantity(uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         require(ticketsLeft >= _quantity); //require quantity wont be over the total ticket pool
         require(tickets[_typeOfTicket].created == true);
-        tickets[_typeOfTicket].remaining = _quantity; 
+        tickets[_typeOfTicket].remaining = _quantity;
         ticketsLeft -= _quantity; //reduce the total ticket pool by quantity
 
         SetTicketQuantity(msg.sender, _typeOfTicket, _quantity);
@@ -233,7 +233,7 @@ contract Project {
       * @param _buyer Address of the buyer
       */
     function addDistributor(address _buyer) onlyPromoter() stagingPhase() {
-        require(_buyer != promoter); 
+        require(_buyer != promoter);
         if(buyers[_buyer].isDistributor == true) return; //dont want to throw, just return early instead
         buyers[_buyer].isDistributor = true;
         AddDistributor(msg.sender, _buyer);
@@ -242,7 +242,7 @@ contract Project {
     /** @dev Set the alloted quantity of a ticket for a distributor, can only be done in the staging phase and by the promoter
       * @param _distributor The address of the distributor.
       * @param _typeOfTicket The ticket type
-      * @param _quantity Quantity of tickets      
+      * @param _quantity Quantity of tickets
       */
     function setDistributorAllottedQuantity(address _distributor, uint _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
         require(tickets[_typeOfTicket].remaining >= _quantity); //check for sufficient tickets of that type
@@ -285,7 +285,7 @@ Funding Phase - Ticketing
     **************************/
     /**@dev An address is a valid buyer if they're not membran/promoter and we're in a phase where buying is valid*/
     modifier validBuyer() {
-        //check what phase we're in and see if the buyer is valid for that phase 
+        //check what phase we're in and see if the buyer is valid for that phase
         if (!buyers[msg.sender].isDistributor && currentState != State.PublicFunding) throw; //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
         if (buyers[msg.sender].isDistributor && currentState != State.PrivateFunding) throw; //if they are a distributor and its not the private funding phase, throw
         //make sure theyre an end comsumer or a distributor
@@ -293,7 +293,7 @@ Funding Phase - Ticketing
         _;
     }
 
-    /**@dev Check if the given address parameter is a valid distributor*/    
+    /**@dev Check if the given address parameter is a valid distributor*/
     modifier validDistributorAddress(address _distributor) {
         require(buyers[_distributor].isDistributor);
         _;
@@ -318,67 +318,67 @@ Funding Phase - Ticketing
       * @param _typeOfTicket The ticket type to purchase
       * @param _quantity How many of that type to purchase
       */
-    function buyTicketFromPromoter(uint _typeOfTicket, uint _quantity) payable 
+    function buyTicketFromPromoter(uint _typeOfTicket, uint _quantity) payable
     validBuyer() fundingPhase()  {
-        Buyer storage _buyer = buyers[msg.sender]; 
+        Buyer storage _buyer = buyers[msg.sender];
 
         //CONDITION CHECKS
         require(_quantity > 0);
-        require(tickets[_typeOfTicket].created == true); //Require valid ticket type        
+        require(tickets[_typeOfTicket].created == true); //Require valid ticket type
         require(tickets[_typeOfTicket].remaining >= _quantity);
-        
+
         //if theyre not a distributor, check if they will go over the comsumer limit
-        if (!_buyer.isDistributor 
+        if (!_buyer.isDistributor
             && _buyer.ticketsBought + _quantity > consumerMaxTickets) throw;
 
         //if the amount of tickets the Distributor seller goes over their allotted limits, reject it
         if(_buyer.isDistributor
-            && (ticketsOf[msg.sender][_typeOfTicket] + _quantity  
+            && (ticketsOf[msg.sender][_typeOfTicket] + _quantity
             > _buyer.allottedQuantity[_typeOfTicket])) throw;
 
         uint _total = tickets[_typeOfTicket].price * _quantity; //calculate total price
         uint _netValue = msg.value  - _total; //subtract ether sent from total price
-        uint _membranFee  = calc(_total, membranFee); //calculate membran's fee 
+        uint _membranFee  = calc(_total, membranFee); //calculate membran's fee
 
         require(_netValue >= 0); //make sure buyer paid enough
-    
+
         //EFFECTS
-        _buyer.ticketsBought += _quantity; //add to the total tickets bought for that buyer        
+        _buyer.ticketsBought += _quantity; //add to the total tickets bought for that buyer
         ticketsOf[msg.sender][_typeOfTicket] += _quantity; //add the tickets bought to the buyer for that ticket type
         tickets[_typeOfTicket].remaining -= _quantity; //subtract remaining quantity from pool of that ticket type
 
         //split payment between parties
-        pendingWithdrawls[msg.sender] += _netValue; 
+        pendingWithdrawls[msg.sender] += _netValue;
         pendingWithdrawls[membran] += _membranFee;
         pendingWithdrawls[promoter] += _total - _membranFee;
 
-        //alert of funds split 
+        //alert of funds split
         FundsReceived(msg.sender, _netValue);
         FundsReceived(membran, _membranFee);
         FundsReceived(promoter, _total - _membranFee);
-        
 
-        BuyTicketFromPromoter(msg.sender, promoter, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
+
+        BuyTicketFromPromoter(promoter, msg.sender, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
     }
 
     /** @dev Allow purchases from the distributor given that it's a valid buyer (end-consumer only) and valid phase (public funding)
       * @param _typeOfTicket The ticket type to purchase
       * @param _quantity How many of that type to purchase
       */
-    function buyTicketFromDistributor(address _distributor, uint _typeOfTicket, uint _quantity) payable 
+    function buyTicketFromDistributor(address _distributor, uint _typeOfTicket, uint _quantity) payable
     validDistributorAddress(_distributor) publicFundingPhase() {
-        Buyer storage _buyer = buyers[msg.sender]; 
+        Buyer storage _buyer = buyers[msg.sender];
 
         //CONDITION CHECKS
         //check that they are indeed an end comsumer
         require(msg.sender != membran
-                && msg.sender != promoter 
+                && msg.sender != promoter
                 && !_buyer.isDistributor);
         require(_quantity > 0);
         require(tickets[_typeOfTicket].created == true); //Require valid ticket type
         require(buyers[_distributor].allottedQuantity[_typeOfTicket] >= _quantity); //Require that the distributor has enough allotted quantities to sell to the buyer
         require ( _buyer.ticketsBought + _quantity <= consumerMaxTickets); //if theyre not a distributor, check if they will go over the comsumer limit
-        
+
         uint _faceValue = tickets[_typeOfTicket].price * _quantity; //calculate the total face value based on the quantity
         uint _markup =  calc(_faceValue, buyers[_distributor].markup[_typeOfTicket]); //calculate the markup price over the face value
         uint _total = _faceValue + _markup; //calculate total price
@@ -395,13 +395,13 @@ Funding Phase - Ticketing
         //split payment between parties
         pendingWithdrawls[msg.sender] += _netValue;
         pendingWithdrawls[promoter] +=  _promotersFee;
-        pendingWithdrawls[_distributor]  += _total - _promotersFee; 
+        pendingWithdrawls[_distributor]  += _total - _promotersFee;
 
-        //alert of funds split 
+        //alert of funds split
         FundsReceived(msg.sender, _netValue);
         FundsReceived(promoter, _promotersFee);
         FundsReceived(_distributor, _total - _promotersFee);
-        
+
         BuyTicketFromDistributor(_distributor, msg.sender, buyers[msg.sender].isDistributor, _typeOfTicket, _quantity, msg.value);
     }
 /**************************

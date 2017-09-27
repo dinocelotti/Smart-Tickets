@@ -60,7 +60,7 @@ const byIdObj = {
 		{
 			payload: {
 				project,
-			purchaseData: { from, typeOfTicket, quantity, weiSent }
+			purchaseData: { to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
@@ -68,7 +68,7 @@ const byIdObj = {
 		const prevPurchases = prevProject.purchasesFromPromoter
 		const nextPurchases = [
 			...prevPurchases,
-			{ from, typeOfTicket, quantity, weiSent }
+			{ to, typeOfTicket, quantity, weiSent }
 		]
 		const projectToAdd = {
 			...prevProject,
