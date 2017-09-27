@@ -11,18 +11,24 @@ const byIdObj = {
 	[BUY_TICKET_FROM_DISTRIBUTOR]: (
 		state,
 		{
-			payload: {
-				project,
+				payload: {
+					project,
 			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
+				}
 			}
-		}
 	) => {
-		const prevPurchAddress = state[to]
-		const nextPurchAddress = {
-			...prevPurchAddress,
-			TicketPurchases: { from, typeOfTicket, quantity, weiSent }
+		const ticketTitle = `${typeOfTicket}_${project.address}`
+		const prevAccountState = state[to]
+		const prevTicketState = prevAccountState.tickets
+		const nextTicketState = {
+			...prevTicketState,
+			[ticketTitle]: { from, to, typeOfTicket, quantity, weiSent }
 		}
-		return { ...state, [to]: nextPurchAddress }
+		const nextAccountState = {
+			...prevAccountState,
+			tickets: nextTicketState
+		}
+		return { ...state, [to]: nextAccountState }
 	}
 }
 
