@@ -4,6 +4,7 @@ import { createReducerFromObj, makeNewSet } from './reducer-helpers'
 
 const { ADD_TICKET, ADD_IPFS_DETAILS_TO_TICKET } = types
 const { SET_TICKET_PRICE, SET_TICKET_QUANTITY } = types
+const { BUY_TICKET_FROM_PROMOTER, BUY_TICKET_FROM_DISTRIBUTOR } = types
 
 const ticketSetHelper = ({ attr, ticketAttr }) => ({ state, ticket }) => {
 	const prevTicket = state[ticket.id]
@@ -36,7 +37,39 @@ const byIdObj = {
 			ticketAttr: 'quantity'
 		})
 		return setTicketQuantity({ state, ticket })
-	}
+	},
+	[BUY_TICKET_FROM_PROMOTER]: (
+		state,
+		{
+			payload: {
+			ticket: { id },
+			purchaseData: { quantity, to }
+			}
+		}
+	) => {
+		const previousTicketHolderState = state[id].ticketHolders
+		const nextTicketHolderState = {
+			...previousTicketHolderState,
+			[to]: quantity
+		}
+		return { ...state, [id]: { ...state[id], ticketHolders: nextTicketHolderState } }
+	},
+	[BUY_TICKET_FROM_DISTRIBUTOR]: (
+		state,
+		{
+			payload: {
+			ticket: { id },
+			purchaseData: { quantity }
+			}
+		}
+	) => {
+		const previousDistributorState = state[id].ticketHolders
+		const nextDistributorState = {
+			...previousDistributorState,
+			[id]: quantity
+		}
+		return { ...state, [id]: { ...state[id], distributors: nextDistributorState } }
+	},
 }
 
 const idsObj = {

@@ -120,20 +120,26 @@ function SetMarkup({ data, address }) {
 	}
 }
 function BuyTicketFromPromoter({ data, address }) {
-	const { typeOfTicket, quantity, weiSent, from } = data
+	const { from, to, typeOfTicket, quantity, weiSent } = data
 	return {
 		type: types.BUY_TICKET_FROM_PROMOTER,
 		payload: {
 			project: { address },
 			purchaseData: {
 				from,
+				to,
 				typeOfTicket,
 				quantity,
 				weiSent
+			},
+			ticket: {
+				id: getId({ typeOfTicket: data.typeOfTicket }, address),
+				fee: data.markup
 			}
 		}
 	}
 }
+
 function BuyTicketFromDistributor({ data, address }) {
 	const { from, to, typeOfTicket, quantity, weiSent } = data
 	return {
@@ -146,6 +152,10 @@ function BuyTicketFromDistributor({ data, address }) {
 				typeOfTicket,
 				quantity,
 				weiSent
+			},
+			ticket: {
+				id: getId({ typeOfTicket: data.typeOfTicket }, address),
+				fee: data.markup
 			}
 		}
 	}

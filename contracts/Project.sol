@@ -115,7 +115,7 @@ contract Project {
 
      event SetMarkup (address indexed distributor, uint _markup, uint _typeOfTicket);
 
-     event BuyTicketFromPromoter(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket, uint quantity, uint weiSent);
+     event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, uint typeOfTicket, uint quantity, uint weiSent);
      event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket,  uint quantity, uint weiSent);
      event FundsReceived(address indexed from, uint amount);
 
@@ -358,7 +358,7 @@ Funding Phase - Ticketing
         FundsReceived(promoter, _total - _membranFee);
 
 
-        BuyTicketFromPromoter(promoter, msg.sender, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
+        BuyTicketFromPromoter(msg.sender, promoter, _buyer.isDistributor, _typeOfTicket, _quantity, msg.value);
     }
 
     /** @dev Allow purchases from the distributor given that it's a valid buyer (end-consumer only) and valid phase (public funding)

@@ -8,7 +8,7 @@ export async function getAccountsAndBals() {
 		accounts: accounts.reduce(
 			(arr, address, currIdx) => [
 				...arr,
-				{ address, balance: balances[currIdx] }
+				{ address, balance: balances[currIdx], tickets: [] }
 			],
 			[]
 		)

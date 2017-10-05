@@ -8,22 +8,24 @@ const byIdObj = {
 		...state,
 		...accounts.reduce((obj, acc) => ({ ...obj, [acc.address]: acc }), {})
 	}),
-
 	[BUY_TICKET_FROM_PROMOTER]: (
 		state,
 		{
 			payload: {
-					project,
-			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
+				project,
+				purchaseData: { from, to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
 		const ticketTitle = `${typeOfTicket}_${project.address}`
 		const prevAccountState = state[to]
 		const prevTicketState = prevAccountState.tickets
+		const nextTicketQuantity = prevTicketState[ticketTitle].quantity
+			? prevTicketState[ticketTitle].quantity + quantity
+			: quantity
 		const nextTicketState = {
 			...prevTicketState,
-			[ticketTitle]: { from, to, typeOfTicket, quantity, weiSent }
+			[ticketTitle]: { ticket: ticketTitle, quantity: nextTicketQuantity }
 		}
 		const nextAccountState = {
 			...prevAccountState,
@@ -35,11 +37,11 @@ const byIdObj = {
 	[BUY_TICKET_FROM_DISTRIBUTOR]: (
 		state,
 		{
-				payload: {
-					project,
-			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
-				}
+			payload: {
+				project,
+				purchaseData: { from, to, typeOfTicket, quantity, weiSent }
 			}
+		}
 	) => {
 		const ticketTitle = `${typeOfTicket}_${project.address}`
 		const prevAccountState = state[to]
@@ -53,7 +55,7 @@ const byIdObj = {
 			tickets: nextTicketState
 		}
 		return { ...state, [to]: nextAccountState }
-	},
+	}
 }
 
 const idsObj = {

@@ -16,6 +16,7 @@ const byIdObj = {
 			state: 'Staging',
 			tickets: [],
 			distributors: [],
+			ticketHolders: [],
 			purchasesFromPromoter: [],
 			purchasesFromDistributor: [],
 			...project
@@ -60,19 +61,22 @@ const byIdObj = {
 		{
 			payload: {
 				project,
-			purchaseData: { to, typeOfTicket, quantity, weiSent }
+				purchaseData: { to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
 		const prevProject = state[project.address]
 		const prevPurchases = prevProject.purchasesFromPromoter
+		const prevTicketHolders = prevProject.ticketHolders
 		const nextPurchases = [
 			...prevPurchases,
 			{ to, typeOfTicket, quantity, weiSent }
 		]
+		const nextTicketHolders = [...prevTicketHolders, to]
 		const projectToAdd = {
 			...prevProject,
-			purchasesFromPromoter: nextPurchases
+			purchasesFromPromoter: nextPurchases,
+			ticketHolders: nextTicketHolders
 		}
 		return { ...state, [project.address]: projectToAdd }
 	},
@@ -82,22 +86,26 @@ const byIdObj = {
 		{
 			payload: {
 				project,
-			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
+				purchaseData: { from, to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
 		const prevProject = state[project.address]
 		const prevPurchases = prevProject.purchasesFromDistributor
+		const prevTicketHolders = prevProject.ticketHolders
 		const nextPurchases = [
 			...prevPurchases,
 			{ from, to, typeOfTicket, quantity, weiSent }
 		]
+		const nextTicketHolders = [...prevTicketHolders, to]
 		const projectToAdd = {
 			...prevProject,
-			purchasesFromDistributor: nextPurchases
+			purchasesFromDistributor: nextPurchases,
+			ticketHolders: nextTicketHolders
 		}
 		return { ...state, [project.address]: projectToAdd }
 	},
+
 	[WITHDRAW]: (state, action) => {
 		return { ...state }
 	}

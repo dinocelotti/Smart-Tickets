@@ -9,11 +9,10 @@ function isBigNumber(object) {
 
 /**
  * Takes an event and normalizes the arguments inside it, converting any big numbers into their string equivalents
- * @param {object, string}  
+ * @param {object, string}
  */
 const normalizeArgs = log => {
 	const { args, address, ...metadata } = log
-
 	return {
 		address,
 
@@ -34,7 +33,9 @@ const normalizeArgs = log => {
 function maptoBN(arr) {
 	return arr.map(x => BNtoStr(x))
 }
+
 function BNtoStr(x) {
+	console.log("debugging: " + x)
 	return isBigNumber(x) ? x.toString(10) : x
 }
 

@@ -141,6 +141,7 @@ class Promoter extends Entity {
      Tickets
      ***************/
 	async addTicket(ticketType, ticketPrice, ticketQuantity) {
+		console.log('DEBUGGING STAGE 1 - PROJECTAPI TICKETTYPE: ' + ticketType)
 		return this.wrapTx(
 			PromoterTypes.addTicket(ticketType, ticketPrice, ticketQuantity)
 		)
@@ -226,7 +227,6 @@ class Buyer extends Entity {
      **************************/
 	async buyTicketFromPromoter({ ticketType, ticketQuantity, txObj }) {
 		//get phase to check to see if its valid
-		console.log('buyTicketFromPromoter:', this.address)
 		return this.wrapTx(
 			BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity, txObj)
 		)
