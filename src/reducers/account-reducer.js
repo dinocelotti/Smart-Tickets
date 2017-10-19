@@ -13,19 +13,18 @@ const byIdObj = {
 		{
 				payload: {
 					project,
-			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
+			purchaseData: { to, typeOfTicket, quantity }
 				}
 			}
 	) => {
+		quantity = parseInt(quantity)
 		const ticketTitle = `${typeOfTicket}_${project.address}`
 		const prevAccountState = state[to]
 		const prevTicketState = prevAccountState.tickets
-		const nextTicketQuantity = prevTicketState[ticketTitle].quantity
-			? prevTicketState[ticketTitle].quantity + quantity
-			: quantity
+		const nextTicketQuantity = prevTicketState[ticketTitle] ? prevTicketState[ticketTitle].quantity + quantity : quantity
 		const nextTicketState = {
 			...prevTicketState,
-			[ticketTitle]: { ticket: ticketTitle, quantity: nextTicketQuantity }
+			[ticketTitle]: { quantity: nextTicketQuantity }
 		}
 		const nextAccountState = {
 			...prevAccountState,
@@ -43,6 +42,7 @@ const byIdObj = {
 			}
 		}
 	) => {
+		quantity = parseInt(quantity)
 		const ticketTitle = `${typeOfTicket}_${project.address}`
 		const prevAccountState = state[to]
 		const prevTicketState = prevAccountState.tickets
