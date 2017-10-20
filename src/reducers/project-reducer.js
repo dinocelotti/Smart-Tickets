@@ -61,7 +61,7 @@ const byIdObj = {
 		{
 			payload: {
 				project,
-				purchaseData: { to, typeOfTicket, quantity, weiSent }
+			purchaseData: { to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
@@ -72,7 +72,7 @@ const byIdObj = {
 			...prevPurchases,
 			{ to, typeOfTicket, quantity, weiSent }
 		]
-		const nextTicketHolders = [...prevTicketHolders, to]
+		const nextTicketHolders = prevTicketHolders.includes(to) ? prevTicketHolders : [...prevTicketHolders, to]
 		const projectToAdd = {
 			...prevProject,
 			purchasesFromPromoter: nextPurchases,
@@ -86,7 +86,7 @@ const byIdObj = {
 		{
 			payload: {
 				project,
-				purchaseData: { from, to, typeOfTicket, quantity, weiSent }
+			purchaseData: { from, to, typeOfTicket, quantity, weiSent }
 			}
 		}
 	) => {
@@ -97,7 +97,7 @@ const byIdObj = {
 			...prevPurchases,
 			{ from, to, typeOfTicket, quantity, weiSent }
 		]
-		const nextTicketHolders = [...prevTicketHolders, to]
+		const nextTicketHolders = prevTicketHolders.includes(to) ? prevTicketHolders : [...prevTicketHolders, to]
 		const projectToAdd = {
 			...prevProject,
 			purchasesFromDistributor: nextPurchases,

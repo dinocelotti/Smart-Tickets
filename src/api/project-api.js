@@ -141,7 +141,6 @@ class Promoter extends Entity {
      Tickets
      ***************/
 	async addTicket(ticketType, ticketPrice, ticketQuantity) {
-		console.log('DEBUGGING STAGE 1 - PROJECTAPI TICKETTYPE: ' + ticketType)
 		return this.wrapTx(
 			PromoterTypes.addTicket(ticketType, ticketPrice, ticketQuantity)
 		)

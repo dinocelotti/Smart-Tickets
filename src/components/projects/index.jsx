@@ -43,6 +43,7 @@ export default class Projects extends React.Component {
 		purchasesFromPromoter,
 		purchasesFromDistributor,
 		tickets,
+		ticketHolders,
 		distributors,
 		address,
 		state /* eslint-enable */,
