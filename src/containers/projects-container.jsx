@@ -24,9 +24,9 @@ export default connect(
 		ticketState,
 		distributorState
 	}) => ({
-		projectState,
-		accounts,
-		ticketState,
-		distributorState
-	})
+			projectState,
+			accounts,
+			ticketState,
+			distributorState
+		})
 )(ProjectsContainer)

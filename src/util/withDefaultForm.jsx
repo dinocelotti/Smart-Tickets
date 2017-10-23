@@ -13,6 +13,7 @@ function withDefaultForm(WrappedComponent, formFields) {
 				}, resolve)
 			)
 
+		//generate the inputs object to create the markup
 		makeDefaultInputs = inputNames => {
 			return inputNames.reduce((inputsObj, inputKey) => {
 				const humanField = camelToHuman(inputKey)

@@ -41,6 +41,7 @@ contract Project {
         uint promotersFee; //fee that the promoter takes from the markup
         bytes32 ipfsHash; //hash linking to buyers profile, if any
         uint ticketsBought; //total number of tickets bought for this buyer
+        string info; //to be converted to an IPFS hash for off-chain storage
     }
 
     function Project(
@@ -98,7 +99,7 @@ contract Project {
         Event Firers
 **************************/
 
-     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
+     event LogCreated(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
      event FinishStaging();
      event StartPrivateFunding();
      event StartPublicFunding();
@@ -118,6 +119,8 @@ contract Project {
      event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, uint typeOfTicket, uint quantity, uint weiSent);
      event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket,  uint quantity, uint weiSent);
      event FundsReceived(address indexed from, uint amount);
+
+     event SetBuyerInfo(address buyer, string name, string info);
 
      event Withdraw(address indexed from, uint amount);
 
@@ -274,7 +277,14 @@ contract Project {
 
         SetMarkup(msg.sender, _markup, _typeOfTicket);
     }
-
+    /* @dev Set the buyer information corresponding to a particular address
+]    * @param name Name we want to set the buyer struct with, we will expand this with more info as security and off-chain storage ramps up
+    */
+    function setBuyerInfo(address buyerAddress, string buyerName, string buyerInfo) {
+        buyers[msg.sender].name = buyerName;
+        buyers[msg.sender].info = buyerInfo;
+        SetBuyerInfo(name, info);
+    }
 
 /**************************
 Funding Phase - Ticketing
@@ -286,8 +296,10 @@ Funding Phase - Ticketing
     /**@dev An address is a valid buyer if they're not membran/promoter and we're in a phase where buying is valid*/
     modifier validBuyer() {
         //check what phase we're in and see if the buyer is valid for that phase
-        if (!buyers[msg.sender].isDistributor && currentState != State.PublicFunding) throw; //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
-        if (buyers[msg.sender].isDistributor && currentState != State.PrivateFunding) throw; //if they are a distributor and its not the private funding phase, throw
+        if (!buyers[msg.sender].isDistributor && currentState != State.PublicFunding) 
+            revert(); //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
+        if (buyers[msg.sender].isDistributor && currentState != State.PrivateFunding) 
+            revert(); //if they are a distributor and its not the private funding phase, throw
         //make sure theyre an end comsumer or a distributor
         require(msg.sender != membran && msg.sender != promoter);
         _;
@@ -329,12 +341,12 @@ Funding Phase - Ticketing
 
         //if theyre not a distributor, check if they will go over the comsumer limit
         if (!_buyer.isDistributor
-            && _buyer.ticketsBought + _quantity > consumerMaxTickets) throw;
+            && _buyer.ticketsBought + _quantity > consumerMaxTickets) revert();
 
         //if the amount of tickets the Distributor seller goes over their allotted limits, reject it
         if(_buyer.isDistributor
             && (ticketsOf[msg.sender][_typeOfTicket] + _quantity
-            > _buyer.allottedQuantity[_typeOfTicket])) throw;
+            > _buyer.allottedQuantity[_typeOfTicket])) revert();
 
         uint _total = tickets[_typeOfTicket].price * _quantity; //calculate total price
         uint _netValue = msg.value  - _total; //subtract ether sent from total price
@@ -407,7 +419,7 @@ Funding Phase - Ticketing
 /**************************
 Done Phase - Withdrawls
 **************************/
-    function withdraw() donePhase(){
+    function withdraw() donePhase() {
         uint amount = pendingWithdrawls[msg.sender];
         pendingWithdrawls[msg.sender] = 0 ;
         msg.sender.transfer(amount);
