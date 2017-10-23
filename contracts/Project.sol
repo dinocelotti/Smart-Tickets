@@ -99,7 +99,7 @@ contract Project {
         Event Firers
 **************************/
 
-     event LogCreated(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
+     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
      event FinishStaging();
      event StartPrivateFunding();
      event StartPublicFunding();
@@ -120,7 +120,7 @@ contract Project {
      event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, uint typeOfTicket,  uint quantity, uint weiSent);
      event FundsReceived(address indexed from, uint amount);
 
-     event SetBuyerInfo(address buyer, string name, string info);
+   //  event SetBuyerInfo(address buyer, string name, string info);
 
      event Withdraw(address indexed from, uint amount);
 
@@ -280,11 +280,11 @@ contract Project {
     /* @dev Set the buyer information corresponding to a particular address
 ]    * @param name Name we want to set the buyer struct with, we will expand this with more info as security and off-chain storage ramps up
     */
-    function setBuyerInfo(address buyerAddress, string buyerName, string buyerInfo) {
+  /*  function setBuyerInfo(address buyerAddress, string buyerName, string buyerInfo) {
         buyers[msg.sender].name = buyerName;
         buyers[msg.sender].info = buyerInfo;
         SetBuyerInfo(name, info);
-    }
+    }*/
 
 /**************************
 Funding Phase - Ticketing
