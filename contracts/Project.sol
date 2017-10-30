@@ -97,11 +97,7 @@ contract Project {
     }
 
     function getUserInfo(address user) constant returns (string, string) {
-        if(users[user].name){
             return (users[user].name, users[user].info);
-        } else {
-            return ("DEFAULT", "DEFAULT");
-        }
     }
 
 /**************************
