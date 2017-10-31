@@ -27,11 +27,10 @@ Ticket sales information in the live events industry is currently stored and man
 
 Some are trying to take action, but each solution thus far has significant drawbacks. We acknowledge that there are other blockchain-based ticket startups in existence. However, we believe they are approaching the problem in a way that directly competes with giants of industry, such as Live Nation and Ticketmaster. These current blockchain-based ticket startups do not provide a foundation service where industry leaders can improve their offering. MembranLive, on the other hand, acts as the gears on which that chain can more efficiently operate, rather than being a “part” of the value chain itself, and fosters greater coordination and accessibility of data throughout the whole ticket industry. 
 
-Existing primary and secondary market competitors: Ticketmaster, Eventbrite, SeatGeek, StubHub
-
+Existing primary ticket sellers: Ticketmaster, Eventbrite, SeeTickets, The Ticket Factory
+Existing secondary market sellers: SeatGeek, StubHub, Get Me In!, Viagogo, Seatwave, eBay, 
 Non blockchain-based solutions: Songkick, Twickets
-
-Blockchain-based solutions: Aventus, Blocktix, LAVA, HelloSugoi
+Blockchain-based solutions: Aventus, Blocktix, LAVA, HelloSugoi, Guts
 
 Our key opposition is secondary market sellers whose business we are directly eroding. In some cases, primary ticket sellers have purchased secondary platforms in an attempt to protect and capture previously lost value. Here, too, we erode the secondary platform’s business, but only insofar as this value is redirected and more immediately captured by the parent.
 
