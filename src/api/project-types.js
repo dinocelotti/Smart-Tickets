@@ -94,5 +94,11 @@ export const BuyerTypes = {
       txObj
     ),
 
-  setUserDetails: (_name, _info) => makeMethod('setUserDetails', _name, _info)
+  setUserDetails: (_user, _name, _info) =>
+    makeMethod('setUserDetails', _user, _name, _info)
+};
+
+export const UserTypes = {
+  setUser: (userAddresss, name, info) => makeMethod('setUser', name, info),
+  getUser: () => makeMethod('getUser', {})
 };

@@ -26,6 +26,16 @@ export default class EndUser extends Component {
       }, resolve)
     );
 
+  handleSubmit = async () => {
+    const { userAddress, name, information } = this.state;
+    this.setState(() => ({ loading: true }));
+    const userInstance = new projectApi.User({
+      userAddress: userAddress
+    });
+    await userInstance.setUser(name, information);
+    this.setState(() => ({ loading: false }));
+  };
+
   makeDefaultInputs = inputNames => {
     return inputNames.reduce((inputsObj, inputKey) => {
       const humanField = camelToHuman(inputKey);
@@ -47,13 +57,6 @@ export default class EndUser extends Component {
       description: `Balance in wei: ${this.props.accounts.byId[id].balance}`
     }));
   }
-
-  handleSubmit = async () => {
-    const { userAddress, name, information } = this.props.data;
-    this.setState(() => ({ loading: true }));
-    await projectApi.setUserDetails(this.props.data);
-    this.setState(() => ({ loading: false }));
-  };
 
   handleClick = currentTab => {
     this.setState(() => ({ activeItem: currentTab }));
