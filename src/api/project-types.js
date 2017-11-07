@@ -20,7 +20,9 @@ function makeMethod(methodName, ...params) {
   };
 }
 export function encodeString(str) {
-  return web3.toDecimal(web3.toHex(str));
+  var myHex = web3.toHex(str);
+  console.log('Encoded '+str+' as hex: '+myHex);
+  return myHex;
 }
 export function decodeString(hex) {
   return web3.toAscii(hex);
