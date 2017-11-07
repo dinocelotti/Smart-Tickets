@@ -14,7 +14,7 @@ contract ProjectResolver {
     event AddAddress(address indexed _address, address _contract );
     event AddProject(address _project);
 
-    function ProjResolver(string _name) {
+    function ProjectResolver(string _name) {
         resolverName = _name;
         resolverAddress = msg.sender;
     }
@@ -23,7 +23,7 @@ contract ProjectResolver {
         projectsAssociatedOf[msg.sender][newProjId] = _project;
         AddAddress(msg.sender, _project);
     }
-    function addProject(address _project){
+    function addProject(address _project) {
         projects.push(_project);
         AddProject(_project);
     }

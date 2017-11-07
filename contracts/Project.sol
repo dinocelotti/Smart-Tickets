@@ -68,7 +68,7 @@ contract Project {
       * @dev Checks if the tx sender is a distributor.
       * @return bool If tx sender is a distributor.
       */
-    function isDistributor() constant returns(bool){
+    function isDistributor() constant returns(bool) {
         return users[msg.sender].isDistributor;
     }
 

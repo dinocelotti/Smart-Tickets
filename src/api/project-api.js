@@ -1,7 +1,12 @@
 import ethApi from './eth-api';
 import Utils from './api-helpers';
 import ApiErrs from './api-errors';
-import { BuyerTypes, EntityTypes, PromoterTypes } from './project-types';
+import {
+  BuyerTypes,
+  EntityTypes,
+  PromoterTypes,
+  UserTypes
+} from './project-types';
 
 /**
  *
@@ -34,6 +39,13 @@ async function createProject({
   }); // Add the Project to the list of Projects that address is associated with
 }
 
+async function createRegistry() {
+  await ethApi.loadContracts();
+  await ethApi.deployUserRegistry();
+  const userInstance = ethApi.deployedUserRegistry;
+  return userInstance;
+}
+
 /**
  *
  * A base class to inherit from, providing utility functions to the promoter and buyer/distributor
@@ -45,6 +57,7 @@ class Entity {
     this.projectAddress = projectAddress;
     this.projectInstance = {};
   }
+
   async init() {
     //console.group('Entity Constructor')
     try {
@@ -251,14 +264,48 @@ class Buyer extends Entity {
       )
     );
   }
+}
 
-  async setUserDetails({ name, info }) {
-    return this.wrapTx(BuyerTypes.setUserDetails(name, info));
+class User {
+  constructor({ userAddress }) {
+    this.userAddress = userAddress;
+  }
+  /**
+	 *
+	 * Wrap a transaction call to simplify calls to the smart contract
+	 * @param {string, string} { methodName, params }
+	 * @returns
+	 * @memberof Entity
+	 */
+  async wrapTx({ methodName, params, txObj = null }) {
+    const defaultParams = {
+      from: this.address, //set msg.sender to this entity
+      gas: 200000 //placeholder gas value for the transaction to pass,
+    };
+
+    const userInstance = await createRegistry();
+
+    //call the project instance with the given method name and parameters, if any
+    return userInstance[methodName](
+      ...[
+        // same as using func.apply to spread parameters
+        ...params, // spread parameters if any
+        txObj ? { ...defaultParams, ...txObj } : defaultParams //override or include extra transaction parameters
+      ]
+    );
+  }
+  async setUser(name, info) {
+    return this.wrapTx(UserTypes.setUser(name, info));
+  }
+
+  async getUser() {
+    return this.wrapTx(UserTypes.getUser());
   }
 }
 
 export default {
   createProject,
   Promoter,
-  Buyer
+  Buyer,
+  User
 };

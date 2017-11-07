@@ -68,6 +68,7 @@ class DistributorForm extends Component {
       txObj: { value: this.state.ticketCost }
     });
   };
+
   componentWillReceiveProps(nextProps) {
     this.calculateTicketCost(nextProps);
   }
