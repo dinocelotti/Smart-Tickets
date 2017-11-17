@@ -344,31 +344,34 @@ Funding Phase - Ticketing
         User storage _user = users[msg.sender];
 
         //CONDITION CHECKS
+        //  A positive amount has been requested
+        //  Ticket type is valid
+        //  Promoter has enough tickets of this type remaining
         require(_quantity > 0);
-        require(tickets[_typeOfTicket].created == true); //Require valid ticket type
+        require(tickets[_typeOfTicket].created == true);
         require(tickets[_typeOfTicket].remaining >= _quantity);
 
-        //if theyre not a distributor, check if they will go over the comsumer limit
+        //  If buyer is not a distributor, check they will not exceed consumer limit
         if (!_user.isDistributor &&
             _user.ticketsBought + _quantity > 
             consumerMaxTickets) 
             revert();
 
-        //if the amount of tickets the Distributor seller goes over their allotted limits, reject it
+        //  If buyer is distributor, check they will not exceed allotted amount for this type
         if (_user.isDistributor &&
             (ticketsOf[msg.sender][_typeOfTicket] + _quantity >
             _user.allottedQuantity[_typeOfTicket])) 
             revert();
 
         uint _total = tickets[_typeOfTicket].price * _quantity; //calculate total price
-        uint _netValue = msg.value - _total; //subtract ether sent from total price
+        uint _netValue = msg.value - _total; //subtract total price from ether sent
         uint _membranFee = calc(_total, membranFee); //calculate membran's fee
 
         require(_netValue >= 0); //make sure user paid enough
 
         //EFFECTS
-        _user.ticketsBought += _quantity; //add to the total tickets bought for that user
         ticketsOf[msg.sender][_typeOfTicket] += _quantity; //add the tickets bought to the user for that ticket type
+        _user.ticketsBought += _quantity; //add to the total tickets bought for that user
         tickets[_typeOfTicket].remaining -= _quantity; //subtract remaining quantity from pool of that ticket type
 
         //split payment between parties
@@ -396,6 +399,7 @@ Funding Phase - Ticketing
 
         //CONDITION CHECKS
         //  Buyer is an end consumer
+        //  A positive amount has been resquested
         //  Ticket type is valid
         //  Distributor owns enough tickets of that type to sell to the user
         //  Buyer will not go over the consumer limit
