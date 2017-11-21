@@ -25,7 +25,7 @@ export function encodeString(str) {
   return myHex;
 }
 export function decodeString(hex) {
-  return web3.toAscii(hex);
+  return web3.toUTF8(hex);
 }
 export const EntityTypes = {
   queryBuyer: (_buyer, _typeOfTicket) =>

@@ -37,6 +37,7 @@ function StartPublicFunding(project) {
 	return { type: types.START_PUBLIC_FUNDING, payload: { project } }
 }
 function AddTicket({ data, address }) {
+	// Ticket types are stored on chain as hex, convert back to UTF8 before updating state
 	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.ADD_TICKET,
@@ -56,6 +57,7 @@ function AddIpfsDetailsToTicket({ data, address }) {
 	}
 }
 function SetTicketPrice({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.SET_TICKET_PRICE,
 		payload: {
@@ -65,6 +67,7 @@ function SetTicketPrice({ data, address }) {
 	}
 }
 function SetTicketQuantity({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.SET_TICKET_QUANTITY,
 		payload: {
@@ -83,6 +86,7 @@ function AddDistributor({ data, address }) {
 	}
 }
 function SetDistributorAllottedQuantity({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.SET_DISTRIBUTOR_ALLOTTED_QUANTITY,
 		payload: {
@@ -109,6 +113,7 @@ function SetDistributorFee({ data, address }) {
 	}
 }
 function SetMarkup({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.SET_MARKUP,
 		payload: {
@@ -122,6 +127,7 @@ function SetMarkup({ data, address }) {
 	}
 }
 function BuyTicketFromPromoter({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	const { from, to, typeOfTicket, quantity, weiSent } = data
 	return {
 		type: types.BUY_TICKET_FROM_PROMOTER,
@@ -143,6 +149,7 @@ function BuyTicketFromPromoter({ data, address }) {
 }
 
 function BuyTicketFromDistributor({ data, address }) {
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	const { from, to, typeOfTicket, quantity, weiSent } = data
 	return {
 		type: types.BUY_TICKET_FROM_DISTRIBUTOR,
