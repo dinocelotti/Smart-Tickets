@@ -1,4 +1,5 @@
 import types from './action-types'
+import Web3 from 'web3'
 export default {
 	projectResolverDeploySuccess,
 	Created,
@@ -16,6 +17,7 @@ export default {
 	BuyTicketFromDistributor,
 	Withdraw
 }
+const web3 = new Web3();
 function projectResolverDeploySuccess(projectResolverDeployed) {
 	return {
 		type: types.PROJECT_RESOLVER_DEPLOYED_SUCCESS,
@@ -35,7 +37,7 @@ function StartPublicFunding(project) {
 	return { type: types.START_PUBLIC_FUNDING, payload: { project } }
 }
 function AddTicket({ data, address }) {
-	console.log('DEBUGGING STAGE 3 - PROJECTACTIONS DATA: ' + data.typeOfTicket)
+	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.ADD_TICKET,
 		payload: {
