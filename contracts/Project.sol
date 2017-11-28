@@ -30,7 +30,10 @@ contract Project {
     }
     State public currentState; //hold state of contract to function as state machine
 
+
     string public projectName; //name of the project to be created
+    string public country;  //host country
+    string public city;     //host city
 
     address public promoter; //wallet of the promoter
     address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, placeholder
@@ -38,7 +41,8 @@ contract Project {
     uint public ticketsLeft; //number of tickets left to be sold at this event
     uint public totalTickets; //total number of tickets
     uint public consumerMaxTickets; //limit of the number of tickets a non-Distributor user can own
-    uint membranFee; //the fee that membran takes for this event
+    uint membranFee;    //the fee that membran takes for this event
+    uint public endTime;    //time when sales end
 
     mapping(address => User) users; // address of the user => user struct
     mapping(bytes32 => Ticket) tickets; // type of ticket => ticket struct
