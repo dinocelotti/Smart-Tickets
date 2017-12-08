@@ -30,6 +30,7 @@ contract Project {
     }
     State public currentState; //hold state of contract to function as state machine
 
+
     string public projectName; //name of the project to be created
     string public country;  //host country
     string public city;     //host city
@@ -181,15 +182,6 @@ contract Project {
         require(users[msg.sender].isDistributor);
         _;
     }
-
-/****************************
-    Setters - any phase
-****************************/
-    function increaseTicketTotal(uint _amount) onlyPromoter() {
-        totalTickets += _amount;
-        ticketsLeft += _amount;
-    }
-
 
 /**************************
     Staging Phase
