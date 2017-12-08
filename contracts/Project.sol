@@ -107,29 +107,29 @@ contract Project {
         Event Firers
 **************************/
 
-    event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
-    event FinishStaging();
-    event StartPrivateFunding();
-    event StartPublicFunding();
+     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
+     event FinishStaging();
+     event StartPrivateFunding();
+     event StartPublicFunding();
 
-    event AddTicket(address indexed promoter, bytes32 typeOfTicket);
-    event AddIpfsDetailsToTicket(address indexed promoter, bytes32 typeOfTicket, bytes32 ipfsHash);
-    event SetTicketPrice (address indexed promoter, bytes32 typeOfTicket, uint priceInWei);
-    event SetTicketQuantity (address indexed promoter, bytes32 typeOfTicket, uint quantity);
-    event IncreaseTicketTotal(address indexed promoter, uint totalTickets, uint ticketsLeft);
+     event AddTicket(address indexed promoter, bytes32 typeOfTicket);
+     event AddIpfsDetailsToTicket(address indexed promoter, bytes32 typeOfTicket, bytes32 ipfsHash);
+     event SetTicketPrice (address indexed promoter, bytes32 typeOfTicket, uint priceInWei);
+     event SetTicketQuantity (address indexed promoter, bytes32 typeOfTicket, uint quantity);
 
-    event AddDistributor (address indexed promoter, address distributor);
-    event SetDistributorAllottedQuantity (address indexed promoter, address _distributor, bytes32 _typeOfTicket, uint allottedQuantity);
-    event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
 
-    event SetMarkup (address indexed distributor, uint _markup, bytes32 _typeOfTicket);
-    event SetUserDetails(address indexed userAddress, string name, string info);
+     event AddDistributor (address indexed promoter, address distributor);
+     event SetDistributorAllottedQuantity (address indexed promoter, address _distributor, bytes32 _typeOfTicket, uint allottedQuantity);
+     event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
 
-    event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
-    event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
-    event FundsReceived(address indexed from, uint amount);
+     event SetMarkup (address indexed distributor, uint _markup, bytes32 _typeOfTicket);
+     event SetUserDetails(address indexed userAddress, string name, string info);
 
-    event Withdraw(address indexed from, uint amount);
+     event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
+     event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
+     event FundsReceived(address indexed from, uint amount);
+
+     event Withdraw(address indexed from, uint amount);
 
 /**************************
     Phase Modifiers
@@ -188,15 +188,6 @@ contract Project {
     function increaseTicketTotal(uint _amount) onlyPromoter() {
         totalTickets += _amount;
         ticketsLeft += _amount;
-    }
-
-    function increaseTicketsOf(bytes32 _typeOfTicket, uint _amount) onlyPromoter() {
-        require(ticketsLeft >= _amount);    // Check if there are enough unassigned tickets
-        require(tickets[_typeOfTicket].created == true);    // Check that this type exists
-        ticketsLeft -= _amount;
-
-        tickets[_typeOfTicket].remaining += _amount;
-        SetTicketQuantity(msg.sender, _typeOfTicket, tickets[_typeOfTicket].remaining);
     }
 
 
