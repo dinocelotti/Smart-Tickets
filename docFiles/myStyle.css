@@ -1,0 +1,42 @@
+body {
+    background-color: #ffffff;
+}
+tbody {
+    display: table-row-group;
+    vertical-align: middle;
+    border-left: 2px solid black;
+    border-right: 2px solid black;
+}
+tr {
+    display: table-row;
+    padding: 5px;
+}
+.altColor {
+    background-color: #eeeeef;
+}
+.rowColor {
+    background-color: #ffffff;
+}
+.methSumm {
+    padding: 0px 20px 5px 10px;
+    border: 1px solid #9eadc0;
+    background-color: #f9f9f9;
+}
+
+
+
+.methDetails {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-top: 20px;
+    border: 2px solid #9eadc0;
+}
+.method {
+    border: 1px solid #9eadc0;
+    background-color: #ffffff;
+}
+.methDetHeader {
+    padding: 5px;
+    background-color: #dee3e9;
+    border-bottom: 1px solid #9eadc0;
+}
