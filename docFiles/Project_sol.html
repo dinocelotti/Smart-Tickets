@@ -1,230 +1,737 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Project.sol Documentation</title>
-    <link rel="stylesheet" type="text/css" href=".\myStyle.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Project.sol Documentation</title>
+  <link rel="stylesheet" type="text/css" href=".\myStyle.css">
 </head>
+
 <body>
-    <!-- ========= CLASS DATA ========= -->
-    <div>
-        <div class="description"></div>
-        <div class="summary">
-            <!-- ========= FIELD SUMMARY ========= -->
-            <div></div>
-            <!-- ========= CONSTRUCTOR SUMMARY ========= -->
-            <div></div>
-            <!-- ========= METHOD SUMMARY ========= -->
-            <div class="methSumm">
-                <h1>Method Summary</h1>
-                <table>
-                    <tbody class="methTable">
-                        <tr>
-                            <td class="colFirst">Modifier and Type</th>
-                            <td class="colLast">Method and Description</th>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>finishStaging</strong>
-                                    ()
-                                </code>
-                                <div>Moves state from staging to private funding</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>startPublicFunding</strong>
-                                    ()
-                                </code>
-                                <div>Move state from private funding to public funding</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>addTicket</strong>
-                                    (bytes32 _typeOfTicket, uint _priceInWei, uint _quantity)
-                                </code>
-                                <div>Add a ticket to this project</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>addIpfsDetailsToTicket</strong>
-                                    (bytes32 _typeOfTicket, bytes32 _hash)
-                                </code>
-                                <div>Add an IPFS hast to a ticket</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setTicketPrice</strong>
-                                    (bytes32 _typeOfTicket, uint _priceInWei)
-                                </code>
-                                <div>Set the ticket price</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setTicketQuantity</strong>
-                                    (bytes32 _typeOfTicket, uint _quantity)
-                                </code>
-                                <div>Set the ticket quantity of that type</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>addDistributor</strong>
-                                    (address _user)
-                                </code>
-                                <div>Whitelist a user as a distributor</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setDistributorAllotedQuantity</strong>
-                                    (address _distributor, bytes32 _typeOfTicket, uint _quantity)
-                                </code>
-                                <div>Set alloted quantity of a ticket for a distributor</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code>onlyPromoter() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setDistributorFee</strong>
-                                    (address _distributor, uint _promotersFee)
-                                </code>
-                                <div>Set the promoters fee for the distributor</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>onlyDistributor() stagingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setMarkup</strong>
-                                    (uint _markup, bytes32 _typeOfTicket)
-                                </code>
-                                <div>Set the markup on the face value of the ticket for the distributor</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code></code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>setUserDetails</strong>
-                                    (string name, string info)
-                                </code>
-                                <div>Add information about a user to the registry</div>
-                            </td>
-                        </tr>
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code>validUser() fundingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>buyTicketFromPromoter</strong>
-                                    (bytes32 _typeOfTicket, uint _quantity)
-                                </code>
-                                <div>Exchange user's ETH for ownership of promoters ticket</div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code>validDistributorAddress(_distributor) publicFundingPhase()</code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong>buyTicketFromDistributor</strong>
-                                    (address _distributor, bytes32 _typeOfTicket, uint _quantity)
-                                </code>
-                                <div>Exchange user's ETH for ownership of distributors ticket</div>
-                            </td>
-                        </tr>
-                        <!--
-                        <tr class="altColor">
-                            <td class="colFirst">
-                                <code></code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong></strong>
+  <div id="pageHeader">
+    <h1 style="margin: 0px; padding-left: 20px">Project.sol Documentation</h1>
+  </div>
+  <!-- ========= CLASS DATA ========= -->
+  <div>
+    <div class="description"></div>
+    <div class="summary">
+      <!-- ========= METHOD SUMMARY ========= -->
+      <div class="methSumm">
+        <h2>Method Summary</h2>
+        <table>
+          <tbody class="methTable">
+            <tr>
+              <td class="colFirst">Requirements</th>
+              <td class="colLast">Method and Description</th>
+            </tr>
 
-                                </code>
-                                <div></div>
-                            </td>
-                        </tr>
-                        <tr class="rowColor">
-                            <td class="colFirst">
-                                <code></code>
-                            </td>
-                            <td class="colLast">
-                                <code>
-                                    <strong></strong>
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>addDistributor</strong>
+                  (address _user)
+                </code>
+                <div>Whitelist a user as a distributor</div>
+              </td>
+            </tr>
 
-                                </code>
-                                <div></div>
-                            </td>
-                        </tr>
-                        -->
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="details">
-            <div class="methDetails">
-                <h1>Method Details</h1>
-                <div class="method">
-                    <div class="methDetHeader">
-                        <strong>addTicket</strong>
-                    </div>
-                    <strong>Description</strong><br>
-                    <strong>Parameters</strong><br>
-                    <strong>Returns</strong><br>
-                    <strong>Triggers</strong><br>
-                </div>
-            </div>
-        </div>
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>addIpfsDetailsToTicket</strong>
+                  (bytes32 _typeOfTicket, bytes32 _hash)
+                </code>
+                <div>Add an IPFS hast to a ticket</div>
+              </td>
+            </tr>
+
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>addTicket</strong>
+                  (bytes32 _typeOfTicket, uint _priceInWei, uint _quantity)
+                </code>
+                <div>Add a ticket to this project</div>
+              </td>
+            </tr>
+
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code>validDistributorAddress(_distributor) publicFundingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>buyTicketFromDistributor</strong>
+                  (address _distributor, bytes32 _typeOfTicket, uint _quantity)
+                </code>
+                <div>Exchange user's ETH for ownership of distributors ticket</div>
+              </td>
+            </tr>
+
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>validUser() fundingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>buyTicketFromPromoter</strong>
+                  (bytes32 _typeOfTicket, uint _quantity)
+                </code>
+                <div>Exchange user's ETH for ownership of promoters ticket</div>
+              </td>
+            </tr>
+
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code>onlyPromoter()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>finishStaging</strong>
+                  ()
+                </code>
+                <div>Moves state from staging to private funding</div>
+              </td>
+            </tr>
+            
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setDistributorAllotedQuantity</strong>
+                  (address _distributor, bytes32 _typeOfTicket, uint _quantity)
+                </code>
+                <div>Set alloted quantity of a ticket for a distributor</div>
+              </td>
+            </tr>
+
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setDistributorFee</strong>
+                  (address _distributor, uint _promotersFee)
+                </code>
+                <div>Set the promoters fee for the distributor</div>
+              </td>
+            </tr>
+
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyDistributor() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setMarkup</strong>
+                  (uint _markup, bytes32 _typeOfTicket)
+                </code>
+                <div>Set the markup on the face value of the ticket for the distributor</div>
+              </td>
+            </tr>
+
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setTicketPrice</strong>
+                  (bytes32 _typeOfTicket, uint _priceInWei)
+                </code>
+                <div>Set the ticket price</div>
+              </td>
+            </tr>
+
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyPromoter() stagingPhase()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setTicketQuantity</strong>
+                  (bytes32 _typeOfTicket, uint _quantity)
+                </code>
+                <div>Set the ticket quantity of that type</div>
+              </td>
+            </tr>
+            
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code></code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>setUserDetails</strong>
+                  (string name, string info)
+                </code>
+                <div>Add information about a user to the registry</div>
+              </td>
+            </tr>
+            
+            <tr class="altColor">
+              <td class="colFirst">
+                <code>onlyPromoter()</code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong>startPublicFunding</strong>
+                  ()
+                </code>
+                <div>Move state from private funding to public funding</div>
+              </td>
+            </tr>            
+            <!--
+            <tr class="altColor">
+              <td class="colFirst">
+                <code></code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong></strong>
+
+                </code>
+                <div></div>
+              </td>
+            </tr>
+            <tr class="rowColor">
+              <td class="colFirst">
+                <code></code>
+              </td>
+              <td class="colLast">
+                <code>
+                  <strong></strong>
+
+                </code>
+                <div></div>
+              </td>
+            </tr>
+            -->
+          </tbody>
+        </table>
+      </div>
     </div>
+    <div class="details">
+      
+      <!-- ========= METHOD DETAILS ========= -->
+      <div class="methDetails">
+        <h2>Method Details</h2>
+
+        <div class="thisMethod" id="addDistributor">
+          <div class="methHeader">
+            <strong>addDistributor</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Whitelists a user as a distributor, giving them the priviledges of a distributor account on this project.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  address <strong>_user</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>AddDistributor</strong>(address msg.sender, address _user)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="addIpfsDetailsToTicket">
+          <div class="methHeader">
+            <strong>addIpfsDetailsToTicket</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Add an ipfs hash to a ticket to store and retrive additional data off-chain.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  bytes32 <strong>_typeOfTicket</strong>, 
+                  bytes32 <strong>_hash</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>AddIpfsDetailsToTicket</strong>(address msg.sender, bytes32 _typeOfTicket, bytes32 _hash)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="addTicket">
+          <div class="methHeader">
+            <strong>addTicket</strong>
+          </div>
+          <div class="methInfo">
+
+            <div>
+              <strong>Description</strong>
+              <p>
+                Creates a new ticket type on this project. Also assigns price and quantity attributes to this ticket type.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  bytes32 <strong>_typeOfTicket</strong>,
+                  uint <strong>_priceInWei</strong>,
+                  uint <strong>_quantity</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>AddTicket</strong>(msg.sender, _typeOfTicket)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="buyTicketFromDistributor">
+          <div class="methHeader">
+            <strong>buyTicketFromDistributor</strong>
+            <i> payable</i>
+          </div>
+          <div class="methInfo">
+
+            <div>
+              <strong>Description</strong>
+              <p>
+                Exchanges the function caller's coin for the requested amount of tickets 
+                from the distributor. Buyer must be an end consumer, requesting a non-negative 
+                amount of an existing ticket type of which the distributor owns enough of. The
+                buyer also cannot request an amount that would overflow their alloted quantity.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  address <strong>_distributor</strong>,
+                  bytes32 <strong>_typeOfTicket</strong>,
+                  uint <strong>_quantity</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>validDistributorAddress(_distributor)</code>, 
+                <code>publicFundingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>BuyTicketFromDistributor</strong>(address _distributor, address msg.sender, bool users[msg.sender].isDistributor, bytes32 _typeOfTicket, uint _quantity, uint msg.value)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="buyTicketFromPromoter">
+          <div class="methHeader">
+            <strong>buyTicketFromPromoter</strong>
+          </div>
+          <div class="methInfo">
+
+            <div>
+              <strong>Description</strong>
+              <p>
+                  Exchanges the function caller's coin for the requested amount of tickets 
+                  from the promoter. Buyer may be any user, requesting a non-negative amount 
+                  of an existing ticket type of which the promoter owns enough of. The
+                  buyer also cannot request an amount that would overflow their alloted quantity.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  bytes32 <strong>_typeOfTicket</strong>,
+                  uint <strong>_quantity</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>validUser()</code>, 
+                <code>fundingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>BuyTicketFromPromoter</strong>(address msg.sender, address promoter, bool _user.isDistributor, bytes32 _typeOfTicket, uint _quantity, uint msg.value)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="thisMethod" id="finishStaging">
+          <div class="methHeader">
+            <strong>finishStaging</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Move project's state from staging to private funding. Requires that 
+                the promoter has divided the total amount of tickets amongst the individual
+                ticket types. Also requires the current stage to be <i>Staging</i>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>FinishStaging</strong>()
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="thisMethod" id="setDistributorAllottedQuantity">
+          <div class="methHeader">
+            <strong>setDistributorAllottedQuantity</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Set the alloted quantity of a ticket type that this 
+                distributor may purchase. Requires that the given address 
+                is a distributor and there are enough remaining tickets
+                of that type.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  address <strong>_distributor</strong>, 
+                  bytes32 <strong>_typeOfTicket</strong>, 
+                  uint <strong>_quantity</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>SetDistributorAllottedQuantity</strong>
+                  (address msg.sender, address _distributor, bytes32 _typeOfTicket, uint _quantity)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="thisMethod" id="setDistributorFee">
+          <div class="methHeader">
+            <strong>setDistributorFee</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Set the promoters fee for this distributor's markup on tickets.
+                Requires that the given address is a distributor.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  address <strong>_distributor</strong>, 
+                  uint <strong>_promotersFee</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>SetDistributorFee</strong>(address msg.sender, address _distributor, uint _promotersFee)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="thisMethod" id="setTicketPrice">
+          <div class="methHeader">
+            <strong>setTicketPrice</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Set the price of this ticket type. Requires that the 
+                price is non-negative and the given ticket type exists.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  bytes32 <strong>_typeOfTicket</strong>, 
+                  uint <strong>_priceInWei</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>SetTicketPrice</strong>(address msg.sender, bytes32 _typeOfTicket, uint _priceInWei)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+       
+        <div class="thisMethod" id="setTicketQuantity">
+          <div class="methHeader">
+            <strong>setTicketQuantity</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Set the quantity of tickets for the given type. Requires 
+                that the given type exists and that the quantity will not 
+                cause the amount of tickets to exceed the <code>totalTickets</code>
+                project attribute.
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  bytes32 <strong>_typeOfTicket</strong>, 
+                  uint <strong>_quantity</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>, 
+                <code>stagingPhase()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>SetTicketQuantity</strong>(address msg.sender, bytes 32 _typeOfTicket, uint _quantity)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="setUserDetails">
+          <div class="methHeader">
+            <strong>setUserDetails</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Add <code>name</code> and <code>info</code> attributes 
+                to a user struct for more detail. 
+              </p>
+            </div>
+
+            <div>
+              <strong>Parameters</strong>
+              <p>
+                <code>
+                  string <strong>name</strong>,
+                  string <strong>info</strong>
+                </code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>SetUserDetails</strong>(address msg.sender, string name, string info)
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="thisMethod" id="startPublicFunding">
+          <div class="methHeader">
+            <strong>startPublicFunding</strong>
+          </div>
+
+          <div class="methInfo">
+            <div>
+              <strong>Description</strong>
+              <p>
+                Move project sate forward from private funding to 
+                public funding. Requires that the current state is 
+                PrivateFunding.
+              </p>
+            </div>
+
+            <div>
+              <strong>Requirements</strong>
+              <p>
+                <code>onlyPromoter()</code>
+              </p>
+            </div>
+
+            <div>
+              <strong>Event Triggers</strong>
+              <p>           
+                <code>
+                  <strong>StartPublicFunding</strong>()
+                </code>
+              </p>
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
 </body>
+
 </html>

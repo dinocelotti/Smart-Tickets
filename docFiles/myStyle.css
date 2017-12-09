@@ -1,5 +1,6 @@
 body {
     background-color: #ffffff;
+    margin: 0;
 }
 tbody {
     display: table-row-group;
@@ -9,7 +10,31 @@ tbody {
 }
 tr {
     display: table-row;
-    padding: 5px;
+    padding: 10px;
+}
+
+#pageHeader {
+    color: white;
+    background-color: black;
+    font-family: helveticaneue;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.methSumm {
+    padding: 10px;
+    margin: 20px 10px;
+    border: 2px solid #9eadc0;
+    background-color: #f9f9f9;
+}
+.colFirst {
+    padding-right: 30px;
+}
+.colLast {
+    padding-right: 30px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 .altColor {
     background-color: #eeeeef;
@@ -17,26 +42,34 @@ tr {
 .rowColor {
     background-color: #ffffff;
 }
-.methSumm {
-    padding: 0px 20px 5px 10px;
-    border: 1px solid #9eadc0;
-    background-color: #f9f9f9;
-}
-
-
 
 .methDetails {
     background-color: #f9f9f9;
     padding: 10px;
-    margin-top: 20px;
+    margin: 20px 10px;
     border: 2px solid #9eadc0;
 }
-.method {
+.thisMethod {
     border: 1px solid #9eadc0;
     background-color: #ffffff;
+    margin-top: 10px;
 }
-.methDetHeader {
+.methHeader {
     padding: 5px;
     background-color: #dee3e9;
     border-bottom: 1px solid #9eadc0;
+}
+.methInfo {
+    padding: 5px;
+}
+
+/* Font controls */
+@font-face {
+    font-family: montserrat-bold;
+    src: url(montserrat-bold.otf);
+    font-weight: bold;
+}
+@font-face {
+    font-family: helveticaneue;
+    src: url(helveticaneue.otf);
 }
