@@ -1,0 +1,11 @@
+version: '2'
+services:
+  smart-tick:
+    image: smart-tickets
+    command: bash
+    stdin_open: true
+    tty: true
+    ports:
+      - "7001:8080"
+    volumes:
+      - ./:/Smart-Tickets
