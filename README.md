@@ -1,16 +1,15 @@
 # Table of Contents
 
-1. Introduction to Smart-Tickets
-2. Underlying Frameworks
+1. [Introduction to Smart-Tickets](https://github.com/dinocelotti/Smart-Tickets#1-introduction-to-smart-tickets)
+2. [Underlying Frameworks](https://github.com/dinocelotti/Smart-Tickets#2-underlying-frameworks)
    * Installation & starting app
 3. Blockchain Contracts
    * Project
    * UserRegistry
    * ProjectResolver
-4. User Types
-   * Promoter
-   * Distributor
-   * End Consumer
+4. [User Accounts](https://github.com/dinocelotti/Smart-Tickets#4-user-accounts)
+   * Account creation and attributes
+   * User Types
 5. Event Attributes
    * Staging
    * Ticket Types
@@ -91,8 +90,69 @@ In a second console run:
 
 `npm start`
 
-# 4. User Types
-Users on the Smart-Tickets platform are defined by an Ethereum wallet address. They will be found in a global registry with individual attributes but will also have additional attributes & permissions within projects, depending on their relationship to the project. User types are project attributes defined by each individual project. The three types of users are Promoters, Distributors, and End Consumers.
+# 4. Users 
+## Accounts
+
+### Current progress
+Accounts do not yet exist on the platform. There are several attributes which projects may assign to specific addresses (ie. isDistributor) but there is no system in neither front-end nor back-end for registering an account.
+
+## Desired state
+Users on the Smart-Tickets platform will be identified by an Ethereum wallet address, so for each address there may exist an account. Account creation will therefore consist of initializing an address as an existing user and supplying the required information (decided by us).
+
+Accounts will be found in a global registry, containing global attributes about each user. Accounts may also have project-specfic attributes (stored with the respective projects), depending on their relationship to a project. User types are a project-specific attribute which defines the user's role for a project and allows them the appropriate permissions. The three user types are Promoters, Distributors, and End Consumers.
+
+
+## User Info
+### Current user attributes
+#### Global attributes
+var type | name
+---------|-------
+bool | isDistributor
+bool | initialized
+uint | promotersFee
+bytes32 | ipfsHash
+uint | ticketsBought
+string | name
+string | info
+mapping(uint => uint) | allottedQuantity
+mapping(uint => uint) | markup
+#### Project attributes
+var type | name
+---------|-------
+bool | isDistributor
+bool | initialized
+uint | promotersFee
+bytes32 | ipfsHash
+uint | ticketsBought
+string | name
+string | info
+mapping(bytes32 => uint) | allottedQuantity
+mapping(bytes32 => uint) | markup
+
+### Desired user attributes
+#### Global attributes
+var type | name
+bool | initialized
+bytes32 | userName
+bytes32 | country
+bytes32 | city
+bool | canPromote
+
+#### Project attributes
+var type | name
+---------|-------
+bool | isDistributor
+bool | initialized
+uint | ticketsBought
+mapping(bytes32 => uint) | remainingAllowed
+mapping(bytes32 => uint) | markup
+uint | promotersFee
+
+* ipfsHash will be removed since there is currently no roadmap for implementing IPFS storage
+* global attributes related to tickets will be removed as they should be stored in each project
+* allotedQuantity will be converted to remainingAllowed to simplify purchase operations
+* name and info have been removed from project attributes as they should be global
+
 
 ## Promoter
 
