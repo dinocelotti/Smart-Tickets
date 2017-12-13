@@ -1,75 +1,125 @@
-# Smart-tickets
+# Table of Contents
 
-Membran Smart-Tickets provides a platform for the management and sales of events.
+1. Introduction to Smart-Tickets
+2. Underlying Frameworks
+   * Installation & starting app
+3. Blockchain Contracts
+   * Project
+   * UserRegistry
+   * ProjectResolver
+4. User Types
+   * Promoter
+   * Distributor
+   * End Consumer
+5. Event Attributes
+   * Staging
+   * Ticket Types
+   * White-listed Distributors
+6. Transactions
 
-## Installing dependencies
+# 1. Introduction to Smart-tickets
 
-      npm i && npm install -g truffle ethereumjs-testrpc
-      (optional) redux-dev-tools chrome extension
+Membran's Smart-Tickets is a platform built upon the Ethereum protocol for the management of events and ticket sales.
 
-## Running tests
+## The problem
 
-      jest -i
+Ticket sales information in the events industry is currently stored and managed across disparate systems, proprietary standards, and individually centralized databases. Fraud and artificially distorted markets plague the industry, resulting in inefficient market economics, rent-seeking, and an overall frustrating user experience.
 
-## Starting app
+## Current Market
 
-      testrpc
-      (In a seperate window) truffle compile && truffle migrate && npm start
-      (Optional) Have redux-dev-tools chrome extension installed to see reducer states/actions
+It is important to understand the main markets in today's ticket sales industry. The industry can be simplified into two catagories of sellers - those who have a direct connection to the event organisers such as distributors (Primary), and those who purchase tickets on the primary market only to re-sell them (Secondary).
 
-## Preface
-
-### The problem
-
-Ticket sales information in the live events industry is currently stored and managed across disparate systems, proprietary standards, and individually centralized databases. Fraud and artificially distorted markets plague the industry, resulting in inefficient market economics, rent-seeking, and an overall frustrated user experience.
-
-### Current Solutions
-
-Some are trying to take action, but each solution thus far has significant drawbacks. We acknowledge that there are other blockchain-based ticket startups in existence. However, we believe they are approaching the problem in a way that directly competes with giants of industry, such as Live Nation and Ticketmaster. These current blockchain-based ticket startups do not provide a foundation service where industry leaders can improve their offering. MembranLive, on the other hand, acts as the gears on which that chain can more efficiently operate, rather than being a “part” of the value chain itself, and fosters greater coordination and accessibility of data throughout the whole ticket industry. 
-
-Existing primary ticket sellers: Ticketmaster, Eventbrite, SeeTickets, The Ticket Factory
-Existing secondary market sellers: SeatGeek, StubHub, Get Me In!, Viagogo, Seatwave, eBay, 
-Non blockchain-based solutions: Songkick, Twickets
-Blockchain-based solutions: Aventus, Blocktix, LAVA, HelloSugoi, Guts
-
-Our key opposition is secondary market sellers whose business we are directly eroding. In some cases, primary ticket sellers have purchased secondary platforms in an attempt to protect and capture previously lost value. Here, too, we erode the secondary platform’s business, but only insofar as this value is redirected and more immediately captured by the parent.
+* Primary market sellers: Ticketmaster, Eventbrite, SeeTickets
+* Secondary market sellers: SeatGeek, StubHub, Get Me In!
 
 Our major barrier to entry is the size and scope of the existing systems in place. It is essential to communicate to large stakeholders the significance of the value we are adding if we hope for them to change their current entrenched behavior. By providing easily adopted minor integrations to existing data feeds that deliver valuable analytics to the creators, we can offer modular software alternatives that will be gradually adopted to replace existing infrastructure.
 
-### Benefits of utilizing smart contracts and the blockchain
+## Benefits of utilizing smart contracts and the blockchain
 
-Any transaction between two or more “official” parties (i.e. not including scalpers) that is based on the volume or value of tickets sold for an event can benefit from the MembranLive platform by having better and faster data, and by knowing they are minimizing potential losses to rent-seekers and fraudsters. However, we are initially targeting the aforementioned three key stakeholders, as they will likely be the most interested in analytics, security, and secondary market protection that the MembranLive platform affords.
+By building our platform on the Ethereum blockchain, we can gain all the benefits of the underlying protocol. This means that our platform is capable of the same strong cryptographic security of Ethereum and will not experience downtime issues faced by conventional servers. Here is a short list of what our platform intends to bring to the ticket sales market with the use of blockchain:
 
-Later, we plan to develop analytics solutions integrated to the transaction ledger, which will increase efficiency with regards to accounting, transaction data and analytics, and venue or collection society reporting. Fans will benefit from fraud protection and convenient ticket authentication, and will also be able to effortlessly transfer their ticket to another user or reissue their ticket to the primary market. Transacting parties will also be able to see a transaction almost immediately, and can trust in their purchase or sale, as it is impossible for double-spend or other fraudulent transactions to take place between two parties on the network.
+* Tight control over ticket transactions for promoters
+* Elimination of ticket fraud
+* Reduction of secondary market exploitation
+* Automation of ticket sales
+* High flexibility in the management of events
+* Low cost compared to conventional systems
 
-MembranLive provides a platform to consolidate ticket transactions to a single shared distributed ledger. Dashboards for creators and sellers allow for the creation, tracking, and distribution of tickets. Similarly, performers, venues, and other stakeholders interface with the platform in order to have reports, statements, and other analytics at their fingertips.
+Smart-Tickets provides a platform to consolidate ticket transactions to a single shared distributed ledger. Dashboards for creators and sellers allow for the creation, tracking, and distribution of tickets. Similarly, performers, venues, and other stakeholders interface with the platform in order to have reports, statements, and other analytics at their fingertips.
 
-## Main elements
 
-- Using the block chain to achieve consensus on the validity of ticket transactions in a distributed manner
-- Leveraging smart contracts to automate the creation of events, and management of the tickets associated to a particular event
-- Provide high flexibility in the creation and operation of such events
-- Low costs and fees compared to existing ticketing solutions on the market today
-- High reliability and availability in terms of accessing and interacting with the event sales due to the distributed nature of block chain + smart contracts
-- Reduction of second-hand market profiting and ticket fraud
+# 2. Underlying Frameworks
+The back-end of the Smart-Tickets platform consists of contracts which exist on the blockchain. These contracts are initially written in Solidity and then compiled down to Ethereum Virtual Machine (EVM) code. This means that any action which must update user/event data in the app has to eventually interact with the blockchain.
 
-### Promoter Process
+The front-end of the Smart-Tickets platform is a React app with a Redux state manager. Interactions with contracts are done with the [web3](https://github.com/ethereum/web3.js/) Ethereum javascript API. The Redux state is updated by searching through transaction logs on the blockchain for *events* which define a change to the back-end state. These events are then translated into Redux actions and handled by the reducers. 
 
-  Promoters (herein “Creators”) who create events, and coordinate with venues, performers, and ticket sellers. Creators set the face value and ticket categories and are also able to sell tickets on their own.
+In development we make use of the following tools:
 
-  Becoming a promoter will involve a KYC process where off-chain verification will be done on the promoter. Once the promoter is verified their address can be white-listed into a verification smart contract that we own. Then, they are able to create Projects under their white-listed address. Addresses that create Projects but are not white-listed on our verification smart contract are simply ignored by the system and deemed invalid.
+* NodeJS
+  * Node is a javascript runtime environment which our development tools use to run
+  * Your system must have Node & NPM installed in order to use the other tools
+* Truffle Suite
+  * Truffle is used to compile and deploy our contracts
+  * The suite also contains several important tools for testing our contracts
+  * Written in javascipt as a node package
+* TestRPC
+  * Part of the truffle suite
+  * Simulates a real blockchain, but eliminates the mining process in order to speed up testing
 
-### Distributor Process
+## Installing dependencies
+Run the following commands:
 
-  Primary ticket sellers who operate the platforms through which fans can purchase their tickets and process payment.
+`npm i` 
+   
+`npm install -g truffle ethereumjs-testrpc`
+   
+   
+**optional:** install redux dev-tools chrome extension
 
-  Becoming a distributor involves being added/white-listed into a specific Project that a white-listed Promoter has created. Once added, the distributor is now valid for that Project.
+## Running tests
 
-### End-consumer Process
+`jest -i`
 
-  Fans who spend the money to attend the event and interact with ticket sellers.
+## Starting app
+In one console run: `testrpc`
 
-  Becoming an end-consumer simply involves having an Ethereum wallet
+In a second console run:
+
+`truffle compile`
+
+`truffle migrate`
+
+`npm start`
+
+# 4. User Types
+Users on the Smart-Tickets platform are defined by an Ethereum wallet address. They will be found in a global registry with individual attributes but will also have additional attributes & permissions within projects, depending on their relationship to the project. User types are project attributes defined by each individual project. The three types of users are Promoters, Distributors, and End Consumers.
+
+## Promoter
+
+A Promoter is the owner of a project contract. When a user creates a project, they are automatically made the promoter of it. Promoters are granted the most powerful permissions as they are allowed to change many project attributes after creation.
+
+**NOTE** currently any user may create projects but we intend that eventually users will require a global *canPromote* permission given by the administrators of the platform.
+
+Promoters have the following permissions:
+* Create ticket types
+* Whitelist distributors
+* Advance project phase
+
+## Distributor
+
+A Distributor is a user that has been whitelisted by a project promoter in order to sell more tickets. Any user may become a distributor, the promoter is responsible for picking trustworthy partners. Distributors priviledges allow the user more freedom with ticket buying & selling.
+
+Distributors have the following permissions:
+* Increased cap on amount of tickets they may purchase (set by promoter during white-listing)
+* Freedom to sell tickets
+* Ability to purchase tickets in private-funding phase
+
+
+## End-consumer
+
+End-consumer is the user type given to any address which is not white-listed on a project. These users will make up the bulk of interactions with the platform and also have the tightest restrictions. Promoters may wish to grant additional priviledges to end-consumers in certain circumstances, but by default they are only granted this priviledge:
+
+* Allowed to purchase tickets up to the consumer cap (set by promoter)
 
 ### Ticket Purchases
 
