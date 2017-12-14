@@ -3,11 +3,11 @@
 1. [Introduction to Smart-Tickets](https://github.com/dinocelotti/Smart-Tickets#1-introduction-to-smart-tickets)
 2. [Underlying Frameworks](https://github.com/dinocelotti/Smart-Tickets#2-underlying-frameworks)
    * Installation & starting app
-3. Blockchain Contracts
+3. [Blockchain Contracts](https://github.com/dinocelotti/Smart-Tickets#3-blockchain-contracts)
    * Project
    * UserRegistry
    * ProjectResolver
-4. [User Accounts](https://github.com/dinocelotti/Smart-Tickets#4-user-accounts)
+4. [Users](https://github.com/dinocelotti/Smart-Tickets#4-users)
    * Account creation and attributes
    * User Types
 5. Event Attributes
@@ -89,6 +89,48 @@ In a second console run:
 `truffle migrate`
 
 `npm start`
+# 3. Blockchain Contracts
+## Project Contract
+This is the main contract, it is responsible for defining the state of a project. When a promoter uses the front-end to create their event, a Project contract is deployed on the back-end to represent this event. 
+
+### State
+Each project has a state, which is used to define which functions are unlocked to which user types. There are four states, which occur chronologically:
+
+#### Current phase action unlocks:
+Staging | PrivateFunding | PublicFunding | Done 
+--------|----------------|---------------|------
+<ul><li>Create ticket type</li><li>Set ticket quantity</li><li>Set ticket price</li><li>White-list a distributor</li><li>Set distributor allowance</li> </ul>|<ul><li>Distributors may purchase tickets</li></ul>|<ul><li>Distributors may purchase tickets</li><li>Distributors may sell tickets</li><li>Consumers may purchase tickets</li></ul> |<li>All actions halted (except for pending transactions)</li>
+
+#### Desired phase action unlocks:
+During all phases until Done | PrivateFunding | PublicFunding | Done
+----------------------|----------------|---------------|------
+<ul><li>Create ticket type</li><li>Increase ticket quantity</li><li>Set ticket price</li><li>White-list a distributor</li><li>Increase distributor allowance</li></ul> | <ul><li>Distributors may purchase tickets</li></ul> | <ul><li>Distributors may purchase tickets</li><li>Distributors may sell tickets</li><li>Consumers may purchase tickets</li></ul> |<li>All actions halted (except for pending transactions)</li>
+
+Ticket quantities and distributor allowances should only be capable of increasing. This is to prevent a promoter from reducing a ticket type's quantity below the amount already purchased, which would break certain functions. Similarily if a distributor has already bought tickets, a promoter should not be able to reduce their allowance below that amount purchased.
+
+
+### Tickets
+Each ticket type is represented in the Project contract as a struct. Ticket balances of each address are recorded in the project contract by the *ticketsOf* mapping. Any transaction involving the transfer of ticket ownerships must be processed by the project contract. Rules for transactions will be defined further below, as it is a large topic.
+
+#### Current struct
+var type | name
+---------|------
+uint | price
+uint | remaining
+bool | created
+bytes32 | ipfsHash
+
+The ipfsHash attribute should be removed from the struct as currently there is no road map for IPFS implementation.
+
+## UserRegistry Contract
+This contract is not currently functional so the description below represents the desired function of this contract.
+
+The UserRegistry contract exists to store user information so that it may be accessed from across the entire Smart-Tickets platform. Users "create" an account by at the very least setting their *initialized* tag to **TRUE**. Since user accounts are identified by their address, any method call to the registry is sufficient proof that the caller owns their own address and is therefore allowed to edit their own info.
+
+The desired user attributes for the UserRegistry are discussed in section #4 as *global attributes*. The contract should contain setters for all user attributes that allow any address to modify it's own information.
+
+## ProjectResolver Contract
+This contract stores an array with the address of all of the events which have been created. When a user creates an event on the front-end, a project contract is created to represent it and it's address is stored by the ProjectResolver contract. The contract allows a caller to query the totall number of projects created, the amount owned by an address, and the jth project created by an address.
 
 # 4. Users 
 ## Accounts
@@ -96,10 +138,10 @@ In a second console run:
 ### Current progress
 Accounts do not yet exist on the platform. There are several attributes which projects may assign to specific addresses (ie. isDistributor) but there is no system in neither front-end nor back-end for registering an account.
 
-## Desired state
+### Desired state
 Users on the Smart-Tickets platform will be identified by an Ethereum wallet address, so for each address there may exist an account. Account creation will therefore consist of initializing an address as an existing user and supplying the required information (decided by us).
 
-Accounts will be found in a global registry, containing global attributes about each user. Accounts may also have project-specfic attributes (stored with the respective projects), depending on their relationship to a project. User types are a project-specific attribute which defines the user's role for a project and allows them the appropriate permissions. The three user types are Promoters, Distributors, and End Consumers.
+Accounts will be found in a global registry, containing global attributes about each user. Accounts may also have project-specfic attributes (stored with the respective projects), depending on their relationship to a project.
 
 
 ## User Info
@@ -132,6 +174,7 @@ mapping(bytes32 => uint) | markup
 ### Desired user attributes
 #### Global attributes
 var type | name
+---------|-------
 bool | initialized
 bytes32 | userName
 bytes32 | country
@@ -154,32 +197,44 @@ uint | promotersFee
 * name and info have been removed from project attributes as they should be global
 
 
-## Promoter
+## User Types
+User types are a project-specific attribute which defines the user's role for a project and allows them the appropriate permissions. The three user types are Promoters, Distributors, and End Consumers.
 
-A Promoter is the owner of a project contract. When a user creates a project, they are automatically made the promoter of it. Promoters are granted the most powerful permissions as they are allowed to change many project attributes after creation.
+### Promoter
 
-**NOTE** currently any user may create projects but we intend that eventually users will require a global *canPromote* permission given by the administrators of the platform.
+A Promoter is the owner of a project contract and it is automatically assigned to a user when they create a project. Promoters are granted the most powerful permissions as they must perform many actions in order to manage their own projects.
 
-Promoters have the following permissions:
-* Create ticket types
-* Whitelist distributors
+**NOTE** Currently any user may create projects but we intend that eventually users will require a global *canPromote* permission given by the administrators of the platform.
+
+#### Curent permissions:
+* Create ticket types during staging phase
+* Whitelist distributors during staging phase
 * Advance project phase
 
-## Distributor
+#### Desired permissions:
+* Create ticket types any phase
+* Whitelist distributors any phase
+* Increase amount of a ticket type
+* Increase white-listed distributor's allowance for a ticket type
+* Change ticket type's price
 
-A Distributor is a user that has been whitelisted by a project promoter in order to sell more tickets. Any user may become a distributor, the promoter is responsible for picking trustworthy partners. Distributors priviledges allow the user more freedom with ticket buying & selling.
+### Distributor
 
-Distributors have the following permissions:
-* Increased cap on amount of tickets they may purchase (set by promoter during white-listing)
+A Distributor is a user that has been whitelisted by a project promoter in order to help sell more tickets. Any user may become a distributor, the promoter is responsible for picking trustworthy partners. Distributors priviledges allow the user more freedom with ticket buying & selling.
+
+#### Curent permissions:
+* Custom allowance on amount of tickets, per type, that they may purchase (set by promoter during white-listing)
 * Freedom to sell tickets
 * Ability to purchase tickets in private-funding phase
 
+#### Desired white-listing process
+When a promoter white-lists a user as a distributor, they set the user's *isDistributor* project attribute to **TRUE**. The user is now allowed to sell tickets and buy above the consumer ticket limit, up to their allowance (default allowance is 0). The promoter may then increase the allowances of each ticket type for this distributor, if none is given then the distributor may not buy any tickets.
 
-## End-consumer
+### End-consumer
 
-End-consumer is the user type given to any address which is not white-listed on a project. These users will make up the bulk of interactions with the platform and also have the tightest restrictions. Promoters may wish to grant additional priviledges to end-consumers in certain circumstances, but by default they are only granted this priviledge:
+End-consumer is the default user type given by a project to an address. These users will make up the bulk of interactions with the platform and also have the tightest restrictions. Promoters may wish to grant additional priviledges to end-consumers in certain circumstances, but by default they are only granted this priviledge:
 
-* Allowed to purchase tickets up to the consumer cap (set by promoter)
+* Allowed to purchase tickets up to the consumer max (set by promoter)
 
 ### Ticket Purchases
 
@@ -258,10 +313,6 @@ So the QR code would encode x+y+z, the key here is parameter z. The next block h
   We're moving to a product that's selling point is back-end infrastructure improvements + increase customer satisfaction by reducing ticketing fraud and greater ease of use. Revenue will instead be generated through ticket sales rather than ICO tokens.
 
 ### Proj.sol specification
-
-  This is the main smart contract, responsible for the creation of "projects" which describe any type of event that needs ticket distribution and sales 
-
-  The contract works as a state machine, where different functionality is either unlocked or restricted based on time and/or functions being called by an authorised entity (such as a promoter).
 
   There will be 4 stages that the contract can be in:
 
