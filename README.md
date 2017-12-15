@@ -97,14 +97,74 @@ This is the main contract, it is responsible for defining the state of a project
 Each project has a state, which is used to define which functions are unlocked to which user types. There are four states, which occur chronologically:
 
 #### Current phase action unlocks:
-Staging | PrivateFunding | PublicFunding | Done 
---------|----------------|---------------|------
-<ul><li>Create ticket type</li><li>Set ticket quantity</li><li>Set ticket price</li><li>White-list a distributor</li><li>Set distributor allowance</li> </ul>|<ul><li>Distributors may purchase tickets</li></ul>|<ul><li>Distributors may purchase tickets</li><li>Distributors may sell tickets</li><li>Consumers may purchase tickets</li></ul> |<li>All actions halted (except for pending transactions)</li>
+<table>
+  <tr>
+    <th>Staging</th>
+    <th>PrivateFunding</th>
+    <th>PublicFunding</th>
+    <th>Done</th>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li>Create ticket type</li>
+        <li>Set ticket quantity</li>
+        <li>Set ticket price</li>
+        <li>White-list a distributor</li>
+        <li>Set distributor allowance</li>
+      </ul>
+    </td>
+    <td>
+      <li>Distributors may purchase tickets</li>
+    </td>
+    <td>
+      <ul>
+        <li>Distributors may purchase tickets</li>
+        <li>Distributors may sell tickets</li>
+        <li>Consumers may purchase tickets</li>
+      </ul>
+    </td>
+    <td>
+      <li>All actions halted (except for pending transactions)</li>
+    </td>
+  </tr>
+</table>
 
 #### Desired phase action unlocks:
-During all phases until Done | PrivateFunding | PublicFunding | Done
-----------------------|----------------|---------------|------
-<ul><li>Create ticket type</li><li>Increase ticket quantity</li><li>Set ticket price</li><li>White-list a distributor</li><li>Increase distributor allowance</li></ul> | <ul><li>Distributors may purchase tickets</li></ul> | <ul><li>Distributors may purchase tickets</li><li>Distributors may sell tickets</li><li>Consumers may purchase tickets</li></ul> |<li>All actions halted (except for pending transactions)</li>
+<table>
+  <tr>
+    <th>All phases until Done</th>
+    <th>PrivateFunding</th>
+    <th>PublicFunding</th>
+    <th>Done</th>
+  </tr>
+  <tr>
+    <td>
+      <ul>
+        <li>Create ticket type</li>
+        <li>Increase ticket quantity</li>
+        <li>Set ticket price</li>
+        <li>White-list a distributor</li>
+        <li>Increase distributor allowance</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Distributors may purchase tickets</li>
+      </ul>
+    </td>
+    <td>
+      <ul>
+        <li>Distributors may purchase tickets</li>
+        <li>Distributors may sell tickets</li>
+        <li>Consumers may purchase tickets</li>
+      </ul>
+    </td>
+    <td>
+      <li>All actions halted (except for pending transactions)</li>
+    </td>
+  </tr>
+</table>
 
 Ticket quantities and distributor allowances should only be capable of increasing. This is to prevent a promoter from reducing a ticket type's quantity below the amount already purchased, which would break certain functions. Similarily if a distributor has already bought tickets, a promoter should not be able to reduce their allowance below that amount purchased.
 
