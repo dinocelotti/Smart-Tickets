@@ -1,14 +1,11 @@
 # Node image
 FROM node:latest
 
-# Maintainer
-MAINTAINER Eric Showers <ejshowers@gmail.com>
-
 # Create code directory
-RUN mkdir /Smart-Tickets
+RUN mkdir /code
 
 # Set working directory
-WORKDIR /Smart-Tickets
+WORKDIR /code
 
 # Install Truffle
 RUN npm install -g truffle
