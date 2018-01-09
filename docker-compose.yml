@@ -6,7 +6,7 @@ services:
     ports:
       - "8545:8545"
   truffle3:
-    image: truffle_1:latest
+    image: ericshowers/truffle-app:latest
     command: bash
     stdin_open: true
     tty: true
