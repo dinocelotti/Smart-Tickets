@@ -18,7 +18,6 @@ module.exports = {
 		'linebreak-style': [2, 'unix'],
 		'no-case-declarations': 0,
 		'no-else-return': 1,
-		semi: [1, 'never'],
 		quotes: [1, 'single'],
 		'space-unary-ops': 2,
 		'no-console': [1, { allow: ['warn', 'error', 'log'] }],
