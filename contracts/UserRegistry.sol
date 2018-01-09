@@ -1,33 +1,49 @@
 pragma solidity ^0.4.2;
 
 contract UserRegistry {
-	struct User {
-        bool isDistributor;
+    struct User {
         bool initialized;
-        uint promotersFee; //fee that the promoter takes from the markup
-        bytes32 ipfsHash; //hash linking to users profile, if any
-        uint ticketsBought; //total number of tickets bought for this user
-        string name; //to be converted to an IPFS hash for off-chain storage
-        string info; //to be converted to an IPFS hash for off-chain storage
-        mapping(uint => uint) allottedQuantity; //number of tickets they are allowed to buy for that specific ticket type
-        mapping(uint => uint) markup; //percent markup on the face value for that specific ticket type
+        bytes32 userName;
+        string country;
+        string city;
+        bool canPromote;
     }
 
     mapping(address => User) users;
-	  event SetUserDetails(address indexed userAddress, string name, string info);
-		
-	  function setUser(string name, string info) {
-			if(!users[msg.sender].initialized) {
-				users[msg.sender].name = name;
-        users[msg.sender].info = info;
-        SetUserDetails(msg.sender, name, info);
-			} else {
-				users[msg.sender] = User(false, true, 0, "", 0, name, info);
-			}
+    mapping(bytes32 => address) addrForName;
+
+    event NewUser(address userAddress, bytes32 userName);
+    event UserDetails(address indexed userAddress, string country, string city, bool canPromote);
+    
+    function initUser(bytes32 _userName) public {
+        //Check that the address is not yet initialized and the user name is not taken
+        require(!users[msg.sender].initialized);
+        require(addrForName[_userName] == 0);
+
+        users[msg.sender].initialized = true;
+        users[msg.sender].userName = _userName;
+        addrForName[_userName] = msg.sender;
+
+        NewUser(msg.sender, _userName);
     }
 
-    function getUserAtAddresss(address userAddress) public constant returns(string, string) {
-      require(users[userAddress].initialized);
-      return (users[userAddress].name, users[userAddress].info);
+    function setUserDetails(string _country, string _city, bool _canPromote) public {
+        require(users[msg.sender].initialized);
+
+        users[msg.sender].country = _country;
+        users[msg.sender].city = _city;
+        users[msg.sender].canPromote = _canPromote;
+
+        UserDetails(msg.sender, _country, _city, _canPromote);
+    }
+
+    function getNameAtAddresss(address userAddress) public view returns(bytes32) {
+        require(users[userAddress].initialized);
+        return (users[userAddress].userName);
+    }
+
+    function getAddressFromName(bytes32 _userName) public view returns(address) {
+        require(users[addrForName[_userName]].initialized);
+        return addrForName[_userName];
     }
 }
