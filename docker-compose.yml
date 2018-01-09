@@ -1,0 +1,16 @@
+version: '2'
+services:
+  testrpc:
+    image: ericshowers/testrpc:latest
+    command: bash -c "testrpc -h 0.0.0.0"
+    ports:
+      - "8545:8545"
+  truffle3:
+    image: truffle_1:latest
+    command: bash
+    stdin_open: true
+    tty: true
+    ports:
+      - "7001:8080"
+    volumes:
+      - ./:/code
