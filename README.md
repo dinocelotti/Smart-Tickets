@@ -193,42 +193,30 @@ When a user attempts to make a listing, the following requirements must be met:
 * Listing price meets ticket price restrictions (if any)
 
 ## UserRegistry Contract
-This contract is still in a prototype stage so the description below represents the desired function of the contract.
+The UserRegistry contract exists to store user information so that it may be accessed from across the entire Smart-Tickets platform. Users create an account by first providing their address and a unique username. This will initialize their account, after which they may set their own details. 
 
-The UserRegistry contract exists to store user information so that it may be accessed from across the entire Smart-Tickets platform. Users "create" an account by at the very least setting their *initialized* tag to **TRUE**. 
-
-The desired user attributes for the UserRegistry are discussed in section #4 as *global attributes*. The contract should contain setters for all user attributes, allowing any address to modify it's own information since any legitimate transaction sent to the registry is sufficient proof that the sender owns their address.
+Users may only edit their own details and to do so they must call the setUserDetails method with all variables, including those that they do not wish to change. The contract also contains two getter methods which allow a caller to find the username associated with an address and vice-versa.
 
 ## ProjectResolver Contract
-This contract stores an array with the address of all of the events which have been created. When a user creates an event on the front-end, a project contract is created to represent it and it's address is stored by the ProjectResolver contract. The contract allows a caller to query the totall number of projects created, the amount owned by an address, and the jth project created by an address.
+This contract stores an array with the addresses of all of the events which have been created. When a user creates an event on the front-end, a project contract is created to represent it and it's address is stored by the ProjectResolver contract. The contract allows a caller to query the totall number of projects created, the amount owned by an address, and the jth project created by an address.
 
 # 4. Users 
 ## Accounts
 
 ### Current progress
-Accounts do not yet exist on the platform. There are several attributes which projects may assign to specific addresses (ie. isDistributor) but there is no fucntioning system in neither front-end nor back-end for registering an account.
-
-### Desired state
-Users on the Smart-Tickets platform will be identified by an Ethereum wallet address, so for each address there may exist an account. Account creation will therefore consist of initializing an address as an existing user and supplying the required information (decided by us).
-
-Accounts will be found in a global registry, containing global attributes about each user. Accounts may also have project-specfic attributes (stored with the respective projects), depending on their relationship to a project.
-
+Accounts are managed by the UserRegistry.sol contract. Users must register an account before they may access the platform as they require an identity. Identities are defined as both an Ethereum address and a corresponding username. Addresses will be used for all on-chain identification but usernames should be used for all front-end rendering so that users are not required to work with the raw hex.
 
 ## User Info
 ### Current user attributes
-Storage for project attributes is currently working, but not for global attributes as *UserRegistry* is still in a prototype state.
 #### Global attributes
 var type | name
 ---------|-------
-bool | isDistributor
 bool | initialized
-uint | promotersFee
-bytes32 | ipfsHash
-uint | ticketsBought
-string | name
-string | info
-mapping(uint => uint) | allottedQuantity
-mapping(uint => uint) | markup
+bytes32 | userName;
+string | country;
+string | city;
+bool | canPromote;
+
 #### Project attributes
 var type | name
 ---------|-------
@@ -243,14 +231,6 @@ mapping(bytes32 => uint) | allottedQuantity
 mapping(bytes32 => uint) | markup
 
 ### Desired user attributes
-#### Global attributes
-var type | name
----------|-------
-bool | initialized
-bytes32 | userName
-string | country
-string | city
-bool | canPromote
 
 #### Project attributes
 var type | name
@@ -263,7 +243,6 @@ mapping(bytes32 => uint) | markup
 uint | promotersFee
 
 * ipfsHash will be removed since there is no road map for IPFS implementation at the moment.
-* global attributes related to tickets will be removed as they should be stored with projects
 * allotedQuantity will be converted to remainingAllowed to simplify purchase operations
 * name and info have been removed from project attributes as they should be global
 * userName should be a bytes32 variable so that we can create a mapping between addresses and user names (can't map with strings)
