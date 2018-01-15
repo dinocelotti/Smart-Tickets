@@ -9,13 +9,10 @@ contract Project {
     */
     enum State {Staging, PrivateFunding, PublicFunding, Done}
 
-    //see https://ethereum.stackexchange.com/questions/17094/how-to-store-ipfs-hash-using-bytes/17112
-    //for details on 32 byte IPFS hash
     struct Ticket {
         uint price; //price of the ticket in wei
         uint remaining; //number of tickets left of this particular ticket
         bool created; //to check for empty values
-        bytes32 ipfsHash; //IPFS hash linking to off-chain ticket details
     }
     struct User {
         bool isDistributor;
@@ -23,10 +20,7 @@ contract Project {
         mapping(bytes32 => uint) allottedQuantity; //number of tickets they are allowed to buy for that specific ticket type
         mapping(bytes32 => uint) markup; //percent markup on the face value for that specific ticket type
         uint promotersFee; //fee that the promoter takes from the markup
-        bytes32 ipfsHash; //hash linking to users profile, if any
         uint ticketsBought; //total number of tickets bought for this user
-        string name; //to be converted to an IPFS hash for off-chain storage
-        string info; //to be converted to an IPFS hash for off-chain storage
     }
     State public currentState; //hold state of contract to function as state machine
 
@@ -43,22 +37,24 @@ contract Project {
     mapping(address => User) users; // address of the user => user struct
     mapping(bytes32 => Ticket) tickets; // type of ticket => ticket struct
     mapping(address => mapping(bytes32 => uint)) ticketsOf; // address => type of ticket => quantity of tickets that address owns
+    mapping(address => mapping(bytes32 => uint[])) amountPriceListing; //address => type of ticket => [sale amount, sale price]
     mapping(address => uint) pendingWithdrawls; //address => withdraw amount pending
 
-    function Project(
+    function Project (
         string _name,
         uint _membranFee,
         uint _totalTickets,
-        uint _consumerMaxTickets) {
-            projectName = _name;
-            membranFee = _membranFee;
-            ticketsLeft = _totalTickets;
-            totalTickets = _totalTickets;
-            consumerMaxTickets = _consumerMaxTickets;
-            promoter = msg.sender;
-            currentState = State.Staging;
-            Created(promoter, projectName, membranFee, ticketsLeft, totalTickets, consumerMaxTickets);
-        }
+        uint _consumerMaxTickets) 
+    {
+        projectName = _name;
+        membranFee = _membranFee;
+        ticketsLeft = _totalTickets;
+        totalTickets = _totalTickets;
+        consumerMaxTickets = _consumerMaxTickets;
+        promoter = msg.sender;
+        currentState = State.Staging;
+        Created(promoter, projectName, membranFee, ticketsLeft, totalTickets, consumerMaxTickets);
+    }
 
 
 /**************************
@@ -96,40 +92,35 @@ contract Project {
         return (b.isDistributor, b.allottedQuantity[_ticketType], b.markup[_ticketType], b.promotersFee);
     }
 
-    function getUserInfo(address user) constant returns (string, string) {
-            return (users[user].name, users[user].info);
-    }
-
 /**************************
         Event Firers
 **************************/
 
-     event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
-     event FinishStaging();
-     event StartPrivateFunding();
-     event StartPublicFunding();
+    event Created(address indexed promoter, string projectName, uint membranFee, uint ticketsLeft, uint totalTickets, uint consumerMaxTickets);
+    event FinishStaging();
+    event StartPrivateFunding();
+    event StartPublicFunding();
 
-     event AddTicket(address indexed promoter, bytes32 typeOfTicket);
-     event AddIpfsDetailsToTicket(address indexed promoter, bytes32 typeOfTicket, bytes32 ipfsHash);
-     event SetTicketPrice (address indexed promoter, bytes32 typeOfTicket, uint priceInWei);
-     event SetTicketQuantity (address indexed promoter, bytes32 typeOfTicket, uint quantity);
+    event AddTicket(address indexed promoter, bytes32 typeOfTicket);
+    event SetTicketPrice (address indexed promoter, bytes32 typeOfTicket, uint priceInWei);
+    event SetTicketQuantity (address indexed promoter, bytes32 typeOfTicket, uint quantity);
+    event TicketListed (address indexed seller, bytes32 typeOfTicket, uint[] amountPrice);
 
+    event AddDistributor (address indexed promoter, address distributor);
+    event SetDistributorAllottedQuantity (address indexed promoter, address _distributor, bytes32 _typeOfTicket, uint allottedQuantity);
+    event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
 
-     event AddDistributor (address indexed promoter, address distributor);
-     event SetDistributorAllottedQuantity (address indexed promoter, address _distributor, bytes32 _typeOfTicket, uint allottedQuantity);
-     event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
+    event SetMarkup (address indexed distributor, uint _markup, bytes32 _typeOfTicket);
+    event SetUserDetails(address indexed userAddress, string name, string info);
 
-     event SetMarkup (address indexed distributor, uint _markup, bytes32 _typeOfTicket);
-     event SetUserDetails(address indexed userAddress, string name, string info);
+    event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
+    event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
+    event FundsReceived(address indexed from, uint amount);
 
-     event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
-     event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
-     event FundsReceived(address indexed from, uint amount);
-
-     event Withdraw(address indexed from, uint amount);
+    event Withdraw(address indexed from, uint amount);
 
 /**************************
-    Phase Modifiers
+    Phasing
 **************************/
 
     modifier stagingPhase(){
@@ -149,33 +140,44 @@ contract Project {
         _;
     }
 
-/**************************
-    Phase Setters
-**************************/
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
-     function finishStaging() onlyPromoter() {
-         require(ticketsLeft == 0);  //Require the promoter properly allocated all tickets into their respective types
-         require(currentState == State.Staging); //Require the previous state to be Staging to move on
-         currentState = State.PrivateFunding;
-         FinishStaging();
-     }
+    function finishStaging() onlyPromoter() {
+        require(ticketsLeft == 0);  //Require the promoter properly allocated all tickets into their respective types
+        require(currentState == State.Staging); //Require the previous state to be Staging to move on
+        currentState = State.PrivateFunding;
+        FinishStaging();
+    }
 
     /** @dev Move state forward from private funding to public funding, can only by done by the promoter */
-     function startPublicFunding() onlyPromoter() {
-         require(currentState == State.PrivateFunding);
-         currentState = State.PublicFunding;
-         StartPublicFunding();
-     }
+    function startPublicFunding() onlyPromoter() {
+        require(currentState == State.PrivateFunding);
+        currentState = State.PublicFunding;
+        StartPublicFunding();
+    }
 
 /**************************
-    Access Modifiers
+    Modifiers
 **************************/
     modifier onlyPromoter() {
         require(msg.sender == promoter);
         _;
     }
-    modifier onlyDistributor(){
-        require(users[msg.sender].isDistributor);
+
+    /**@dev An address is a valid user if they're not membran/promoter and we're in a phase where buying is valid*/
+    modifier validUser() {
+        //check what phase we're in and see if the user is valid for that phase
+        if (!users[msg.sender].isDistributor && currentState != State.PublicFunding) 
+            revert(); //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
+        if (users[msg.sender].isDistributor && currentState != State.PrivateFunding) 
+            revert(); //if they are a distributor and its not the private funding phase, throw
+        //make sure theyre an end comsumer or a distributor
+        require(msg.sender != membran && msg.sender != promoter);
+        _;
+    }
+
+    /**@dev Check if the given address parameter is a valid distributor*/
+    modifier validDistributorAddress(address _distributor) {
+        require(users[_distributor].isDistributor);
         _;
     }
 
@@ -199,15 +201,7 @@ contract Project {
         setTicketPrice(_typeOfTicket, _priceInWei);
         setTicketQuantity(_typeOfTicket, _quantity); //Set ticket quantity for this type, drawing from the total ticket pool
     }
-    /** @dev Add a ipfs hash to a ticket to store off-chain data, can only be done in the staging phase and by the promoter
-      * @param _typeOfTicket Ticket type to create.
-      * @param _hash The ipfs hash to add
-      */
-    function addIpfsDetailsToTicket(bytes32 _typeOfTicket, bytes32 _hash) onlyPromoter() stagingPhase() {
-        require(tickets[_typeOfTicket].created == true); //Require that the ticket type has been made already
-        tickets[_typeOfTicket].ipfsHash = _hash; //Add the hash
-        AddIpfsDetailsToTicket(msg.sender, _typeOfTicket, _hash);
-    }
+    
     /** @dev Set the ticket price, can only be done in the staging phase and by the promoter
       * @param _typeOfTicket Ticket type to create.
       * @param _priceInWei The price of the ticket to set
@@ -276,47 +270,24 @@ contract Project {
       * @param _markup The address of the distributor.
       * @param _typeOfTicket The ticket type
       */
-    function setMarkup(uint _markup, bytes32 _typeOfTicket) onlyDistributor() stagingPhase() {
+    function setMarkup(uint _markup, bytes32 _typeOfTicket) validDistributorAddress(msg.sender) stagingPhase() {
         users[msg.sender].markup[_typeOfTicket] = _markup;
 
         SetMarkup(msg.sender, _markup, _typeOfTicket);
     }
-    /* @dev Set the user information corresponding to a particular address
-]    * @param name Name we want to set the user struct with, we will expand this with more info as security and off-chain storage ramps up
-    */
 
-/**************************
-End User Functions
-**************************/
-    function setUserDetails(string name, string info) {
-        users[msg.sender].name = name;
-        users[msg.sender].info = info;
-        SetUserDetails(msg.sender, name, info);
-    }
+    /**@dev Caller lists an amount of tickets (that they own) for sale at a specific price
+     * @param _ticketType The type of ticket to be listed
+     * @param _amountPrice Array with: index 0 = amount for sale | index 1 = price of ticket
+     */
+    function listTicket(bytes32 _ticketType, uint[] _amountPrice) public {
+        require(_amountPrice[0] > 0 && _amountPrice[1] >= 0);
+        require(tickets[_ticketType].created == true);
+        require(ticketsOf[msg.sender][_ticketType] >= _amountPrice[0]);
 
-/**************************
-Funding Phase - Ticketing
-**************************/
-
-    /**************************
-        Modifiers
-    **************************/
-    /**@dev An address is a valid user if they're not membran/promoter and we're in a phase where buying is valid*/
-    modifier validUser() {
-        //check what phase we're in and see if the user is valid for that phase
-        if (!users[msg.sender].isDistributor && currentState != State.PublicFunding) 
-            revert(); //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
-        if (users[msg.sender].isDistributor && currentState != State.PrivateFunding) 
-            revert(); //if they are a distributor and its not the private funding phase, throw
-        //make sure theyre an end comsumer or a distributor
-        require(msg.sender != membran && msg.sender != promoter);
-        _;
-    }
-
-    /**@dev Check if the given address parameter is a valid distributor*/
-    modifier validDistributorAddress(address _distributor) {
-        require(users[_distributor].isDistributor);
-        _;
+        ticketsOf[msg.sender][_ticketType] -= _amountPrice[0];
+        amountPriceListing[msg.sender][_ticketType] = _amountPrice;
+        TicketListed(msg.sender, _ticketType, _amountPrice);
     }
 
     /**************************
