@@ -11,6 +11,6 @@ services:
     stdin_open: true
     tty: true
     ports:
-      - "7001:8080"
+      - "3000:3000"
     volumes:
       - ./:/code
