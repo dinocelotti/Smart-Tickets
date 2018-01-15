@@ -44,8 +44,7 @@ contract Project {
         string _name,
         uint _membranFee,
         uint _totalTickets,
-        uint _consumerMaxTickets) 
-    {
+        uint _consumerMaxTickets) {
         projectName = _name;
         membranFee = _membranFee;
         ticketsLeft = _totalTickets;
@@ -288,6 +287,17 @@ contract Project {
         ticketsOf[msg.sender][_ticketType] -= _amountPrice[0];
         amountPriceListing[msg.sender][_ticketType] = _amountPrice;
         TicketListed(msg.sender, _ticketType, _amountPrice);
+    }
+
+    /**@dev Caller cancels sales of all listed tickets of this type
+     * @param _ticketType The ticket type to cancel
+     */
+    function cancelListing(bytes32 _ticketType) public {
+        require(amountPriceListing[msg.sender][_ticketType][0] > 0);
+
+        remaining = amountPriceListing[msg.sender][_ticketType][0];
+        amountPriceListing[msg.sender][_ticketType] = [0, 0];
+        ticketsOf[msg.sender][_ticketType] = remaining;
     }
 
     /**************************
