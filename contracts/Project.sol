@@ -290,7 +290,7 @@ contract Project {
         TicketListed(msg.sender, _ticketType, _amountPrice);
     }
 
-    /**@dev Caller cancels sales of all listed tickets of this type
+    /**@dev Caller cancels sender's sales of all listed tickets of this type
      * @param _ticketType The ticket type to cancel
      */
     function cancelListing(bytes32 _ticketType) public {
@@ -316,6 +316,41 @@ contract Project {
     /**************************
         Payable functions
     **************************/
+
+    /** @dev Universal transaction function for any purchase
+      * @param _seller address of the user who has listed these tickets for sale
+      * @param _ticketType type of the ticket to purchase
+      * @param _quantity amount to purchase
+      */
+    function buyTicket(address _seller, bytes32 _ticketType, uint _quantity) public payable {
+
+        //CONDITION CHECKS
+        //  A positive amount has been requested
+        //  Ticket type is valid
+        //  Seller has enough tickets listed
+        require(_quantity > 0);
+        require(tickets[_typeOfTicket].created == true);
+        require(amountPriceListing[_seller][_ticketType][0] >= _quantity);
+
+        //If buyer is not a distributor, check they will not exceed consumer limit
+        if (!validDistributorAddress(msg.sender) &&
+            users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) 
+            revert();
+
+        //If buyer is distributor, check they will not exceed allotted amount for this type
+        if (validDistributorAddress(msg.sender) &&
+            (ticketsOf[msg.sender][_typeOfTicket] + _quantity > users[msg.sender].allottedQuantity[_typeOfTicket])) 
+            revert();
+
+        //Calculate total cost of purchase and ensure that buyer has payed enough
+        uint netCost = amountPriceListing[_seller][_ticketType][1] * _quantity;
+        uint change = msg.value - netCost;
+        require(change >= 0);
+
+        amountPriceListing[_seller][_ticketType][0] -= _quantity;
+        ticketsOf[msg.sender][_ticketType] = _quantity;
+    }
+
     /** @dev Allow purchases from the promoter given that it's a valid user (distributor/end-consumer) and valid phase (public/private funding)
       * @param _typeOfTicket The ticket type to purchase
       * @param _quantity How many of that type to purchase
