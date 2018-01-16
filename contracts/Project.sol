@@ -44,7 +44,8 @@ contract Project {
         string _name,
         uint _membranFee,
         uint _totalTickets,
-        uint _consumerMaxTickets) {
+        uint _consumerMaxTickets) public
+    {
         projectName = _name;
         membranFee = _membranFee;
         ticketsLeft = _totalTickets;
@@ -63,7 +64,7 @@ contract Project {
       * @dev Checks if the tx sender is a distributor.
       * @return bool If tx sender is a distributor.
       */
-    function isDistributor() constant returns(bool) {
+    function isDistributor() constant public returns(bool) {
         return users[msg.sender].isDistributor;
     }
 
@@ -73,8 +74,8 @@ contract Project {
       * @return  Ticket price in wei of that type.
       * @return  Number of tickets left of that type.
       */
-    function getTicketVals(bytes32 _ticketType) constant returns (bytes32, uint, uint) {
-        Ticket _t = tickets[_ticketType];
+    function getTicketVals(bytes32 _ticketType) constant public returns (bytes32, uint, uint) {
+        Ticket storage _t = tickets[_ticketType];
         return (_ticketType, _t.price, _t.remaining);
     }
 
@@ -86,8 +87,8 @@ contract Project {
       * @return  The markup that the distributor has placed on the face value of the ticket
       * @return  The promoter fee to be taken out of the markup
       */
-    function queryUser(address _user, bytes32 _ticketType) constant returns (bool, uint, uint, uint) {
-        User b = users[_user];
+    function queryUser(address _user, bytes32 _ticketType) constant public returns (bool, uint, uint, uint) {
+        User storage b = users[_user];
         return (b.isDistributor, b.allottedQuantity[_ticketType], b.markup[_ticketType], b.promotersFee);
     }
 
@@ -140,7 +141,7 @@ contract Project {
     }
 
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
-    function finishStaging() onlyPromoter() {
+    function finishStaging() public onlyPromoter() {
         require(ticketsLeft == 0);  //Require the promoter properly allocated all tickets into their respective types
         require(currentState == State.Staging); //Require the previous state to be Staging to move on
         currentState = State.PrivateFunding;
@@ -148,7 +149,7 @@ contract Project {
     }
 
     /** @dev Move state forward from private funding to public funding, can only by done by the promoter */
-    function startPublicFunding() onlyPromoter() {
+    function startPublicFunding() public onlyPromoter() {
         require(currentState == State.PrivateFunding);
         currentState = State.PublicFunding;
         StartPublicFunding();
@@ -192,7 +193,7 @@ contract Project {
       * @param _priceInWei Price in wei to assign to this ticket type.
       * @param _quantity Number of tickets of this type
       */
-    function addTicket(bytes32 _typeOfTicket, uint _priceInWei, uint _quantity) onlyPromoter() stagingPhase() {
+    function addTicket(bytes32 _typeOfTicket, uint _priceInWei, uint _quantity) public onlyPromoter() stagingPhase() {
         require(tickets[_typeOfTicket].created == false); //Require that the specific ticket type hasnt been initialized yet
         tickets[_typeOfTicket].created = true;
 
@@ -205,7 +206,7 @@ contract Project {
       * @param _typeOfTicket Ticket type to create.
       * @param _priceInWei The price of the ticket to set
       */
-    function setTicketPrice(bytes32 _typeOfTicket, uint _priceInWei) onlyPromoter() stagingPhase() {
+    function setTicketPrice(bytes32 _typeOfTicket, uint _priceInWei) public onlyPromoter() stagingPhase() {
         require(tickets[_typeOfTicket].created == true);
         require(_priceInWei >= 0);
         tickets[_typeOfTicket].price = _priceInWei; //Set the price of the ticket of that type
@@ -216,7 +217,7 @@ contract Project {
       * @param _typeOfTicket Ticket type to create.
       * @param _quantity The quantity of tickets to set
       */
-    function setTicketQuantity(bytes32 _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
+    function setTicketQuantity(bytes32 _typeOfTicket, uint _quantity) public onlyPromoter() stagingPhase() {
         require(ticketsLeft >= _quantity); //require quantity wont be over the total ticket pool
         require(tickets[_typeOfTicket].created == true);
         tickets[_typeOfTicket].remaining = _quantity;
@@ -231,7 +232,7 @@ contract Project {
     /** @dev Add a user as a distributor, can only be done by the promoter and in staging phase
       * @param _user Address of the user
       */
-    function addDistributor(address _user) onlyPromoter() stagingPhase() {
+    function addDistributor(address _user) public onlyPromoter() stagingPhase() {
         require(_user != promoter);
         if (users[_user].isDistributor == true) 
             return;     //dont want to throw, just return early instead
@@ -244,7 +245,7 @@ contract Project {
       * @param _typeOfTicket The ticket type
       * @param _quantity Quantity of tickets
       */
-    function setDistributorAllottedQuantity(address _distributor, bytes32 _typeOfTicket, uint _quantity) onlyPromoter() stagingPhase() {
+    function setDistributorAllottedQuantity(address _distributor, bytes32 _typeOfTicket, uint _quantity) public onlyPromoter() stagingPhase() {
         require(tickets[_typeOfTicket].remaining >= _quantity); //check for sufficient tickets of that type
         require(users[_distributor].isDistributor); //make sure this user is a distributor
 
@@ -257,7 +258,7 @@ contract Project {
       * @param _distributor The address of the distributor.
       * @param _promotersFee The fee in percent to set for the distributor
       */
-    function setDistributorFee(address _distributor, uint _promotersFee) onlyPromoter() stagingPhase() {
+    function setDistributorFee(address _distributor, uint _promotersFee) public onlyPromoter() stagingPhase() {
         require(users[_distributor].isDistributor); //make sure this user is a distributor
 
         users[_distributor].promotersFee = _promotersFee;
@@ -269,7 +270,7 @@ contract Project {
       * @param _markup The address of the distributor.
       * @param _typeOfTicket The ticket type
       */
-    function setMarkup(uint _markup, bytes32 _typeOfTicket) validDistributorAddress(msg.sender) stagingPhase() {
+    function setMarkup(uint _markup, bytes32 _typeOfTicket) public validDistributorAddress(msg.sender) stagingPhase() {
         users[msg.sender].markup[_typeOfTicket] = _markup;
 
         SetMarkup(msg.sender, _markup, _typeOfTicket);
@@ -295,7 +296,7 @@ contract Project {
     function cancelListing(bytes32 _ticketType) public {
         require(amountPriceListing[msg.sender][_ticketType][0] > 0);
 
-        remaining = amountPriceListing[msg.sender][_ticketType][0];
+        uint remaining = amountPriceListing[msg.sender][_ticketType][0];
         amountPriceListing[msg.sender][_ticketType] = [0, 0];
         ticketsOf[msg.sender][_ticketType] = remaining;
     }
@@ -308,7 +309,7 @@ contract Project {
       * @param _percentage Percentage to take
       * @return  _total total value after division
       */
-    function calc(uint _value, uint _percentage) returns (uint _total) {
+    function calc(uint _value, uint _percentage) public pure returns (uint _total) {
         _total = (_value * _percentage) / 100;
     }
 
@@ -319,7 +320,7 @@ contract Project {
       * @param _typeOfTicket The ticket type to purchase
       * @param _quantity How many of that type to purchase
       */
-    function buyTicketFromPromoter(bytes32 _typeOfTicket, uint _quantity) payable
+    function buyTicketFromPromoter(bytes32 _typeOfTicket, uint _quantity) public payable
     validUser() fundingPhase() 
     {
         User storage _user = users[msg.sender];
@@ -373,7 +374,7 @@ contract Project {
       * @param _typeOfTicket The ticket type to purchase
       * @param _quantity How many of that type to purchase
       */
-    function buyTicketFromDistributor(address _distributor, bytes32 _typeOfTicket, uint _quantity) payable
+    function buyTicketFromDistributor(address _distributor, bytes32 _typeOfTicket, uint _quantity) public payable
     validDistributorAddress(_distributor) publicFundingPhase() 
     {
         User storage _user = users[msg.sender];
@@ -418,7 +419,7 @@ contract Project {
 /**************************
 Done Phase - Withdrawls
 **************************/
-    function withdraw() donePhase() {
+    function withdraw() public donePhase() {
         uint amount = pendingWithdrawls[msg.sender];
         pendingWithdrawls[msg.sender] = 0;
         msg.sender.transfer(amount);
