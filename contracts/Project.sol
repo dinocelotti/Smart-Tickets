@@ -344,8 +344,11 @@ contract Project {
 
         //If buyer is distributor, check they will not exceed allotted amount for this type
         if (validDistributorAddress(msg.sender) &&
-            (ticketsOf[msg.sender][_ticketType] + _quantity > users[msg.sender].allottedQuantity[_ticketType])) {
+            (allottedQuantity[_ticketType] >= _quantity))
+        {
             revert();
+        } else {
+            allottedQuantity[_ticketQuantity] -= _quantity;
         }
 
         //Calculate total cost of purchase and ensure that buyer has payed enough
