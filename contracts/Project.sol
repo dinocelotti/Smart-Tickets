@@ -113,6 +113,7 @@ contract Project {
     event SetMarkup (address indexed distributor, uint _markup, bytes32 _ticketType);
     event SetUserDetails(address indexed userAddress, string name, string info);
 
+    event BuyTicket(address indexed buyer, address indexed seller, bytes32 ticketType, uint quantity);
     event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
     event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
     event FundsReceived(address indexed from, uint amount);
@@ -335,21 +336,35 @@ contract Project {
 
         //If buyer is not a distributor, check they will not exceed consumer limit
         if (!validDistributorAddress(msg.sender) &&
-            users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) 
+            users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) {
             revert();
+        } else {
+            users[msg.sender].ticketsBought += _quantity;
+        }
 
         //If buyer is distributor, check they will not exceed allotted amount for this type
         if (validDistributorAddress(msg.sender) &&
-            (ticketsOf[msg.sender][_ticketType] + _quantity > users[msg.sender].allottedQuantity[_ticketType])) 
+            (ticketsOf[msg.sender][_ticketType] + _quantity > users[msg.sender].allottedQuantity[_ticketType])) {
             revert();
+        }
 
         //Calculate total cost of purchase and ensure that buyer has payed enough
         uint netCost = amountPriceListing[_seller][_ticketType][1] * _quantity;
         uint change = msg.value - netCost;
         require(change >= 0);
 
+        //Transfer tickets
         amountPriceListing[_seller][_ticketType][0] -= _quantity;
         ticketsOf[msg.sender][_ticketType] = _quantity;
+
+        //Split payments
+        pendingWithdrawls[msg.sender] += change;
+        pendingWithdrawls[_seller] += netCost;
+
+        FundsReceived(msg.sender, change);
+        FundsReceived(_seller, netCost);
+
+        BuyTicket(msg.sender, _seller, _ticketType, _quantity);
     }
 
     /** @dev Allow purchases from the promoter given that it's a valid user (distributor/end-consumer) and valid phase (public/private funding)
