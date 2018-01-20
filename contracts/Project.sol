@@ -335,7 +335,7 @@ contract Project {
         require(amountPriceListing[_seller][_ticketType][0] >= _quantity);
 
         //If buyer is not a distributor, check they will not exceed consumer limit
-        if (!validDistributorAddress(msg.sender) &&
+        if (!users[msg.sender].isDistributor &&
             users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) {
             revert();
         } else {
@@ -343,12 +343,12 @@ contract Project {
         }
 
         //If buyer is distributor, check they will not exceed allotted amount for this type
-        if (validDistributorAddress(msg.sender) &&
-            (allottedQuantity[_ticketType] >= _quantity))
+        if (users[msg.sender].isDistributor &&
+            (users[msg.sender].allottedQuantity[_ticketType] >= _quantity))
         {
             revert();
         } else {
-            allottedQuantity[_ticketQuantity] -= _quantity;
+            users[msg.sender].allottedQuantity[_ticketType] -= _quantity;
         }
 
         //Calculate total cost of purchase and ensure that buyer has payed enough
