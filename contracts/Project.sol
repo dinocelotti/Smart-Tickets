@@ -35,9 +35,10 @@ contract Project {
     uint membranFee; //the fee that membran takes for this event
 
     mapping(address => User) users; // address of the user => user struct
-    mapping(bytes32 => Ticket) tickets; // type of ticket => ticket struct
-    mapping(address => mapping(bytes32 => uint)) ticketsOf; // address => type of ticket => quantity of tickets that address owns
-    mapping(address => mapping(bytes32 => uint[])) amountPriceListing; //address => type of ticket => [sale amount, sale price]
+    mapping(bytes32 => Ticket) tickets; //ticket type name => ticket struct
+    mapping(address => mapping(bytes32 => uint)) ticketsOf; //owner => ticket type => amount
+    mapping(address => mapping(bytes32 => uint[])) amountPriceListing; //seller => ticket type => [amount, price]
+    mapping(address => mapping(address => mapping(bytes32 => uint[]))) amountPriceReservations; //seller => entitled => ticket type => [amount, price]
     mapping(address => uint) pendingWithdrawls; //address => withdraw amount pending
 
     function Project (
@@ -92,6 +93,14 @@ contract Project {
         return (b.isDistributor, b.allottedQuantity[_ticketType], b.markup[_ticketType], b.promotersFee);
     }
 
+    /** @dev Calculate the fraction of a value, while accounting for solidity's limitation for no fixed point values
+      * @param _value Unit value to divide by
+      * @param _percentage Percentage to take
+      * @return  _total total value after division
+      */
+    function calc(uint _value, uint _percentage) public pure returns (uint _total) {
+        _total = (_value * _percentage) / 100;
+    }
 /**************************
         Event Firers
 **************************/
@@ -101,10 +110,11 @@ contract Project {
     event StartPrivateFunding();
     event StartPublicFunding();
 
-    event AddTicket(address indexed promoter, bytes32 typeOfTicket);
-    event SetTicketPrice (address indexed promoter, bytes32 typeOfTicket, uint priceInWei);
-    event SetTicketQuantity (address indexed promoter, bytes32 typeOfTicket, uint quantity);
-    event TicketListed (address indexed seller, bytes32 typeOfTicket, uint[] amountPrice);
+    event AddTicket(address indexed promoter, bytes32 ticketType);
+    event SetTicketPrice (address indexed promoter, bytes32 ticketType, uint priceInWei);
+    event SetTicketQuantity (address indexed promoter, bytes32 ticketType, uint quantity);
+    event TicketListed (address indexed seller, bytes32 ticketType, uint[] amountPrice);
+    event TicketReserved(address indexed owner, address entitled, bytes32 ticketType, uint[] amountPrice);
 
     event AddDistributor (address indexed promoter, address distributor);
     event SetDistributorAllottedQuantity (address indexed promoter, address _distributor, bytes32 _ticketType, uint allottedQuantity);
@@ -114,8 +124,9 @@ contract Project {
     event SetUserDetails(address indexed userAddress, string name, string info);
 
     event BuyTicket(address indexed buyer, address indexed seller, bytes32 ticketType, uint quantity);
-    event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 typeOfTicket, uint quantity, uint weiSent);
-    event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 typeOfTicket,  uint quantity, uint weiSent);
+    event ClaimReserved(msg.sender, _seller, _ticketType, _quantity);
+    event BuyTicketFromPromoter(address indexed to, address indexed from, bool indexed isDistributor, bytes32 ticketType, uint quantity, uint weiSent);
+    event BuyTicketFromDistributor(address indexed from, address indexed to, bool indexed isDistributor, bytes32 ticketType,  uint quantity, uint weiSent);
     event FundsReceived(address indexed from, uint amount);
 
     event Withdraw(address indexed from, uint amount);
@@ -291,28 +302,43 @@ contract Project {
         TicketListed(msg.sender, _ticketType, _amountPrice);
     }
 
-    /**@dev Caller cancels sender's sales of all listed tickets of this type
-     * and return the tickets to the sendes ownership
+    /**@dev Caller cancels their sales of all listed tickets of this type
+     * and returns the tickets to the caller's ownership
      * @param _ticketType The ticket type to cancel
      */
     function cancelListing(bytes32 _ticketType) public {
         require(amountPriceListing[msg.sender][_ticketType][0] > 0);
 
-        uint remaining = amountPriceListing[msg.sender][_ticketType][0];
+        ticketsOf[msg.sender][_ticketType] = amountPriceListing[msg.sender][_ticketType][0];
         amountPriceListing[msg.sender][_ticketType] = [0, 0];
-        ticketsOf[msg.sender][_ticketType] = remaining;
+        TicketListed(msg.sender, _ticketType, [0,0]);
     }
 
-    /**************************
-        Helper functions
-    **************************/
-    /** @dev Calculate the fraction of a value, while accounting for solidity's limitation for no fixed point values
-      * @param _value Unit value to divide by
-      * @param _percentage Percentage to take
-      * @return  _total total value after division
-      */
-    function calc(uint _value, uint _percentage) public pure returns (uint _total) {
-        _total = (_value * _percentage) / 100;
+    /**@dev Caller reserves an amount of tickets at a price for an entitled address
+     * @param _entitled The address for whom the tickets are reserved
+     * @param _ticketType The type of ticket to reserve
+     * @param _amountPrice The amount and price to reserve
+     */
+    function reserveTicket(address _entitled, bytes32 _ticketType, uint[] _amountPrice) public {
+        require(_amountPrice[0] > 0 && _amountPrice[1] >= 0);
+        require(tickets[_ticketType].created == true);
+        require(ticketsof[msg.sender][_ticketType] >= _amountPrice[0]);
+
+        ticketsOf[msg.sender][_ticketType] -= _amountPrice[0];
+        amountPriceReservations[msg.sender][_entitled][_ticketType] = _amountPrice;
+        TicketReserved(msg.sender, _entitled, _ticketType, _amountPrice);
+    }
+
+    /**@dev Caller cancels all reserved tickets (of a given type) for an address
+     * @param _entitled The address for whom the tickets are reserved
+     * @param _ticketType The type of ticket to cancel
+     */
+    function cancelReservations(address _entitled, bytes32 _ticketType) public {
+        require(amountPriceReservations[msg.sender][_entitled][_ticketType][0] > 0);
+
+        ticketsOf[msg.sender][_ticketType] = amountPriceReservations[msg.sender][_entitled][_ticketType][0];
+        amountPriceReservations[msg.sender][_entitled][_ticketType] = [0, 0];
+        TicketReserved(msg.sender, _entitled, _ticketType, [0, 0]);
     }
 
     /**************************
@@ -334,6 +360,11 @@ contract Project {
         require(tickets[_ticketType].created == true);
         require(amountPriceListing[_seller][_ticketType][0] >= _quantity);
 
+        //Calculate total cost of purchase and ensure that buyer has payed enough
+        uint netCost = amountPriceListing[_seller][_ticketType][1] * _quantity;
+        uint change = msg.value - netCost;
+        require(change >= 0);
+
         //If buyer is not a distributor, check they will not exceed consumer limit
         if (!users[msg.sender].isDistributor &&
             users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) {
@@ -351,14 +382,9 @@ contract Project {
             users[msg.sender].allottedQuantity[_ticketType] -= _quantity;
         }
 
-        //Calculate total cost of purchase and ensure that buyer has payed enough
-        uint netCost = amountPriceListing[_seller][_ticketType][1] * _quantity;
-        uint change = msg.value - netCost;
-        require(change >= 0);
-
         //Transfer tickets
         amountPriceListing[_seller][_ticketType][0] -= _quantity;
-        ticketsOf[msg.sender][_ticketType] = _quantity;
+        ticketsOf[msg.sender][_ticketType] += _quantity;
 
         //Split payments
         pendingWithdrawls[msg.sender] += change;
@@ -368,6 +394,53 @@ contract Project {
         FundsReceived(_seller, netCost);
 
         BuyTicket(msg.sender, _seller, _ticketType, _quantity);
+    }
+
+    /** @dev Function for claiming tickets that are reserved for the caller. Caller may decide to take 
+      * all of the tickets that they are entitled to, or just some.
+      * @param _seller address of the original owner of the tickets, who placed the reservation
+      * @param _ticketType type of the ticket to be claimed
+      * @param _quantity amount of tickets to be claimed
+      */
+    function claimReserved(address _seller, bytes32 _ticketType, uint _quantity) public payable {
+        require(_quantity > 0);
+        require(tickets[_ticketType].created == true);
+        require(amountPriceReservations[_seller][msg.sender][_ticketType][0] >= _quantity);
+
+        //Calculate total cost of purchase and ensure that buyer has payed enough
+        int netCost = amountPriceReservations[_seller][msg.sender][_ticketType][1] * _quantity;
+        int change = msg.value - netCost;
+        require(change >= 0);
+        
+        //If buyer is not a distributor, check they will not exceed consumer limit
+        if (!users[msg.sender].isDistributor &&
+            users[msg.sender].ticketsBought + _quantity > consumerMaxTickets) {
+            revert();
+        } else {
+            users[msg.sender].ticketsBought += _quantity;
+        }
+
+        //If buyer is distributor, check they will not exceed allotted amount for this type
+        if (users[msg.sender].isDistributor &&
+            (users[msg.sender].allottedQuantity[_ticketType] >= _quantity))
+        {
+            revert();
+        } else {
+            users[msg.sender].allottedQuantity[_ticketType] -= _quantity;
+        }
+
+        //Transfer tickets
+        amountPriceReservation[_seller][msg.sender][_ticketType][0] -= _quantity;
+        ticketsOf[msg.sender][_ticketType] += _quantity;
+
+        //Split payments
+        pendingWithdrawls[msg.sender] += change;
+        pendingWithdrawls[_seller] += netCost;
+
+        FundsReceived(msg.sender, change);
+        FundsReceived(_seller, netCost);
+
+        ClaimReserved(msg.sender, _seller, _ticketType, _quantity);
     }
 
     /** @dev Allow purchases from the promoter given that it's a valid user (distributor/end-consumer) and valid phase (public/private funding)
@@ -399,9 +472,9 @@ contract Project {
             _user.allottedQuantity[_ticketType])) 
             revert();
 
-        uint _total = tickets[_ticketType].price * _quantity; //calculate total price
-        uint _netValue = msg.value - _total; //subtract total price from ether sent
-        uint _membranFee = calc(_total, membranFee); //calculate membran's fee
+        int _total = tickets[_ticketType].price * _quantity; //calculate total price
+        int _netValue = msg.value - _total; //subtract total price from ether sent
+        int _membranFee = calc(_total, membranFee); //calculate membran's fee
 
         require(_netValue >= 0); //make sure user paid enough
 
