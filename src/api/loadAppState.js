@@ -12,7 +12,7 @@ const loadAppState = async () => {
 	console.log('App state loading...')
 	const projectResolver = ethApi.deployed.projectResolver
 
-	const logHanderCreator = actionCreators => (err, log) => {
+	const logHandlerCreator = actionCreators => (err, log) => {
 		if (err) {
 			console.error(err)
 			throw err
@@ -26,7 +26,7 @@ const loadAppState = async () => {
 	}
 	console.log('Uninstalling old filters')
 
-	const logHandler = logHanderCreator({ actionCreator })
+	const logHandler = logHandlerCreator({ actionCreator })
 	const filterObj = { fromBlock: 0, toBlock: 'latest' }
 	const projectResolverFilter = projectResolver.AddProject({}, filterObj)
 	projectResolverFilter.stopWatching()
