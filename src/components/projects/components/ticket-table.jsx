@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { List, Table, Accordion, Icon } from 'semantic-ui-react'
-import camelToHuman from 'src/util/stringUtils'
+import camelToHuman from '../../../util/stringUtils'
 
 export default class TicketTable extends Component {
 	distributorBreakdownPerTicket = (distributors, ticketId) => {

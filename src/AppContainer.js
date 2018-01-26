@@ -5,11 +5,11 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { getAccounts } from './actions/account-actions';
 import ethApi from './api/eth-api';
 import store from './store';
-import { LoadingSplash } from './components/Loaders';
+import { LoadingSplash } from './components/Status/Loaders';
 /* Import WebWorker that watches the blockchain */
 //eslint dislikes the require syntax
 //eslint-disable-next-line
-const myWorker = require('worker-loader?inline&fallback=false!./api/loadAppState.js');
+const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.js');
 /**
  * Import View Containers for routes
  */
@@ -54,7 +54,7 @@ class AppContainer extends React.Component {
          * This worker watches for events on the blockchain, and then 
          * dispatches actions to the store based upon those events
          */
-        const worker = new myWorker();
+        const worker = new Worker();
         worker.onmessage = e => {
             console.log("Webworker Dispatch: " + e.data);
             store.dispatch(e.data);

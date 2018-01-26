@@ -52,5 +52,5 @@ const loadAppState = async () => {
 		})
 	})
 }
-console.log('webworker loaded')
+console.log('Webworker Initialized')
 loadAppState()
