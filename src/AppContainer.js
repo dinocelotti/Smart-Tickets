@@ -5,17 +5,16 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { getAccounts } from './actions/account-actions';
 import ethApi from './api/eth-api';
 import store from './store';
-import { LoadingSplash } from './components/Status/Loaders';
 /* Import WebWorker that watches the blockchain */
 //eslint dislikes the require syntax
 //eslint-disable-next-line
 const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.js');
 /**
- * Import View Containers for routes
+ * Import Components
  */
-import Promoter from './containers/promoter-container';
-import Distributor from './containers/distributor-container';
-import EndConsumer from './containers/end-consumer-container';
+import { Wrapper } from './components/Wrapper'
+import { EventListContainer } from './components/EventListContainer'
+import { LoadingSplash } from './components/Status/Loaders';
 /**
  * Import Custom CSS
  */
@@ -68,13 +67,13 @@ class AppContainer extends React.Component {
         }
         return(
             <div>
-                <Router>
-                    <Switch>
-                        <Route exact path="/" component={Promoter} />
-                        <Route path="/distributor" component={Distributor} />
-                        <Route path="/endconsumer" component={EndConsumer} />
-                    </Switch>
-                </Router>
+                <Wrapper>
+                    <Router>
+                        <Switch>
+                            <Route exact path="/" component={EventListContainer} />
+                        </Switch>
+                    </Router>
+                </Wrapper>
             </div>
         )
     }
