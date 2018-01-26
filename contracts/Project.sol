@@ -12,8 +12,8 @@ contract Project {
     enum State {Staging, PrivateFunding, PublicFunding, Done}
 
     struct Ticket {
-        uint price; //price of the ticket in wei
-        uint remaining; //number of tickets left of this particular ticket
+        uint total; //Sum of all created of this ticket type
+        uint maxPrice; //Upper bound on price of ticket, 0 if none
         bool created; //to check for empty values
     }
 
@@ -33,7 +33,6 @@ contract Project {
     address public promoter; //wallet of the promoter
     address public membran = 0x1111111111111111111111111111111111111111; //wallet of membran, placeholder
 
-    uint public ticketsLeft; //number of tickets left to be sold at this event
     uint public totalTickets; //total number of tickets
     uint public consumerMaxTickets; //limit of the number of tickets a non-Distributor user can own
     uint membranFee; //the fee that membran takes for this event
@@ -127,7 +126,7 @@ contract Project {
     event StartPrivateFunding ();
     event StartPublicFunding ();
 
-    event AddTicket (address indexed promoter, bytes32 ticketType);
+    event AddTicket (address indexed promoter, bytes32 ticketType, uint princeInWei, uint quantity);
     event SetTicketPrice (address indexed promoter, bytes32 ticketType, uint priceInWei);
     event SetTicketQuantity (address indexed promoter, bytes32 ticketType, uint quantity);
     event TicketListed (address indexed seller, bytes32 ticketType, uint[2] amountPrice);
@@ -251,37 +250,20 @@ contract Project {
       * @param _priceInWei Price in wei to assign to this ticket type.
       * @param _quantity Number of tickets of this type
       */
-    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() stagingPhase() {
-        require(tickets[_ticketType].created == false); //Require that the specific ticket type hasnt been initialized yet
+    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
+        // Ensure that the attributes for this type are set
         tickets[_ticketType].created = true;
+        tickets[_ticketType].total += _quantity;
+        tickets[_ticketType].maxPrice = _priceInWei;
 
-        AddTicket(msg.sender, _ticketType);
-        setTicketPrice(_ticketType, _priceInWei);
-        setTicketQuantity(_ticketType, _quantity); //Set ticket quantity for this type, drawing from the total ticket pool
-    }
-    
-    /** @dev Set the ticket price, can only be done in the staging phase and by the promoter
-      * @param _ticketType Ticket type to create.
-      * @param _priceInWei The price of the ticket to set
-      */
-    function setTicketPrice(bytes32 _ticketType, uint _priceInWei) public onlyPromoter() stagingPhase() {
-        require(tickets[_ticketType].created == true);
-        require(_priceInWei >= 0);
-        tickets[_ticketType].price = _priceInWei; //Set the price of the ticket of that type
-        SetTicketPrice(msg.sender, _ticketType, _priceInWei);
-    }
 
-    /** @dev Set the ticket quantity of that type, can only be done in the staging phase and by the promoter
-      * @param _ticketType Ticket type to create.
-      * @param _quantity The quantity of tickets to set
-      */
-    function setTicketQuantity(bytes32 _ticketType, uint _quantity) public onlyPromoter() stagingPhase() {
-        require(ticketsLeft >= _quantity); //require quantity wont be over the total ticket pool
-        require(tickets[_ticketType].created == true);
-        tickets[_ticketType].remaining = _quantity;
-        ticketsLeft -= _quantity; //reduce the total ticket pool by quantity
 
-        SetTicketQuantity(msg.sender, _ticketType, _quantity);
+        //Give the promoter ownership over the new tickets
+        ticketsOfAddr[promoter][_ticketType] += _quantity;
+
+        totalTickets += _quantity;
+
+        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
     }
 
     /**************************
