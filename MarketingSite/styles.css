@@ -1,0 +1,58 @@
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+html {
+    box-sizing: border-box;
+}
+.background {
+    background:url('./images/background.jpg');
+    height: 100%;
+    width: 100%;
+    background-size: 100%;
+    background-position: center center; 
+    background-repeat: no-repeat;
+}
+.layer {
+    background-color: rgba(2, 15, 92, 0.7);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.brand{
+    font-family: 'Oswald', sans-serif;
+    font-size: 2.25rem;
+}
+.container {
+    height: 100%;
+    width: 100%;
+}
+.hero {
+    padding-top: 125px;
+    display: flex;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    height: calc(100%-150px);
+}
+.hero-title{
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 55px;
+    color: white;
+}
+.hero-quote{
+    font-family: 'Open Sans', sans-serif;
+    font-size: 20px;
+    color: white;
+    padding: 60px;
+}
+.hero-button{
+    padding-top: 25px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
