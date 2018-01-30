@@ -115,8 +115,6 @@ contract Project {
         string projectName, 
         uint membranFee,
         uint consumerMaxTickets);
-    event FinishStaging ();
-    event StartPrivateFunding ();
     event StartPublicFunding ();
 
     event AddTicket (address indexed promoter, bytes32 ticketType, uint princeInWei, uint quantity);
@@ -169,13 +167,6 @@ contract Project {
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
     function finishStaging() public onlyPromoter() {
         require(currentState == State.Staging); //Require the previous state to be Staging to move on
-        currentState = State.PrivateFunding;
-        FinishStaging();
-    }
-
-    /** @dev Move state forward from private funding to public funding, can only by done by the promoter */
-    function startPublicFunding() public onlyPromoter() {
-        require(currentState == State.PrivateFunding);
         currentState = State.PublicFunding;
         StartPublicFunding();
     }
@@ -185,6 +176,12 @@ contract Project {
 **************************/
     modifier onlyPromoter() {
         require(msg.sender == promoter);
+        _;
+    }
+
+    /**@dev Check if the given address parameter is a valid distributor*/
+    modifier onlyDistributor(address _distributor) {
+        require(users[_distributor].isDistributor);
         _;
     }
 
@@ -198,31 +195,6 @@ contract Project {
         //make sure theyre an end comsumer or a distributor
         require(msg.sender != membran && msg.sender != promoter);
         _;
-    }
-
-    /**@dev Check if the given address parameter is a valid distributor*/
-    modifier onlyDistributor(address _distributor) {
-        require(users[_distributor].isDistributor);
-        _;
-    }
-
-    /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
-      * @param _ticketType Ticket type to create.
-      * @param _priceInWei Price in wei to assign to this ticket type.
-      * @param _quantity Number of tickets of this type
-      */
-    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
-        // Ensure that the attributes for this type are set
-        tickets[_ticketType].created = true;
-        tickets[_ticketType].total += _quantity;
-        tickets[_ticketType].maxPrice = _priceInWei;
-
-        //Give the promoter ownership over the new tickets
-        ticketsOfAddr[promoter][_ticketType] += _quantity;
-
-        totalTickets += _quantity;
-
-        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
     }
 
 /**************************
@@ -272,6 +244,25 @@ contract Project {
         users[msg.sender].markup[_ticketType] = _markup;
 
         SetMarkup(msg.sender, _markup, _ticketType);
+    }
+
+    /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
+      * @param _ticketType Ticket type to create.
+      * @param _priceInWei Price in wei to assign to this ticket type.
+      * @param _quantity Number of tickets of this type
+      */
+    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
+        // Ensure that the attributes for this type are set
+        tickets[_ticketType].created = true;
+        tickets[_ticketType].total += _quantity;
+        tickets[_ticketType].maxPrice = _priceInWei;
+
+        //Give the promoter ownership over the new tickets
+        ticketsOfAddr[promoter][_ticketType] += _quantity;
+
+        totalTickets += _quantity;
+
+        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
     }
 
     /**@dev Caller lists an amount of tickets (that they own) for sale at a specific price
