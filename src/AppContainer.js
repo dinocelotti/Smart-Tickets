@@ -13,6 +13,7 @@ const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.j
  * Import Components
  */
 import { Wrapper } from './components/Wrapper'
+import { LoginContainer } from './components/Account/LoginContainer'
 import { EventListContainer } from './components/EventListContainer'
 import { LoadingSplash } from './components/Status/Loaders';
 /**
@@ -55,7 +56,7 @@ class AppContainer extends React.Component {
          */
         const worker = new Worker();
         worker.onmessage = e => {
-            console.log("Webworker Dispatch: " + e.data);
+            console.log('Webworker Dispatch: ' + e.data);
             store.dispatch(e.data);
         };
     }    
@@ -72,6 +73,7 @@ class AppContainer extends React.Component {
                 <Router>
                     <Wrapper>
                         <Switch>
+                            <Route path="/login" component={LoginContainer}/>
                             <Route path="/events" component={EventListContainer}/>
                             <Route path="/createEvent" component={EventListContainer}/>
                             <Route path="/account" component={EventListContainer}/>
