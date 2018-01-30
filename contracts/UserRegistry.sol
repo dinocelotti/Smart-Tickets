@@ -10,15 +10,14 @@ contract UserRegistry {
     }
 
     mapping(address => User) users;
-    mapping(bytes32 => address) addrForName;
+    mapping(bytes32 => address) addrForName;    //Username => address
 
     event NewUser(address userAddress, bytes32 userName);
     event UserDetails(address indexed userAddress, string country, string city, bool canPromote);
     
     function initUser(bytes32 _userName) public {
-        //Check that the address is not yet initialized and the user name is not taken
-        require(!users[msg.sender].initialized);
-        require(addrForName[_userName] == 0);
+        require(!users[msg.sender].initialized);    //Address is not yet initialized
+        require(addrForName[_userName] == 0);   //User name is not taken
 
         users[msg.sender].initialized = true;
         users[msg.sender].userName = _userName;

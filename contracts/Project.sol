@@ -6,10 +6,10 @@ contract Project {
     /*
     * Staging -> The promoter is still setting up the project details
     * PrivateFunding -> Contract is Distributor and ready to sell tickets to Distributor sellers, all ticket transfers frozen
-    * PublicFunding -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
+    * Public -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
     * Done -> Sale has finished and is finalized, ticket transfers enabled for public
     */
-    enum State {Staging, PrivateFunding, PublicFunding, Done}
+    enum State {Staging, Public, Done}
 
     struct Ticket {
         uint total; //Sum of all created of this ticket type
@@ -115,8 +115,6 @@ contract Project {
         string projectName, 
         uint membranFee,
         uint consumerMaxTickets);
-    event FinishStaging ();
-    event StartPrivateFunding ();
     event StartPublicFunding ();
 
     event AddTicket (address indexed promoter, bytes32 ticketType, uint princeInWei, uint quantity);
@@ -156,13 +154,8 @@ contract Project {
         _;
     }
 
-    modifier fundingPhase(){
-        require(currentState == State.PublicFunding || currentState == State.PrivateFunding);
-        _;
-    }
-
     modifier publicFundingPhase(){
-        require(currentState == State.PublicFunding);
+        require(currentState == State.Public);
         _;
     }
 
@@ -174,14 +167,7 @@ contract Project {
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
     function finishStaging() public onlyPromoter() {
         require(currentState == State.Staging); //Require the previous state to be Staging to move on
-        currentState = State.PrivateFunding;
-        FinishStaging();
-    }
-
-    /** @dev Move state forward from private funding to public funding, can only by done by the promoter */
-    function startPublicFunding() public onlyPromoter() {
-        require(currentState == State.PrivateFunding);
-        currentState = State.PublicFunding;
+        currentState = State.Public;
         StartPublicFunding();
     }
 
@@ -193,41 +179,20 @@ contract Project {
         _;
     }
 
-    /**@dev An address is a valid user if they're not membran/promoter and we're in a phase where buying is valid*/
-    modifier validUser() {
-        //check what phase we're in and see if the user is valid for that phase
-        if (!users[msg.sender].isDistributor && currentState != State.PublicFunding) 
-            revert(); //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
-        if (users[msg.sender].isDistributor && currentState != State.PrivateFunding) 
-            revert(); //if they are a distributor and its not the private funding phase, throw
-        //make sure theyre an end comsumer or a distributor
-        require(msg.sender != membran && msg.sender != promoter);
-        _;
-    }
-
     /**@dev Check if the given address parameter is a valid distributor*/
-    modifier validDistributorAddress(address _distributor) {
+    modifier onlyDistributor(address _distributor) {
         require(users[_distributor].isDistributor);
         _;
     }
 
-    /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
-      * @param _ticketType Ticket type to create.
-      * @param _priceInWei Price in wei to assign to this ticket type.
-      * @param _quantity Number of tickets of this type
-      */
-    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
-        // Ensure that the attributes for this type are set
-        tickets[_ticketType].created = true;
-        tickets[_ticketType].total += _quantity;
-        tickets[_ticketType].maxPrice = _priceInWei;
-
-        //Give the promoter ownership over the new tickets
-        ticketsOfAddr[promoter][_ticketType] += _quantity;
-
-        totalTickets += _quantity;
-
-        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
+    /**@dev An address is a valid user if they're not membran/promoter and we're in a phase where buying is valid*/
+    modifier validUser() {
+        //check what phase we're in and see if the user is valid for that phase
+        if (!users[msg.sender].isDistributor && currentState != State.Public) 
+            revert(); //if they're not a distributor (so they are an end consumer) and we're not in a public phase, throw
+        //make sure theyre an end comsumer or a distributor
+        require(msg.sender != membran && msg.sender != promoter);
+        _;
     }
 
 /**************************
@@ -251,7 +216,7 @@ contract Project {
       */
     function giveAllowance(address _distributor, bytes32 _ticketType, uint _quantity) public 
     onlyPromoter()
-    validDistributorAddress(_distributor)
+    onlyDistributor(_distributor)
     {
         users[_distributor].allowance[_ticketType] += _quantity;
         GiveAllowance(_distributor, _ticketType, _quantity);
@@ -273,10 +238,29 @@ contract Project {
       * @param _markup The address of the distributor.
       * @param _ticketType The ticket type
       */
-    function setMarkup(uint _markup, bytes32 _ticketType) public validDistributorAddress(msg.sender) stagingPhase() {
+    function setMarkup(uint _markup, bytes32 _ticketType) public onlyDistributor(msg.sender) stagingPhase() {
         users[msg.sender].markup[_ticketType] = _markup;
 
         SetMarkup(msg.sender, _markup, _ticketType);
+    }
+
+    /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
+      * @param _ticketType Ticket type to create.
+      * @param _priceInWei Price in wei to assign to this ticket type.
+      * @param _quantity Number of tickets of this type
+      */
+    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
+        // Ensure that the attributes for this type are set
+        tickets[_ticketType].created = true;
+        tickets[_ticketType].total += _quantity;
+        tickets[_ticketType].maxPrice = _priceInWei;
+
+        //Give the promoter ownership over the new tickets
+        ticketsOfAddr[promoter][_ticketType] += _quantity;
+
+        totalTickets += _quantity;
+
+        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
     }
 
     /**@dev Caller lists an amount of tickets (that they own) for sale at a specific price
