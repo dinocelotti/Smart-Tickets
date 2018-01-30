@@ -9,6 +9,11 @@ const fs = require('fs');
 let Project = require('../../build/contracts/Project.json');
 let UserRegistry = require('../../build/contracts/UserRegistry.json');
 let ProjectResolver = require('../../build/contracts/ProjectResolver');
+
+let BlockchainProviderAddress = 'localhost';
+if (process.env.NODE_ENV === 'production') {
+  BlockchainProviderAddress = '138.68.60.49';
+}
 /**
  *
  *
@@ -30,11 +35,11 @@ class API {
   /**
 	 * Creates an instance of API.
 	 * @memberof API
-	 */
+	 */ 
   constructor() {
     if (!this.provider) {
       // Create a provider if one does not exist yet.
-      this.provider = new Web3.providers.HttpProvider('http://localhost:8545');
+      this.provider = new Web3.providers.HttpProvider('http://'+ BlockchainProviderAddress +':8545');
     }
     if (!this.web3) {
       // Create web3 instance if one does not exist yet.
@@ -50,7 +55,6 @@ class API {
 	 * @memberof API
 	 */
   async getProjectAtAddress({ address }) {
-    //console.group('GetProjectAtAddress')
     console.log('Getting projectAtAddress ' + address);
     if (!this.projectsAtAddress[address]) {
       console.warn('Instance not created, making...');
@@ -59,7 +63,6 @@ class API {
     } else {
       console.log('Instance already exists, return cached project');
     }
-    //console.groupEnd()
     return this.projectsAtAddress[address];
   }
 
