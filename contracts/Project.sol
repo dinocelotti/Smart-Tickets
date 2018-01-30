@@ -9,7 +9,7 @@ contract Project {
     * PublicFunding -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
     * Done -> Sale has finished and is finalized, ticket transfers enabled for public
     */
-    enum State {Staging, PrivateFunding, PublicFunding, Done}
+    enum State {Staging, Public, Done}
 
     struct Ticket {
         uint total; //Sum of all created of this ticket type
@@ -156,11 +156,6 @@ contract Project {
         _;
     }
 
-    modifier fundingPhase(){
-        require(currentState == State.PublicFunding || currentState == State.PrivateFunding);
-        _;
-    }
-
     modifier publicFundingPhase(){
         require(currentState == State.PublicFunding);
         _;
@@ -206,7 +201,7 @@ contract Project {
     }
 
     /**@dev Check if the given address parameter is a valid distributor*/
-    modifier validDistributorAddress(address _distributor) {
+    modifier onlyDistributor(address _distributor) {
         require(users[_distributor].isDistributor);
         _;
     }
@@ -251,7 +246,7 @@ contract Project {
       */
     function giveAllowance(address _distributor, bytes32 _ticketType, uint _quantity) public 
     onlyPromoter()
-    validDistributorAddress(_distributor)
+    isDistributor(_distributor)
     {
         users[_distributor].allowance[_ticketType] += _quantity;
         GiveAllowance(_distributor, _ticketType, _quantity);
@@ -273,7 +268,7 @@ contract Project {
       * @param _markup The address of the distributor.
       * @param _ticketType The ticket type
       */
-    function setMarkup(uint _markup, bytes32 _ticketType) public validDistributorAddress(msg.sender) stagingPhase() {
+    function setMarkup(uint _markup, bytes32 _ticketType) public isDistributor(msg.sender) stagingPhase() {
         users[msg.sender].markup[_ticketType] = _markup;
 
         SetMarkup(msg.sender, _markup, _ticketType);
