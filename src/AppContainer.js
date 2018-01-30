@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { getAccounts } from './actions/account-actions';
 import ethApi from './api/eth-api';
 import store from './store';
-/* Import WebWorker that watches the blockchain */
+/* Import WebWorker that watches the blockchain. Uses the worker-loader package for webpack to register loadAppState as a workernp */
 //eslint dislikes the require syntax
 //eslint-disable-next-line
 const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.js');
@@ -62,18 +62,22 @@ class AppContainer extends React.Component {
     render() {
         if (this.state.loading) {
             return (
-                <LoadingSplash message="Connecting to the Blockchain"/>
+                <div>
+                    <LoadingSplash message="Connecting to the Blockchain"/>
+                </div>
             )
         }
         return(
             <div>
-                <Wrapper>
-                    <Router>
+                <Router>
+                    <Wrapper>
                         <Switch>
-                            <Route exact path="/" component={EventListContainer} />
+                            <Route path="/events" component={EventListContainer}/>
+                            <Route path="/createEvent" component={EventListContainer}/>
+                            <Route path="/account" component={EventListContainer}/>
                         </Switch>
-                    </Router>
-                </Wrapper>
+                    </Wrapper>
+                </Router>
             </div>
         )
     }
@@ -85,7 +89,9 @@ AppContainer.propTypes = {
  * Redux bindings 
  */
 function mapStateToProps({ web3State: { projectResolver } }) {
-    return { projectResolver };
+    return { 
+        projectResolver
+    };
 }
 const mapDispatchToProps = dispatch => ({
     getAccounts: () => dispatch(getAccounts())

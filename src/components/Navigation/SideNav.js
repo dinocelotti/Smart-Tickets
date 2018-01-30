@@ -1,13 +1,8 @@
-import React from 'react'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { NavLink } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react';
-import logo from '../../images/logo-white.svg'
-
-const logoStyle = {
-    width: 112,
-    margin: "12 0px",
-    marginLeft: "calc(50% - 56px)"
-}
+import logo from '../../images/logo-white.svg';
 
 /**
  * Sidebar - app NavBar contains navigation links, stateless
@@ -15,10 +10,12 @@ const logoStyle = {
 const SideNav = () => (
     <div>
         <Menu vertical fixed='left' inverted>
-            <img src={logo} style={logoStyle}/>
-            <Menu.Item name='menu item'/>
-            <Menu.Item name='menu item'/>
-            <Menu.Item name='menu item'/>
+            <div className="ui logo icon image">
+                <img src={logo}/>
+            </div>
+            <NavLink to={'/events'} className="item" activeClassName="active"><i className="icon tasks"/>View Events</NavLink>
+            <NavLink to={'/createEvent'} className="item" activeClassName="active"><i className="icon edit"/>Create Event</NavLink>
+            <NavLink to={'/account'} className="item" activeClassName="active"><i className="icon settings"/>Manage My Account</NavLink>
         </Menu>
     </div>
 )
