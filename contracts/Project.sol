@@ -35,7 +35,6 @@ contract Project {
 
     uint public totalTickets; //total number of tickets
     uint public consumerMaxTickets; //limit of the number of tickets a non-Distributor user can own
-    uint membranFee; //the fee that membran takes for this event
 
     mapping(address => User) users; // address of the user => user struct
     mapping(bytes32 => Ticket) tickets; //ticket type name => ticket struct
@@ -46,18 +45,15 @@ contract Project {
 
     function Project (
         string _name,
-        uint _membranFee,
         uint _consumerMaxTickets) public
     {
         projectName = _name;
-        membranFee = _membranFee;
         consumerMaxTickets = _consumerMaxTickets;
         promoter = msg.sender;
         currentState = State.Staging;
         Created(
             promoter, 
             projectName, 
-            membranFee, 
             consumerMaxTickets);
     }
 
@@ -112,21 +108,16 @@ contract Project {
 
     event Created (
         address indexed promoter, 
-        string projectName, 
-        uint membranFee,
+        string projectName,
         uint consumerMaxTickets);
     event StartPublicFunding ();
 
-    event AddTicket (address indexed promoter, bytes32 ticketType, uint princeInWei, uint quantity);
+    event AddTicket (bytes32 ticketType, uint princeInWei, uint quantity);
     event TicketListed (address indexed seller, bytes32 ticketType, uint[2] amountPrice);
     event TicketReserved (address indexed owner, address entitled, bytes32 ticketType, uint[2] amountPrice);
 
-    event AddDistributor (address indexed promoter, address distributor);
-
-    event GiveAllowance (
-        address _distributor, 
-        bytes32 _ticketType, 
-        uint allowance);
+    event AddDistributor (address distributor);
+    event GiveAllowance (address distributor, bytes32 ticketType, uint allowance);
 
     event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
 
@@ -165,8 +156,7 @@ contract Project {
     }
 
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
-    function finishStaging() public onlyPromoter() {
-        require(currentState == State.Staging); //Require the previous state to be Staging to move on
+    function finishStaging() public onlyPromoter() stagingPhase() {
         currentState = State.Public;
         StartPublicFunding();
     }
@@ -260,7 +250,7 @@ contract Project {
 
         totalTickets += _quantity;
 
-        AddTicket(msg.sender, _ticketType, _priceInWei, _quantity);
+        AddTicket(_ticketType, _priceInWei, _quantity);
     }
 
     /**@dev Caller lists an amount of tickets (that they own) for sale at a specific price
