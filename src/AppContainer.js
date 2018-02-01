@@ -12,8 +12,8 @@ const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.j
 /**
  * Import Components
  */
+import LoginContainer from './components/Account/LoginContainer'
 import { Wrapper } from './components/Wrapper'
-import { LoginContainer } from './components/Account/LoginContainer'
 import { EventListContainer } from './components/EventListContainer'
 import { LoadingSplash } from './components/Status/Loaders';
 /**
@@ -30,15 +30,20 @@ import './styles/global.css';
 class AppContainer extends React.Component { 
     constructor(props){
         super(props);
-        this.state={loading:true};
+        this.state={
+            loading:true,
+            account: ''
+        };
     }
     componentDidMount() {
         this.load();
     }
     componentWillReceiveProps(nextProps){
-        if(nextProps.projectResolver.deployed){
+        const loading = nextProps.projectResolver.deployed ? false : true;
+        if(nextProps != this.props){
             this.setState({
-                loading:false
+                loading: loading,
+                userAddress: nextProps.userAddress
             });
         }
     }
@@ -60,20 +65,17 @@ class AppContainer extends React.Component {
             store.dispatch(e.data);
         };
     }    
-    render() {
-        if (this.state.loading) {
-            return (
-                <div>
-                    <LoadingSplash message="Connecting to the Blockchain"/>
-                </div>
-            )
-        }
+    renderLogin(){
+        return(
+            <LoginContainer />
+        )
+    }
+    renderApp() {
         return(
             <div>
                 <Router>
                     <Wrapper>
                         <Switch>
-                            <Route path="/login" component={LoginContainer}/>
                             <Route path="/events" component={EventListContainer}/>
                             <Route path="/createEvent" component={EventListContainer}/>
                             <Route path="/account" component={EventListContainer}/>
@@ -83,16 +85,27 @@ class AppContainer extends React.Component {
             </div>
         )
     }
+    render(){
+        if(this.state.loading){
+            return ( <LoadingSplash message="Connecting to the Blockchain"/> )
+        }
+        else if(!this.state.userAddress){
+            return( this.renderLogin() )
+        }
+        return ( this.renderApp() )  
+    }
 }
 AppContainer.propTypes = {
-    projectResolver: PropTypes.shape({ deployed: PropTypes.bool })
+    projectResolver: PropTypes.shape({ deployed: PropTypes.bool }),
+    userAddress: PropTypes.string
 };
 /**
  * Redux bindings 
  */
-function mapStateToProps({ web3State: { projectResolver } }) {
+function mapStateToProps({ web3State: { projectResolver }, userState }) {
     return { 
-        projectResolver
+        projectResolver,
+        userAddress: userState
     };
 }
 const mapDispatchToProps = dispatch => ({

@@ -1,21 +1,15 @@
-import types from '../actions/action-types'
-
-const initialState = {
-    userAddress: ''
-};
+const initialState = '';
 /**
  * uiReducer - job of this reducer is to handle front-end state
  * @param {*} state 
  * @param {*} action 
  */
-function uiReducer(state = initialState, action) {
-    switch(types.type) {
-        case 'SET_USER_ADDRESS' : { 
-            return Object.assign({}, state, {
-                userAddress : action.address
-            });
-        }
-        default : return state;
+const uiReducer = (state = initialState, action) => {
+    switch(action.type) {
+        case 'SET_USER_ADDRESS' : 
+            return action.address;
+        default : 
+            return state;
     }
 }
-export default uiReducer()
+export default uiReducer

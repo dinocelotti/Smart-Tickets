@@ -1,56 +1,69 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Grid, Image, Dropdown, Button } from 'semantic-ui-react';
 
 /**
  * 
  * @param {dispatch} setUserAddress - dispatcher for SET_USER_ADDRESS function 
  */
-export default class Login extends React.Component{
+class Login extends React.Component {
     constructor(props){
         super(props);
-        this.state={email: '7'}
-        this.handleChange=this.handleChange.bind(this);
-        this.handleSubmit=this.handleSubmit.bind(this);
+        this.state = {address: ''}
+        this.handleChange = this.handleChange.bind(this);
+        this.handleClick = this.handleClick.bind(this);
     }
-    handleChange(event){
-        this.setState({email: event.target.email})
-        console.log(this.state.email)
+    createDropdownList(accounts){
+        return accounts.ids.map(id => ({
+            value: id,
+            text: id,
+            description: 'wei: ' + accounts.byId[id].balance
+        }));
     }
-    handleSubmit(event){
-        this.props.setUserAddress('string')
-        event.preventDefault();
+    handleChange = (event, {value}) => { 
+        this.setState({ 
+            address: value
+        })
     }
-    render(){
+    handleClick = (e) => {
+        e.preventDefault();
+        this.props.onClick(this.state.address)
+    }
+    render() {
+        const value=this.state.address
         return (
-            <div className="ui middle aligned center aligned grid">
-            <div className="column">
-                <h2 className="ui black image header">
-                    <div className="content">
-                        Log-in to your account
-                    </div>
-                </h2>
-                <form onSubmit={this.handleSubmit} className="ui large form">
-                    <div className="ui stacked segment">
-                        <div className="field">
-                            <div className="ui left input">
-                                <input onChange={this.handleChange} value={this.state.email} type="text"/>
-                            </div>
+            <div className="ui middle aligned center aligned grid" style={{paddingTop: 10}}>
+                <div className="column" style={{maxWidth: 650}}>
+                    
+                    <h2 className="ui black image header">
+                        <div className="content">
+                            Log-in to your account
                         </div>
-                        <div className="field">
-                            <div className="ui left input">
-                                <input type="password" name="password" placeholder="Password"/>
-                            </div>
+                    </h2>
+
+                    <div className="ui large form">
+                        <div className="ui stacked segment">
+                            <Dropdown 
+                            onChange={this.handleChange} 
+                            value={value}
+                            placeholder='Select Address' 
+                            type="text" 
+                            fluid 
+                            search 
+                            selection 
+                            options={this.createDropdownList(this.props.accountState)} 
+                            />
+                            <Button fluid large color='black' onClick={this.handleClick} style={{marginTop: 20}}>Login</Button>
                         </div>
-                        <button className="ui fluid large black submit button">Login</button>
+                        <div className="ui segment">This page subject to change as we determine how to handle logins. Example only.</div>
                     </div>
-                </form>
-                <div className="ui segment">This page subject to change as we determine how to handle logins. Example only.</div>
-            </div>    
-        </div>
+                </div>
+            </div>
         )
     }
 }
 Login.propTypes = {
     accounts : PropTypes.arrayOf(PropTypes.string),
-    setUserAddress: PropTypes.func.isRequired
+    onClick: PropTypes.func.isRequired
 }
+export default Login

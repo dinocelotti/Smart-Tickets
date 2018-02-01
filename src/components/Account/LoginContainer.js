@@ -1,26 +1,24 @@
 import { connect } from 'react-redux'
 import Login from './Login'
+import { setUserAddress } from '../../actions/user-actions';
+
 /**
  * mapStateToProps - maps accounts list to props 
  * @param {state} state 
  */
-function mapStateToProps(state){
-	return({
-		accounts: state.accountState.accounts
-	});
-}
+const mapStateToProps = ({ accountState }) => ({ accountState }); 
  /**
   * mapDispatchToProps - maps SET_USER_ADDRESS dispatch to props
   * @param {dispatch} dispatch 
   */
-function mapDispatchToProps(dispatch) {
-	return({
-		//setUserAddress: () => {dispatch(SET_USER_ADDRESS)}
-		setUserAddress: (address) => {console.log(address)}
-	});
+const mapDispatchToProps = dispatch => {
+	return {
+		onClick: address => {
+			dispatch(setUserAddress(address))
+		}
+	}
 }
+  
 
-/**
- * LoginContainer isn't a true container - it's really just a container for the redux state and action.
- */
-export const LoginContainer = connect(mapStateToProps, mapDispatchToProps)(Login)
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login)
