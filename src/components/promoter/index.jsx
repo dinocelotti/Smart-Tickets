@@ -9,7 +9,7 @@ import {
 } from 'semantic-ui-react'
 import propTypes from 'prop-types'
 import projectApi from '../../api/project-api'
-import withDefaultForm from 'src/util/withDefaultForm'
+import withDefaultForm from '../../util/withDefaultForm'
 const formGeneratorFields = {
 	projectName: {},
 	totalTickets: {},

@@ -106,7 +106,7 @@ const byIdObj = {
 		return { ...state, [project.address]: projectToAdd }
 	},
 
-	[WITHDRAW]: (state, action) => {
+	[WITHDRAW]: (state) => {
 		return { ...state }
 	}
 }
