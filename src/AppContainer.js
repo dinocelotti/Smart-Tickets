@@ -39,6 +39,7 @@ class AppContainer extends React.Component {
         this.load();
     }
     componentWillReceiveProps(nextProps){
+        // loading is the inverse of deployed
         const loading = nextProps.projectResolver.deployed ? false : true;
         if(nextProps != this.props){
             this.setState({
