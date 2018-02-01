@@ -39,8 +39,10 @@ contract Project {
     mapping(address => User) users; // address of the user => user struct
     mapping(bytes32 => Ticket) tickets; //ticket type name => ticket struct
     mapping(address => mapping(bytes32 => uint)) ticketsOfAddr; //owner => ticket type => amount
+
     mapping(address => mapping(bytes32 => uint[2])) amountPriceListing; //seller => ticket type => [amount, price]
     mapping(address => mapping(address => mapping(bytes32 => uint[2]))) amountPriceReservations; //seller => entitled => ticket type => [amount, price]
+   
     mapping(address => uint) pendingWithdrawls; //address => withdraw amount pending
 
     function Project (
@@ -62,11 +64,26 @@ contract Project {
 **************************/
 
     /**
-      * @dev Checks if the tx sender is a distributor.
-      * @return bool If tx sender is a distributor.
+      * @dev Checks if the user is a distributor.
+      * @return bool If user is a distributor.
       */      
-    function isDistributor() public constant returns(bool) {        
-        return users[msg.sender].isDistributor;
+    function isDistributor(address _user) public constant returns(bool) {        
+        return users[_user].isDistributor;
+    }
+
+    /// @notice Get number of a ticket type owned by an address 
+    function getOwnings(address _user, bytes32 _ticketType) public view returns (uint) {
+        return ticketsOfAddr[_user][_ticketType];
+    }
+
+    /// @notice Get amount and price of a ticket type listed by a seller
+    function getAddrListing(address _seller, bytes32 _ticketType) public view returns (uint[2]) {
+        return amountPriceListing[_seller][_ticketType];
+    }
+
+    /// @notice Get amount and price of a ticket type reserved by a seller for an entitled user
+    function getAddrReserFor(address _seller, address _entitled, bytes32 _ticketType) public view returns (uint[2]) {
+        return amountPriceReservations[_seller][_entitled][_ticketType];
     }
 
     /** @dev Getter for ticket values for a certain ticket type.
@@ -196,7 +213,7 @@ contract Project {
         if (users[_user].isDistributor == true) 
             return;     //dont want to throw, just return early instead
         users[_user].isDistributor = true;
-        AddDistributor(msg.sender, _user);
+        AddDistributor(_user);
     }
 
     /** @dev Set the alloted quantity of a ticket for a distributor, can only be done in the staging phase and by the promoter
@@ -216,7 +233,7 @@ contract Project {
       * @param _distributor The address of the distributor.
       * @param _promotersFee The fee in percent to set for the distributor
       */
-    function setDistributorFee(address _distributor, uint _promotersFee) public onlyPromoter() stagingPhase() {
+    function setDistributorFee(address _distributor, uint _promotersFee) public onlyPromoter() {
         require(users[_distributor].isDistributor); //make sure this user is a distributor
 
         users[_distributor].promotersFee = _promotersFee;
@@ -228,7 +245,7 @@ contract Project {
       * @param _markup The address of the distributor.
       * @param _ticketType The ticket type
       */
-    function setMarkup(uint _markup, bytes32 _ticketType) public onlyDistributor(msg.sender) stagingPhase() {
+    function setMarkup(uint _markup, bytes32 _ticketType) public onlyDistributor(msg.sender) {
         users[msg.sender].markup[_ticketType] = _markup;
 
         SetMarkup(msg.sender, _markup, _ticketType);
@@ -319,7 +336,7 @@ contract Project {
       * @param _ticketType type of the ticket to purchase
       * @param _quantity amount to purchase
       */
-    function buyTicket(address _seller, bytes32 _ticketType, uint _quantity) public payable {
+    function buyTicket(address _seller, bytes32 _ticketType, uint _quantity) public payable publicFundingPhase() {
 
         //CONDITION CHECKS
         //  A positive amount has been requested
@@ -371,7 +388,7 @@ contract Project {
       * @param _ticketType type of the ticket to be claimed
       * @param _quantity amount of tickets to be claimed
       */
-    function claimReserved(address _seller, bytes32 _ticketType, uint _quantity) public payable {
+    function claimReserved(address _seller, bytes32 _ticketType, uint _quantity) public payable publicFundingPhase() {
         require(_quantity > 0);
         require(tickets[_ticketType].created == true);
         require(amountPriceReservations[_seller][msg.sender][_ticketType][0] >= _quantity);
