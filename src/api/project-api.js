@@ -11,19 +11,15 @@ import {
 /**
  *
  *  Create a new Project given the parameters
- * @param {string, string, string, string} { projectName, totalTickets, consumerMaxTickets, promoterAddress }
+ * @param {string, string, string} { projectName, consumerMaxTickets, promoterAddress }
  */
 async function createProject({
   projectName,
-  totalTickets,
-  consumerMaxTickets,
   promoterAddress
 }) {
   //Create the new project
   const newProject = await ethApi.project.new(
     projectName,
-    '10', // Place holder for membran fee
-    totalTickets,
     consumerMaxTickets,
     {
       from: promoterAddress,
@@ -122,10 +118,6 @@ class Entity {
     return Utils.BNtoStr(res);
   }
 
-  async getUserDetails(address) {
-    return await this.wrapTx(EntityTypes.getUserDetails(address));
-  }
-
   async getTicketVals(ticketType) {
     const res = Utils.maptoBN(
       await this.wrapTx(EntityTypes.getTicketVals(ticketType))
@@ -133,9 +125,46 @@ class Entity {
 
     return {
       ticketType: res[0],
-      ticketPrice: res[1],
-      ticketQuantity: res[2]
+      ticketFaceValue: res[1],
+      ticketMaxPrice: res[2],
+      ticketQuantity: res[3]
     };
+  }
+
+  async listTicket({ticketType, amountPrice}) {
+    return this.wrapTx(
+      EntityTypes.listTicket(ticketType, amountPrice)
+    );
+  }
+
+  async cancelListing({ticketType}) {
+    return this.wrapTx(
+      EntityTypes.cancelListing(ticketType)
+    );
+  }
+
+  async reserveTicket({entitled, ticketType, amountPrice}) {
+    return this.wrapTx(
+      EntityTypes.reserveTicket(entitled, ticketType, amountPrice)
+    );
+  }
+
+  async cancelReservation({entitled, ticketType}) {
+    return this.wrapTx(
+      EntityTypes.cancelReservation(entitled, ticketType)
+    );
+  }
+
+  async buyTicket({seller, ticketType, quantity}) {
+    return this.wrapTx(
+      EntityTypes.buyTicket(seller, ticketType, quantity)
+    );
+  }
+
+  async claimReserved(seller, ticketType, quantity) {
+    return this.wrapTx(
+      EntityTypes.claimReserved(seller, ticketType, quantity)
+    );
   }
 }
 class Promoter extends Entity {
@@ -146,10 +175,6 @@ class Promoter extends Entity {
     return this.wrapTx(PromoterTypes.finishStaging());
   }
 
-  async startPublicFunding() {
-    return this.wrapTx(PromoterTypes.startPublicFunding());
-  }
-
   /**************************
      Staging Phase
      **************************/
@@ -157,27 +182,13 @@ class Promoter extends Entity {
   /***************
      Tickets
      ***************/
-  async addTicket(ticketType, ticketPrice, ticketQuantity) {
+  async addTicket(ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity) {
     return this.wrapTx(
-      PromoterTypes.addTicket(ticketType, ticketPrice, ticketQuantity)
+      PromoterTypes.addTicket(ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity)
     );
   }
-  async addIpfsDetailsToTicket({ ticketType, ipfsHash }) {
-    return this.wrapTx(
-      PromoterTypes.addIpfsDetailsToTicket(ticketType, ipfsHash)
-    );
-  }
-  async setTicketPrice(ticketType, ticketPrice) {
-    return this.wrapTx(PromoterTypes.setTicketPrice(ticketType, ticketPrice));
-  }
-
-  async setTicketQuantity(ticketType, ticketQuantity) {
-    return this.wrapTx(
-      PromoterTypes.setTicketQuantity(ticketType, ticketQuantity)
-    );
-  }
-  async handleTicketForm({ ticketType, ticketPrice, ticketQuantity }) {
-    return this.addTicket(ticketType, ticketPrice, ticketQuantity);
+  async handleTicketForm({ ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity }) {
+    return this.addTicket(ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity);
   }
   /***************
      Distributors
@@ -185,16 +196,16 @@ class Promoter extends Entity {
   async addDistributor(buyer) {
     return this.wrapTx(PromoterTypes.addDistributor(buyer));
   }
-  async setDistributorAllottedQuantity({
+  async giveAllowance({
     distributor,
     ticketType,
-    distributorAllottedQuantity
+    quantity
   }) {
     return this.wrapTx(
-      PromoterTypes.setDistributorAllottedQuantity(
+      PromoterTypes.giveAllowance(
         distributor,
         ticketType,
-        distributorAllottedQuantity
+        quantity
       )
     );
   }
@@ -207,14 +218,14 @@ class Promoter extends Entity {
   async handleDistributorForm({
     distributorAddress,
     ticketType,
-    distributorAllottedQuantity,
+    quantity,
     promoterFee
   }) {
     await this.addDistributor(distributorAddress);
-    await this.setDistributorAllottedQuantity({
+    await this.giveAllowance({
       distributor: distributorAddress,
       ticketType,
-      distributorAllottedQuantity
+      quantity
     });
     await this.setDistributorFee({
       distributor: distributorAddress,
@@ -237,32 +248,6 @@ class Buyer extends Entity {
     return this.isDistributor
       ? this.wrapTx(BuyerTypes.setMarkup(markup, ticketType))
       : ApiErrs.NOT_DISTRIBUTOR;
-  }
-
-  /**************************
-     Funding Phase
-     **************************/
-  async buyTicketFromPromoter({ ticketType, ticketQuantity, txObj }) {
-    //get phase to check to see if its valid
-    return this.wrapTx(
-      BuyerTypes.buyTicketFromPromoter(ticketType, ticketQuantity, txObj)
-    );
-  }
-
-  async buyTicketFromDistributor({
-    distributorAddress,
-    ticketType,
-    ticketQuantity,
-    txObj
-  }) {
-    return this.wrapTx(
-      BuyerTypes.buyTicketFromDistributor(
-        distributorAddress,
-        ticketType,
-        ticketQuantity,
-        txObj
-      )
-    );
   }
 }
 

@@ -13,6 +13,7 @@ contract Project {
 
     struct Ticket {
         uint total; //Sum of all created of this ticket type
+        uint faceValue; //Set by promoter to act as the "regular" price
         uint maxPrice; //Upper bound on price of ticket, 0 if none
         bool created; //to check for empty values
     }
@@ -92,9 +93,9 @@ contract Project {
       * @return  Ticket price in wei of that type.
       * @return  Number of tickets left of that type.
       */
-    function getTicketVals(bytes32 _ticketType) public constant returns (bytes32, uint, uint) {
-        Ticket storage _t = tickets[_ticketType];
-        return (_ticketType, _t.maxPrice, _t.total);
+    function getTicketVals(bytes32 _ticketType) public constant returns (bytes32, uint, uint, uint) {
+        Ticket storage type = tickets[_ticketType];
+        return (_ticketType, type.faceValue, type.maxPrice, type.total);
     }
 
     /** @dev A query function to return data on a user based on a ticket type
@@ -129,7 +130,7 @@ contract Project {
         uint consumerMaxTickets);
     event StartPublicFunding ();
 
-    event AddTicket (bytes32 ticketType, uint princeInWei, uint quantity);
+    event AddTicket (bytes32 ticketType, uint faceValue, maxPrice, uint quantity);
     event TicketListed (address indexed seller, bytes32 ticketType, uint[2] amountPrice);
     event TicketReserved (address indexed owner, address entitled, bytes32 ticketType, uint[2] amountPrice);
 
@@ -256,18 +257,19 @@ contract Project {
       * @param _priceInWei Price in wei to assign to this ticket type.
       * @param _quantity Number of tickets of this type
       */
-    function addTicket(bytes32 _ticketType, uint _priceInWei, uint _quantity) public onlyPromoter() {
+    function addTicket(bytes32 _ticketType, uint _faceValue, uint _maxPrice, uint _quantity) public onlyPromoter() {
         // Ensure that the attributes for this type are set
         tickets[_ticketType].created = true;
         tickets[_ticketType].total += _quantity;
-        tickets[_ticketType].maxPrice = _priceInWei;
+        tickets[_ticketType].faceValue = _faceValue;
+        tickets[_ticketType].maxPrice = _maxPrice;
 
         //Give the promoter ownership over the new tickets
         ticketsOfAddr[promoter][_ticketType] += _quantity;
 
         totalTickets += _quantity;
 
-        AddTicket(_ticketType, _priceInWei, _quantity);
+        AddTicket(_ticketType, _faceValue, _maxPrice, _quantity);
     }
 
     /**@dev Caller lists an amount of tickets (that they own) for sale at a specific price
@@ -319,7 +321,7 @@ contract Project {
      * @param _entitled The address for whom the tickets are reserved
      * @param _ticketType The type of ticket to cancel
      */
-    function cancelReservations(address _entitled, bytes32 _ticketType) public {
+    function cancelReservation(address _entitled, bytes32 _ticketType) public {
         require(amountPriceReservations[msg.sender][_entitled][_ticketType][0] > 0);
 
         ticketsOfAddr[msg.sender][_ticketType] = amountPriceReservations[msg.sender][_entitled][_ticketType][0];

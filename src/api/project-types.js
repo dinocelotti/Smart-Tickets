@@ -28,41 +28,64 @@ export function decodeString(hex) {
   return web3.toUTF8(hex);
 }
 export const EntityTypes = {
-  queryBuyer: (_buyer, _typeOfTicket) =>
-    makeMethod('queryBuyer', _buyer, encodeString(_typeOfTicket)),
-
-  ticketsLeft: () => makeMethod('ticketsLeft'),
+  queryUser: (_buyer, _typeOfTicket) =>
+    makeMethod('queryUser', _buyer, encodeString(_typeOfTicket)),
 
   getTicketVals: _typeOfTicket =>
     makeMethod('getTicketVals', encodeString(_typeOfTicket)),
 
-  getBuyerDetails: _address => makeMethod('getBuyerDetails', _address)
+  listTicket: (ticketType, amountPrice) =>
+    makeMethod(
+        'listTicket',
+        encodeString(ticketType),
+        amountPrice
+    ),
+
+  cancelListing: ticketType =>
+    makeMethod('cancelListing', encodeString(ticketType)),
+
+  reserveTicket: (entitled, ticketType, amountPrice) =>
+    makeMethod(
+      'reserveTicket',
+      entitled,
+      ticketType,
+      amountPrice
+    ),
+
+  cancelReservation: (entitled, ticketType) =>
+    makeMethod('cancelReservation', entitled, encodeString(ticketType)),
+
+  buyTicket: (seller, ticketType, quantity) =>
+    makeMethod(
+      'buyTicket',
+      seller,
+      encodeString(ticketType),
+      quantity
+    ),
+
+  claimReserved: (seller, ticketType, quantity) =>
+    makeMethod(
+      'claimReserved',
+      seller,
+      ticketType,
+      quantity
+    )
 };
 export const PromoterTypes = {
   finishStaging: () => makeMethod('finishStaging'),
 
-  startPublicFunding: () => makeMethod('startPublicFunding'),
-
-  addTicket: (_typeOfTicket, _priceInWei, _quantity) =>
+  addTicket: (_typeOfTicket, _faceValue, _maxPrice, _quantity) =>
     makeMethod(
       'addTicket',
       encodeString(_typeOfTicket),
-      _priceInWei,
+      _faceValue,
+      _maxPrice,
       _quantity
     ),
 
-  addIpfsDetailsToTicket: (_typeOfTicket, _hash) =>
-    makeMethod('addIpfsDetailsToTicket', encodeString(_typeOfTicket), _hash),
-
-  setTicketPrice: (_typeOfTicket, _priceInWei) =>
-    makeMethod('setTicketPrice', encodeString(_typeOfTicket), _priceInWei),
-
-  setTicketQuantity: (_typeOfTicket, _quantity) =>
-    makeMethod('setTicketQuantity', encodeString(_typeOfTicket), _quantity),
-
   addDistributor: _distributor => makeMethod('addDistributor', _distributor),
 
-  setDistributorAllottedQuantity: (_distributor, _typeOfTicket, _quantity) =>
+  giveAllowance: (_distributor, _typeOfTicket, _quantity) =>
     makeMethod(
       'setDistributorAllottedQuantity',
       _distributor,
@@ -76,23 +99,6 @@ export const PromoterTypes = {
 export const BuyerTypes = {
   setMarkup: (_markup, _typeOfTicket) =>
     makeMethod('setMarkup', _markup, encodeString(_typeOfTicket)),
-
-  buyTicketFromPromoter: (_typeOfTicket, _quantity, txObj) =>
-    makeMethod(
-      'buyTicketFromPromoter',
-      encodeString(_typeOfTicket),
-      _quantity,
-      txObj
-    ),
-
-  buyTicketFromDistributor: (_distributor, _typeOfTicket, _quantity, txObj) =>
-    makeMethod(
-      'buyTicketFromDistributor',
-      _distributor,
-      encodeString(_typeOfTicket),
-      _quantity,
-      txObj
-    ),
 
   setUserDetails: (_user, _name, _info) =>
     makeMethod('setUserDetails', _user, _name, _info)
