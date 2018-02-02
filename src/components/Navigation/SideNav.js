@@ -1,7 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react';
-import logo from '../../images/logo-white.svg';
 import LogoutContainer from '../Account/LogoutContainer';
 
 /**
@@ -11,7 +10,7 @@ const SideNav = () => (
     <div>
         <Menu vertical fixed='left' inverted>
             <div className="ui logo icon image">
-                <img src={logo}/>
+                <h1 className="ui header inverted">treblekey</h1>
             </div>
             <NavLink to={'/events'} className="item" activeClassName="active"><i className="icon tasks"/>View Events</NavLink>
             <NavLink to={'/createEvent'} className="item" activeClassName="active"><i className="icon edit"/>Create Event</NavLink>

@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Grid, Image, Dropdown, Button } from 'semantic-ui-react';
+import { Dropdown, Button } from 'semantic-ui-react';
 
 /**
- * 
+ * Login 
  * @param {dispatch} setUserAddress - dispatcher for SET_USER_ADDRESS function 
  */
 class Login extends React.Component {
@@ -53,7 +53,7 @@ class Login extends React.Component {
                             selection 
                             options={this.createDropdownList(this.props.accountState)} 
                             />
-                            <Button fluid large color='black' onClick={this.handleClick} style={{marginTop: 20}}>Login</Button>
+                            <Button fluid size='large' color='black' onClick={this.handleClick} style={{marginTop: 20}}>Login</Button>
                         </div>
                         <div className="ui segment">This page subject to change as we determine how to handle logins. Example only.</div>
                     </div>
