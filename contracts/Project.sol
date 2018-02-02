@@ -94,8 +94,8 @@ contract Project {
       * @return  Number of tickets left of that type.
       */
     function getTicketVals(bytes32 _ticketType) public constant returns (bytes32, uint, uint, uint) {
-        Ticket storage type = tickets[_ticketType];
-        return (_ticketType, type.faceValue, type.maxPrice, type.total);
+        Ticket storage myType = tickets[_ticketType];
+        return (_ticketType, myType.faceValue, myType.maxPrice, myType.total);
     }
 
     /** @dev A query function to return data on a user based on a ticket type
@@ -130,7 +130,7 @@ contract Project {
         uint consumerMaxTickets);
     event StartPublicFunding ();
 
-    event AddTicket (bytes32 ticketType, uint faceValue, maxPrice, uint quantity);
+    event AddTicket (bytes32 ticketType, uint faceValue, uint maxPrice, uint quantity);
     event TicketListed (address indexed seller, bytes32 ticketType, uint[2] amountPrice);
     event TicketReserved (address indexed owner, address entitled, bytes32 ticketType, uint[2] amountPrice);
 
@@ -254,7 +254,8 @@ contract Project {
 
     /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
       * @param _ticketType Ticket type to create.
-      * @param _priceInWei Price in wei to assign to this ticket type.
+      * @param _faceValue Promoter's suggested price
+      * @param _maxPrice Promoter's max price
       * @param _quantity Number of tickets of this type
       */
     function addTicket(bytes32 _ticketType, uint _faceValue, uint _maxPrice, uint _quantity) public onlyPromoter() {
