@@ -5,7 +5,8 @@ import { connect } from 'react-redux'
 export class EventListContainer extends React.Component {
     constructor(props){
         super(props);
-    
+
+        
     }
     componentDidMount(){
         console.log('EventListContainer.componentDidMount')
