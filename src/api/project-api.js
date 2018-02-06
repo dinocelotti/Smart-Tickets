@@ -209,27 +209,17 @@ class Promoter extends Entity {
       )
     );
   }
-  async setDistributorFee({ distributor, promoterFee }) {
-    return this.wrapTx(
-      PromoterTypes.setDistributorFee(distributor, promoterFee)
-    );
-  }
 
   async handleDistributorForm({
     distributorAddress,
     ticketType,
-    quantity,
-    promoterFee
+    quantity
   }) {
     await this.addDistributor(distributorAddress);
     await this.giveAllowance({
       distributor: distributorAddress,
       ticketType,
       quantity
-    });
-    await this.setDistributorFee({
-      distributor: distributorAddress,
-      promoterFee
     });
   }
 }

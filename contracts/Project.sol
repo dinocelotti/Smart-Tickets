@@ -5,7 +5,6 @@ contract Project {
 
     /*
     * Staging -> The promoter is still setting up the project details
-    * PrivateFunding -> Contract is Distributor and ready to sell tickets to Distributor sellers, all ticket transfers frozen
     * Public -> Contract is Distributor and ready to sell tickets to public, ticket transfers for comsums frozen
     * Done -> Sale has finished and is finalized, ticket transfers enabled for public
     */
@@ -22,8 +21,6 @@ contract Project {
         bool isDistributor;
         bool initialized;
         mapping(bytes32 => uint) allowance; //number of tickets they are allowed to buy for that specific ticket type
-        mapping(bytes32 => uint) markup; //percent markup on the face value for that specific ticket type
-        uint promotersFee; //fee that the promoter takes from the markup
         uint ticketsBought; //total number of tickets bought for this user
     }
 
@@ -106,9 +103,9 @@ contract Project {
       * @return  The markup that the distributor has placed on the face value of the ticket
       * @return  The promoter fee to be taken out of the markup
       */
-    function queryUser(address _user, bytes32 _ticketType) public constant returns (bool, uint, uint, uint) {
+    function queryUser(address _user, bytes32 _ticketType) public constant returns (bool, uint) {
         User storage b = users[_user];
-        return (b.isDistributor, b.allowance[_ticketType], b.markup[_ticketType], b.promotersFee);
+        return (b.isDistributor, b.allowance[_ticketType]);
     }
 
     /** @dev Calculate the fraction of a value, while accounting for solidity's limitation for no fixed point values
@@ -137,9 +134,6 @@ contract Project {
     event AddDistributor (address distributor);
     event GiveAllowance (address distributor, bytes32 ticketType, uint allowance);
 
-    event SetDistributorFee (address indexed promoter, address _distributor, uint fee);
-
-    event SetMarkup (address indexed distributor, uint _markup, bytes32 _ticketType);
     event SetUserDetails (address indexed userAddress, string name, string info);
 
     event BuyTicket (address indexed buyer, address indexed seller, bytes32 ticketType, uint quantity);
@@ -228,28 +222,6 @@ contract Project {
     {
         users[_distributor].allowance[_ticketType] += _quantity;
         GiveAllowance(_distributor, _ticketType, _quantity);
-    }
-
-    /** @dev Set the promoters fee for the distributors markup on the tickets, can only be done in the staging phase and by the promoter
-      * @param _distributor The address of the distributor.
-      * @param _promotersFee The fee in percent to set for the distributor
-      */
-    function setDistributorFee(address _distributor, uint _promotersFee) public onlyPromoter() {
-        require(users[_distributor].isDistributor); //make sure this user is a distributor
-
-        users[_distributor].promotersFee = _promotersFee;
-
-        SetDistributorFee(msg.sender, _distributor, _promotersFee);
-    }
-
-    /** @dev Set the markup on the face value of the ticket for the distributor, can only be done in the staging phase and by the distributor
-      * @param _markup The address of the distributor.
-      * @param _ticketType The ticket type
-      */
-    function setMarkup(uint _markup, bytes32 _ticketType) public onlyDistributor(msg.sender) {
-        users[msg.sender].markup[_ticketType] = _markup;
-
-        SetMarkup(msg.sender, _markup, _ticketType);
     }
 
     /** @dev Add a ticket to this Project, can only be done in the staging phase and by the promoter
