@@ -51,7 +51,7 @@ const mapStateToProps = ( state ) => {
 	return {
 		projects: state.projectState.ids,
 		projectsByAddress: state.projectState.byId,
-		userAccount: state.userState
+        userAccount: state.userState
 	}
 }
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

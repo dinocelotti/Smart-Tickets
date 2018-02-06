@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
 import { getAccounts } from './actions/account-actions';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import ethApi from './api/eth-api';
 import store from './store';
 /* Import WebWorker that watches the blockchain. Uses the worker-loader package for webpack to register loadAppState as a workernp */
@@ -11,6 +12,8 @@ const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.j
 /**
  * Import Components
  */
+import CreateEventContainer from './components/CreateEvent/CreateEventContainer'
+import EventListContainer from './components/EventListContainer'
 import LoginContainer from './components/Account/LoginContainer'
 import { Wrapper } from './components/Wrapper'
 import { LoadingSplash } from './components/Status/Loaders'
@@ -71,7 +74,10 @@ class AppContainer extends React.Component {
     renderApp() {
         return(
             <Wrapper>
-                {this.props.children}                
+                <Switch>
+                    <Route path='/createEvent' component={CreateEventContainer}/>
+                    <Route path='/events' component={EventListContainer}/>
+                </Switch>
             </Wrapper>
         )
     }

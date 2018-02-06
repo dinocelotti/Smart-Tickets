@@ -15,7 +15,8 @@ import {
  */
 async function createProject({
   projectName,
-  promoterAddress
+  promoterAddress,
+  consumerMaxTickets
 }) {
   //Create the new project
   const newProject = await ethApi.project.new(
