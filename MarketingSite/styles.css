@@ -4,55 +4,84 @@
 
 html {
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+.toggler{
+    visibility: hidden;
+}
+.toggled{
+    display: block;
 }
 .background {
     background:url('./images/background.jpg');
-    height: 100%;
-    width: 100%;
-    background-size: 100%;
-    background-position: center center; 
+    height: 100%;    
+    background-size: cover;
+    background-position: left top; 
     background-repeat: no-repeat;
 }
 .layer {
     background-color: rgba(2, 15, 92, 0.7);
     top: 0;
     left: 0;
-    width: 100%;
     height: 100%;
 }
 .brand{
     font-family: 'Oswald', sans-serif;
     font-size: 2.25rem;
 }
-.container {
-    height: 100%;
-    width: 100%;
+
+.menu-item{
+    font-size: 1.2rem;
 }
-.hero {
-    padding-top: 125px;
-    display: flex;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-    height: calc(100%-150px);
+.masthead.segment {
+    min-height: 100vh;
+    padding: 1em 0em;
 }
-.hero-title{
-    text-decoration: none;
-    font-family: 'Oswald', sans-serif;
-    font-size: 55px;
+.masthead .logo.item img {
+    margin-right: 1em;      
+}
+.masthead .ui.menu .ui.button {
+    margin-left: 0.5em;
+}
+.masthead h1.ui.header {
+    margin-top: 1em;
+    margin-bottom: 0em;
+    font-size: 4em;
+    font-weight: normal;
+    font-family: 'Raleway', sans-serif;
+}
+.masthead h2 {
+    font-size: 1.7em;
+    font-weight: normal;
+    font-family: 'Roboto', sans-serif;
     color: white;
 }
-.hero-quote{
-    font-family: 'Open Sans', sans-serif;
-    font-size: 20px;
-    color: white;
-    padding: 60px;
-}
-.hero-button{
-    padding-top: 25px;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+@media only screen and (max-width: 768px) {
+    .toggler{
+        visibility: visible;
+    }
+    .toggled {
+        display: none;
+    }
+    .ui.fixed.menu {
+      display: none !important;
+    }
+    .menu .item,
+    .menu .menu {
+      display: none;
+    }
+    .menu .toc.item {
+      display: block;
+    }
+    .masthead.segment {
+      min-height: 100%;
+    }
+    .masthead h1.ui.header {
+      font-size: 2em;
+      margin-top: 1.5em;
+    }
+    .masthead h2 {
+      margin-top: 0.5em;
+      font-size: 1.5em;
 }

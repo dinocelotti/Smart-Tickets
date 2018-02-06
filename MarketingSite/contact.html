@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>treblekey</title>
+</head>
+
+<body>
+<link rel="stylesheet" type="text/css" href="./semantic/dist/semantic.min.css">
+<link rel="stylesheet" type="text/css" href="./styles.css">
+<link href="https://fonts.googleapis.com/css?family=Raleway|Roboto|Oswald" rel="stylesheet"> 
+
+<div class="container">
+
+    <!-- Navbar -->
+    <div class="ui  borderless stackable massive menu horizontal" style="border-radius: 0px; border:none;">
+        <a href="./index.html">
+            <div class="item brand">
+                treblekey
+            </div>
+        </a> 
+            
+        <div class="right menu">
+            <a href="http://treblekey.com/app" class="item menu-item">
+                Beta App
+            </a>
+            <a href="./platform.html" class="item menu-item">
+                Platform
+            </a>
+            <a href="./about.html" class="item menu-item">
+                About Us
+            </a>
+            <a href="./whitepaper.pdf" class="item menu-item">
+                Whitepaper
+            </a>
+            <a href="./contact.html" target="_blank" class="active item">
+                <div class="ui button primary menu-item">
+                    Get in Touch
+                </div>
+            </a>
+        </div>
+    </div>
+    <!-- End Navbar -->
+    <div class="ui vertical stripe segment" style="min-height: 100vh;">
+        <div class="ui middle aligned stackable grid container">
+            <div class="row">
+            <div class="eight wide column">
+                <h3 class="ui header">Interested in having a chat?</h3>
+                <p>We're always interested in talking about how we can use technology to make the world a bit better.</p>
+                <a href="mailto:treblekey@gmail.com" class="ui big green centered button">Send us an email!</a>
+            </div>
+            <div class="six wide right floated column">
+                <div id="map" style="width:400px;height:400px">
+            </div>
+        </div>
+            <div class="row">
+                <div class="center aligned column"></div>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="ui inverted vertical footer segment">
+        <div class="ui container">
+            <div class="ui stackable inverted divided equal height stackable grid">
+            <div class="four wide column">
+                <h4 class="ui inverted header">About</h4>
+                <div class="ui inverted link list">
+                <a href="./platform.html" class="item">Platform</a>
+                <a href="./about.html" class="item">About Us</a>
+                <a href="./whitepaper.pdf" class="item">Whitepaper</a>
+                <a href="./contact.html" class="item">Contact Us</a>
+                </div>
+            </div>
+            <div class="ten wide column">
+                <a href="https://www.creativebc.com/about-us/">
+                    <img src="images/creativebc.png" alt="">
+                </a>
+                <img src="images/mebran-white.png" alt="">
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function myMap() {
+        var mapOptions = {
+            center: new google.maps.LatLng(48.47, -123.36),
+            zoom: 13,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+        var map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    } 
+</script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAafA6sJdMHQYWdzqg59T10UrsHN_7vRJw&callback=myMap"></script> 
+<script
+    src="https://code.jquery.com/jquery-3.1.1.min.js"
+    integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+    crossorigin="anonymous"></script>
+<script src="semantic/dist/semantic.min.js"></script>
+
+</body>
+</html>

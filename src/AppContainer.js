@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { getAccounts } from './actions/account-actions';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import ethApi from './api/eth-api';
 import store from './store';
 /* Import WebWorker that watches the blockchain. Uses the worker-loader package for webpack to register loadAppState as a workernp */
@@ -12,10 +12,11 @@ const Worker = require('worker-loader?inline&fallback=false!./api/loadAppState.j
 /**
  * Import Components
  */
+import CreateEventContainer from './components/CreateEvent/CreateEventContainer'
+import EventListContainer from './components/EventListContainer'
 import LoginContainer from './components/Account/LoginContainer'
 import { Wrapper } from './components/Wrapper'
-import { EventListContainer } from './components/EventListContainer'
-import { LoadingSplash } from './components/Status/Loaders';
+import { LoadingSplash } from './components/Status/Loaders'
 /**
  * Import Custom CSS
  */
@@ -31,8 +32,7 @@ class AppContainer extends React.Component {
     constructor(props){
         super(props);
         this.state={
-            loading:true,
-            account: ''
+            loading:true
         };
     }
     componentDidMount() {
@@ -73,17 +73,12 @@ class AppContainer extends React.Component {
     }
     renderApp() {
         return(
-            <div>
-                <Router>
-                    <Wrapper>
-                        <Switch>
-                            <Route path="/events" component={EventListContainer}/>
-                            <Route path="/createEvent" component={EventListContainer}/>
-                            <Route path="/account" component={EventListContainer}/>
-                        </Switch>
-                    </Wrapper>
-                </Router>
-            </div>
+            <Wrapper>
+                <Switch>
+                    <Route path='/createEvent' component={CreateEventContainer}/>
+                    <Route path='/events' component={EventListContainer}/>
+                </Switch>
+            </Wrapper>
         )
     }
     render(){
