@@ -6,6 +6,12 @@ html {
     box-sizing: border-box;
     font-family: 'Roboto', sans-serif;
 }
+.toggler{
+    visibility: hidden;
+}
+.toggled{
+    display: block;
+}
 .background {
     background:url('./images/background.jpg');
     height: 100%;    
@@ -51,7 +57,13 @@ html {
     color: white;
 }
 
-@media only screen and (max-width: 700px) {
+@media only screen and (max-width: 768px) {
+    .toggler{
+        visibility: visible;
+    }
+    .toggled {
+        display: none;
+    }
     .ui.fixed.menu {
       display: none !important;
     }
