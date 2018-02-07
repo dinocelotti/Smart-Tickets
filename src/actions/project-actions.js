@@ -38,6 +38,7 @@ function StartPublicFunding(project) {
 }
 function AddTicket({ data, address }) {
 	// Ticket types are stored on chain as hex, convert back to UTF8 before updating state
+	console.log(data)
 	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
 	return {
 		type: types.ADD_TICKET,

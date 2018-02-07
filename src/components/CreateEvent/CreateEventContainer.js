@@ -5,9 +5,13 @@ import projectApi from '../../api/project-api'
 
 import PublishEvent from './PublishEvent'
 import CreateEvent from './CreateEvent'
-import CreateTicket from './CreateTicket'
+import CreateTicketController from './CreateTicketController'
 import CreateEventSteps from './CreateEventSteps'
 
+/**
+ * The primary event creation container
+ * is responsible for transacting with redux, handling calls to the API
+ */
 class CreateEventContainer extends React.Component {
     constructor(props){
         super(props);
@@ -16,12 +20,13 @@ class CreateEventContainer extends React.Component {
             projectName: '', 
             userAccount: '',
             consumerMaxTickets: 4,
-            tickets: []
+            tickets: [] // tickets handled by CreateTicketController, this component is source of truth
         };
 
         // Bound functions
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeView = this.handleChangeView.bind(this);        
+        this.handleChangeTickets = this.handleChangeTickets.bind(this);                
         this.handleSubmit = this.handleSubmit.bind(this);
         this.createEvent = this.createEvent.bind(this);
         this.renderComponent = this.renderComponent.bind(this);        
@@ -48,7 +53,15 @@ class CreateEventContainer extends React.Component {
           [name]: value
         });
     }
-    // Passed into the steps component, sets view
+    // Checks if the ticket state has changed and updates the state if it has
+    handleChangeTickets(nextTickets) {
+        if(this.state.tickets != nextTickets){
+            this.setState({
+                tickets: nextTickets
+            });
+        }
+    }
+    // Passed into the steps component, sets view state
     handleChangeView(nextView) {
         if(this.state.view != nextView){
             this.setState({
@@ -60,26 +73,44 @@ class CreateEventContainer extends React.Component {
     handleSubmit(event) {
         alert('We are creating '+this.state.projectName+' on the blockchain...');
         event.preventDefault();
-        this.createEvent();
+        this.setState({
+            loading: true
+        });
+        this.createEvent()
+        this.setState({
+            loading: false
+        });
     }
-    // Set to loading until the event is created. Catch errors. 
+    // Creates event on the blockchain
+    // TODO: Implement error handling in this component
     createEvent = async () => {
+        const promoterAddress = this.state.userAccount
+        console.log(this.state.userAccount)
+        // CREATE EVENT
         const projectData = {
             projectName: this.state.projectName,
             promoterAddress: this.state.userAccount
-        }
-        this.setState(() => ({ loading: true }));
-        await projectApi.createProject( projectData )   
+        }        
+        const projectAddress = await projectApi.createProject( projectData )   
+        alert("the address of the project is:" + projectAddress)
+        const promoterInstance = await new projectApi.Promoter(promoterAddress, projectAddress)
+        await promoterInstance.init()
+        // CREATE TICKETS
+        await this.state.tickets.forEach((ticket)=>{
+            promoterInstance.addTicket(ticket.ticketClass, ticket.faceValue, ticket.maxPrice, ticket.totalNumber)
+        });
+    
     }
     // Render the view component and steps component
     renderComponent(ViewComponent){
         return(
-            <div>
+            <div className="ui padded grid">
                 <CreateEventSteps view={this.state.view} handleChangeView={this.handleChangeView}/>
                 {ViewComponent}
             </div>
         )
     }
+    // Choose which view to render
     render() {
         let ViewComponent = '';
         if(this.state.view == 'CREATE_EVENT'){
@@ -93,10 +124,9 @@ class CreateEventContainer extends React.Component {
         }
         else if(this.state.view == 'ADD_TICKET'){
             ViewComponent = (
-                <CreateTicket 
-                    projectName={this.state.projectName}
-                    consumerMaxTickets={this.state.consumerMaxTickets}
-                    handleChange={this.handleChange}
+                <CreateTicketController
+                    tickets={this.state.tickets}
+                    handleChange={this.handleChangeTickets}
                 />
             )
         }else{
@@ -121,7 +151,8 @@ CreateEventContainer.propTypes = {
         promoter: PropTypes.string,
         projectName: PropTypes.string,
         address: PropTypes.string,
-    })
+    }),
+    userAccount: PropTypes.string,
 };
 /**
  * redux bindings
@@ -143,4 +174,5 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
         ...dispatchProps
     }
 }
+// not dispatching anything
 export default connect(mapStateToProps, null, mergeProps)(CreateEventContainer)

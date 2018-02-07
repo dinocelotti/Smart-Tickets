@@ -4,9 +4,9 @@ import PropTypes from 'prop-types';
 // Pure view component for a topbar. handleChange function determines which view is displayed
 const CreateEventSteps = (props) => {
     return(
-        <div className="ui 1 column row container">
+        <div className="ui one column row">
         <div className="ui column">
-        <div className="ui fluid stackable steps ">
+        <div className="ui fluid stackable steps">
             <a className={props.view=='CREATE_EVENT' ? 'active step' : 'step'} onClick={ () => props.handleChangeView('CREATE_EVENT') }>
                 <i className="info circle icon"></i>
                 <div className="content">
