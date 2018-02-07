@@ -92,14 +92,9 @@ export const PromoterTypes = {
       encodeString(_typeOfTicket),
       _quantity
     ),
-
-  setDistributorFee: (_distributor, _promotersFee) =>
-    makeMethod('setDistributorFee', _distributor, _promotersFee)
 };
-export const BuyerTypes = {
-  setMarkup: (_markup, _typeOfTicket) =>
-    makeMethod('setMarkup', _markup, encodeString(_typeOfTicket)),
 
+export const BuyerTypes = {
   setUserDetails: (_user, _name, _info) =>
     makeMethod('setUserDetails', _user, _name, _info)
 };
