@@ -68,6 +68,8 @@ function GiveAllowance({ data, address }) {
 }
 function TicketListed({ data, address }) {
 	data.ticketType = web3.toUtf8(data.ticketType);
+
+	const { owner, ticketType, amountPrice } = data
 	return {
 		type: types.TICKET_LISTED,
 		payload: {
@@ -82,6 +84,8 @@ function TicketListed({ data, address }) {
 }
 function TicketReserved({ data, address }) {
 	data.ticketType = web3.toUtf8(data.ticketType);
+
+	const { owner, entitled, ticketType, amountPrice } = data
 	return {
 		type: types.TICKET_RESERVED,
 		payload: {
@@ -97,6 +101,8 @@ function TicketReserved({ data, address }) {
 }
 function BuyTicket({ data, address }) {
 	data.ticketType = web3.toUtf8(data.ticketType);
+	
+	const { buyer, seller, ticketType, quantity } = data
 	return {
 		type: types.BUY_TICKET,
 		payload: {
@@ -112,6 +118,8 @@ function BuyTicket({ data, address }) {
 }
 function ClaimReserved({ data, address }) {
 	data.ticketType = web3.toUtf8(data.ticketType);
+
+	const { buyer, seller, ticketType, quantity } = data
 	return {
 		type: types.CLAIM_RESERVED,
 		payload: {
