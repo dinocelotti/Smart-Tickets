@@ -12,6 +12,8 @@ import {
  *
  *  Create a new Project given the parameters
  * @param {string, string, string} { projectName, consumerMaxTickets, promoterAddress }
+ * 
+ * @return {string} 
  */
 async function createProject({
   projectName,
@@ -34,6 +36,7 @@ async function createProject({
   await projectResolver.addAddress(newProject.address, {
     from: promoterAddress
   }); // Add the Project to the list of Projects that address is associated with
+  return newProject.address;
 }
 
 async function createRegistry() {
@@ -49,7 +52,7 @@ async function createRegistry() {
  * @class Entity
  */
 class Entity {
-  constructor({ promoter: promoterAddress, address: projectAddress }) {
+  constructor(promoterAddress, projectAddress) {
     this.address = promoterAddress;
     this.projectAddress = projectAddress;
     this.projectInstance = {};
@@ -188,8 +191,8 @@ class Promoter extends Entity {
       PromoterTypes.addTicket(ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity)
     );
   }
-  async handleTicketForm({ ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity }) {
-    return this.addTicket(ticketType, ticketFaceValue, ticketMaxPrice, ticketQuantity);
+  async handleTicketForm({ ticketClass, faceValue, maxPrice, totalNumber }) {
+    return this.addTicket(ticketClass, faceValue, maxPrice, totalNumber);
   }
   /***************
      Distributors

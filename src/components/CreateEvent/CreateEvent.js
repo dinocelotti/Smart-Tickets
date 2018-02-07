@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 // Pure view component for event creation
 const CreateEvent = (props) => {
     return(
-        <div className="ui padded stackable grid">
         <div className="ui row">
         <div className="ui column">
-            <form className="ui large green container segment form">
+            <form className="ui large green segment form">
                 <div className="field">
                     <label>Event Name</label>
                     <input 
@@ -29,7 +28,6 @@ const CreateEvent = (props) => {
                     />
                 </div>
             </form>
-        </div>
         </div>
         </div>
     )
