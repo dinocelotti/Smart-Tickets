@@ -4,17 +4,13 @@ export default {
 	projectResolverDeploySuccess,
 	Created,
 	FinishStaging,
-	StartPublicFunding,
 	AddTicket,
-	AddIpfsDetailsToTicket,
-	SetTicketPrice,
-	SetTicketQuantity,
 	AddDistributor,
-	SetDistributorAllottedQuantity,
-	SetDistributorFee,
-	SetMarkup,
-	BuyTicketFromPromoter,
-	BuyTicketFromDistributor,
+	GiveAllowance,
+	TicketListed,
+	TicketReserved,
+	BuyTicket,
+	ClaimReserved,
 	Withdraw
 }
 const web3 = new Web3();
@@ -25,7 +21,7 @@ function projectResolverDeploySuccess(projectResolverDeployed) {
 	}
 }
 const getId = (data, address) =>
-	`${data.distributor || data.typeOfTicket}_${address}`
+	`${data.distributor || data.ticketType}_${address}`
 
 function Created({ data, address }) {
 	return { type: types.CREATED, payload: { project: { ...data, address } } }
@@ -33,43 +29,11 @@ function Created({ data, address }) {
 function FinishStaging(project) {
 	return { type: types.FINISH_STAGING, payload: { project } }
 }
-function StartPublicFunding(project) {
-	return { type: types.START_PUBLIC_FUNDING, payload: { project } }
-}
 function AddTicket({ data, address }) {
 	// Ticket types are stored on chain as hex, convert back to UTF8 before updating state
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
+	data.ticketType = web3.toUtf8(data.ticketType);
 	return {
 		type: types.ADD_TICKET,
-		payload: {
-			project: { address },
-			ticket: { id: getId(data, address), ...data }
-		}
-	}
-}
-function AddIpfsDetailsToTicket({ data, address }) {
-	return {
-		type: types.ADD_IPFS_DETAILS_TO_TICKET,
-		payload: {
-			project: { address },
-			ticket: { id: getId(data, address), ...data }
-		}
-	}
-}
-function SetTicketPrice({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
-	return {
-		type: types.SET_TICKET_PRICE,
-		payload: {
-			project: { address },
-			ticket: { id: getId(data, address), ...data }
-		}
-	}
-}
-function SetTicketQuantity({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
-	return {
-		type: types.SET_TICKET_QUANTITY,
 		payload: {
 			project: { address },
 			ticket: { id: getId(data, address), ...data }
@@ -85,10 +49,10 @@ function AddDistributor({ data, address }) {
 		}
 	}
 }
-function SetDistributorAllottedQuantity({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
+function GiveAllowance({ data, address }) {
+	data.ticketType = web3.toUtf8(data.ticketType);
 	return {
-		type: types.SET_DISTRIBUTOR_ALLOTTED_QUANTITY,
+		type: types.GIVE_ALLOWANCE,
 		payload: {
 			project: { address },
 			distributor: {
@@ -96,75 +60,67 @@ function SetDistributorAllottedQuantity({ data, address }) {
 				...data
 			},
 			ticket: {
-				id: getId({ typeOfTicket: data.typeOfTicket }, address),
-				allottedQuantity: data.allottedQuantity
+				id: getId({ ticketType: data.ticketType }, address),
+				allowance: data.allowance
 			}
 		}
 	}
 }
-//set the promoter fee for a distributor
-function SetDistributorFee({ data, address }) {
+function TicketListed({ data, address }) {
+	data.ticketType = web3.toUtf8(data.ticketType);
 	return {
-		type: types.SET_DISTRIBUTOR_FEE,
+		type: types.TICKET_LISTED,
 		payload: {
-			project: { address },
-			distributor: { id: getId(data, address), ...data }
-		}
-	}
-}
-function SetMarkup({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
-	return {
-		type: types.SET_MARKUP,
-		payload: {
-			project: { address },
-			distributor: { id: getId(data, address), ...data },
-			ticket: {
-				id: getId({ typeOfTicket: data.typeOfTicket }, address),
-				fee: data.markup
+			project: {address},
+			listingData: {
+				owner,
+				ticketType,
+				amountPrice
 			}
 		}
 	}
 }
-function BuyTicketFromPromoter({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
-	const { from, to, typeOfTicket, quantity, weiSent } = data
+function TicketReserved({ data, address }) {
+	data.ticketType = web3.toUtf8(data.ticketType);
 	return {
-		type: types.BUY_TICKET_FROM_PROMOTER,
+		type: types.TICKET_RESERVED,
 		payload: {
-			project: { address },
-			purchaseData: {
-				from,
-				to,
-				typeOfTicket,
-				quantity,
-				weiSent
-			},
-			ticket: {
-				id: getId({ typeOfTicket: data.typeOfTicket }, address),
-				fee: data.markup
+			project: {address},
+			reserveData: {
+				owner,
+				entitled,
+				ticketType,
+				amountPrice
 			}
 		}
 	}
 }
-
-function BuyTicketFromDistributor({ data, address }) {
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
-	const { from, to, typeOfTicket, quantity, weiSent } = data
+function BuyTicket({ data, address }) {
+	data.ticketType = web3.toUtf8(data.ticketType);
 	return {
-		type: types.BUY_TICKET_FROM_DISTRIBUTOR,
+		type: types.BUY_TICKET,
 		payload: {
-			project: { address },
-			purchaseData: {
-				from,
-				to,
-				typeOfTicket,
-				quantity,
-				weiSent
-			},
-			ticket: {
-				id: getId({ typeOfTicket: data.typeOfTicket }, address),
-				fee: data.markup
+			project: {address},
+			tradeData: {
+				buyer,
+				seller,
+				ticketType,
+				quantity
+			}
+		}
+	}
+}
+function ClaimReserved({ data, address }) {
+	data.ticketType = web3.toUtf8(data.ticketType);
+	return {
+		type: types.CLAIM_RESERVED,
+		payload: {
+			project: {address},
+			tradeData: {
+				buyer,
+				seller,
+				ticketType,
+				quantity
 			}
 		}
 	}

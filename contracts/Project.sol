@@ -125,7 +125,7 @@ contract Project {
         address indexed promoter, 
         string projectName,
         uint consumerMaxTickets);
-    event StartPublicFunding ();
+    event FinishStaging ();
 
     event AddTicket (bytes32 ticketType, uint faceValue, uint maxPrice, uint quantity);
     event TicketListed (address indexed seller, bytes32 ticketType, uint[2] amountPrice);
@@ -170,7 +170,7 @@ contract Project {
     /** @dev Move state forward from staging to private funding, can only be done by the promoter */
     function finishStaging() public onlyPromoter() stagingPhase() {
         currentState = State.Public;
-        StartPublicFunding();
+        FinishStaging();
     }
 
 /**************************
