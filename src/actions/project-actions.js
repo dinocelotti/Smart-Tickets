@@ -31,12 +31,7 @@ function FinishStaging(project) {
 }
 function AddTicket({ data, address }) {
 	// Ticket types are stored on chain as hex, convert back to UTF8 before updating state
-<<<<<<< HEAD
 	data.ticketType = web3.toUtf8(data.ticketType);
-=======
-	console.log(data)
-	data.typeOfTicket = web3.toUtf8(data.typeOfTicket);
->>>>>>> b2ed89c1ce255f8c9b9febe8325e76e2500078fe
 	return {
 		type: types.ADD_TICKET,
 		payload: {
