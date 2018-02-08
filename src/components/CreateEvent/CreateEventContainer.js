@@ -92,7 +92,7 @@ class CreateEventContainer extends React.Component {
             promoterAddress: this.state.userAccount
         }        
         const projectAddress = await projectApi.createProject( projectData )   
-        alert("the address of the project is:" + projectAddress)
+        alert('the address of the project is:' + projectAddress)
         const promoterInstance = await new projectApi.Promoter(promoterAddress, projectAddress)
         await promoterInstance.init()
         // CREATE TICKETS
@@ -132,6 +132,8 @@ class CreateEventContainer extends React.Component {
         }else{
             ViewComponent = (
                 <PublishEvent
+                    projectName={this.state.projectName}
+                    tickets={this.state.tickets}
                     handleSubmit={this.handleSubmit}
                 />
             )
@@ -141,8 +143,8 @@ class CreateEventContainer extends React.Component {
 }
 // TODO add shape for various
 CreateEventContainer.propTypes = {
-    projectsByAddress: PropTypes.shape({
-        state: PropTypes.string,
+    projects: PropTypes.shape({
+        phase: PropTypes.string,
         tickets: PropTypes.array,
         distributors: PropTypes.array,
         ticketHolders: PropTypes.array,
@@ -162,7 +164,7 @@ CreateEventContainer.propTypes = {
 const mapStateToProps = ( state ) => {
     console.log('mapStateToProps')
 	return {
-		projectsByAddress: state.projectState.byId,
+		projects: state.projectState,
 		userAccount: state.userState
 	}
 }

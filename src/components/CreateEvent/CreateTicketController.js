@@ -81,9 +81,9 @@ AddTicket.propTypes = {
 // All the values are controlled by the above controller
 const Ticket = (props) => {
     return(
-        <div className="ui row">
+        <div className="ui row segment green">
         <div className="ui column">
-        <form className="ui large green form segment">
+        <form className="ui large form ">
             <div className="fields">
                 <div className="field ten wide">
                     <label>Ticket Class</label>
