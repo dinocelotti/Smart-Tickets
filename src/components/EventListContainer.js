@@ -2,13 +2,21 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 
+const filters = [
+    {name: 'All Events', filter: 'ALL_EVENTS'},
+    {name: 'My Events', filter: 'PROMOTER_EVENTS'},
+    {name: 'Distribution', filter: 'DISTRIBUTOR_EVENTS'},
+];
 export class EventListContainer extends React.Component {
     constructor(props){
         super(props);        
         this.state = {
             projects: {},
             userAccount: '',
+            filter: 'ALL_EVENTS',
         }
+        this.handleChangeFilter = this.handleChangeFilter.bind(this);
+        this.filterProjects = this.filterProjects.bind(this);
     }
     componentDidMount(){
         this.updateState(this.props)
@@ -25,10 +33,27 @@ export class EventListContainer extends React.Component {
             userAccount: thatProps.userAccount
         });
     }
+    filterProjects(projects){
+        return Object.keys(projects).filter((address) => {
+            return address; // Run the filter here. projects[address].prop == expectedValue
+        }).map((address) => {
+            return projects[address];
+        });
+    }
+    handleChangeFilter(nextFilter){
+        if(this.state.filter != nextFilter){
+            this.setState({
+                filter: nextFilter
+            });
+        }
+    }
     render() {
         return (
-            <div className="ui divide link items">
-                <EventList projects={this.state.projects}/>
+            <div>
+                <FilterBar onClick={this.handleChangeFilter} filters={filters} activeFilter={this.state.filter}/>
+                <div className="ui divide link items">
+                    <EventList projects={this.filterProjects(this.state.projects)}/>
+                </div>
             </div>
         )
     }
@@ -40,10 +65,45 @@ EventListContainer.propTypes = {
     }),
     userAccount: PropTypes.string
 }
+const FilterBar = (props) => {
+    // Defines the filters that 
+    const filterLinks = props.filters.map((filter) => {
+        return (
+            <a onClick={() => props.onClick(filter.filter)} className={props.activeFilter == filter.filter ? 'item active' : 'item'} key={filter.filter}>
+                {filter.name}
+            </a>
+        )
+    });
+    return (
+        <div className="ui blue pointing sticky menu" style={{borderRadius: 0}}>
+           {filterLinks}
+            <div className="right menu">
+                <div className="ui fluid category search item">
+                    <div className="ui icon input">
+                        <input className="prompt" placeholder="Search events..." type="text"/>
+                        <i className="search link icon"></i>
+                    </div>
+                    <div className="results"></div>
+                </div>
+            </div>
+        </div>
+
+    )
+}
+FilterBar.propTypes = {
+    onClick: PropTypes.func.isRequired,
+    activeFilter: PropTypes.string,
+    filters: PropTypes.array,
+}
 const EventList = (props) => {
     return Object.keys(props.projects).map((address) => {
         return <Event {...props.projects[address]} key={address}/>
     });
+}
+EventList.propTypes = {
+    projects: PropTypes.shape({
+
+    }),
 }
 const Event = (props) => {
     return(
