@@ -9,7 +9,7 @@ module.exports = {
       gas: 4306940
     },
     prod: {
-      host: "www.treblekey.com",
+      host: "treblekey.com",
       port: 8545,
       network_id: "*", // Match any network id
       gas: 4306940
