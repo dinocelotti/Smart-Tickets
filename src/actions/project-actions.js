@@ -20,11 +20,15 @@ function projectResolverDeploySuccess(projectResolverDeployed) {
 		projectResolverDeployed
 	}
 }
-const getId = (data, address) =>
-	`${data.distributor || data.ticketType}_${address}`
 
 function Created({ data, address }) {
-	return { type: types.CREATED, payload: { project: { ...data, address } } }
+	return { type: types.CREATED, 
+		payload: { 
+			project: { ...data, address },
+			promoter: data.promoter,
+			consumerMax: data.consumerMaxTickets
+		} 
+	}
 }
 function FinishStaging(project) {
 	return { type: types.FINISH_STAGING, payload: { project } }
@@ -36,7 +40,7 @@ function AddTicket({ data, address }) {
 		type: types.ADD_TICKET,
 		payload: {
 			project: { address },
-			ticket: { id: getId(data, address), ...data }
+			ticket: { ...data }
 		}
 	}
 }
@@ -45,7 +49,7 @@ function AddDistributor({ data, address }) {
 		type: types.ADD_DISTRIBUTOR,
 		payload: {
 			project: { address },
-			distributor: { id: getId(data, address), ...data }
+			distributor: data.distributor
 		}
 	}
 }
@@ -55,12 +59,9 @@ function GiveAllowance({ data, address }) {
 		type: types.GIVE_ALLOWANCE,
 		payload: {
 			project: { address },
-			distributor: {
-				id: getId(data, address),
-				...data
-			},
+			distributor: data.distributor,
 			ticket: {
-				id: getId({ ticketType: data.ticketType }, address),
+				ticketType: data.ticketType,
 				allowance: data.allowance
 			}
 		}
@@ -77,7 +78,8 @@ function TicketListed({ data, address }) {
 			listingData: {
 				owner,
 				ticketType,
-				amountPrice
+				amount: amountPrice[0],
+				price: amountPrice[1]
 			}
 		}
 	}
@@ -94,7 +96,8 @@ function TicketReserved({ data, address }) {
 				owner,
 				entitled,
 				ticketType,
-				amountPrice
+				amount: amountPrice[0],
+				price: amountPrice[1]
 			}
 		}
 	}
