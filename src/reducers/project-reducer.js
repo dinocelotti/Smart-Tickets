@@ -7,6 +7,7 @@ const initialState = {};
 const projectReducer = (state = initialState, action) => {
     const payload = action.payload;
     let previousProject = ''
+    let distributorList = ''
     switch(action.type) {
         case 'CREATED' :
             return Object.assign({}, state, {
@@ -15,6 +16,7 @@ const projectReducer = (state = initialState, action) => {
                     tickets: [],
                     distributors: [],
                     ticketHolders: [],
+                    listings: [],
                     purchasesFromPromoter: [],
                     purchasesFromDistributor: [],
                     ...action.payload.project,
@@ -23,6 +25,7 @@ const projectReducer = (state = initialState, action) => {
 
         case 'FINISH_STAGING' :
             previousProject = state[payload.project.address]
+
             return Object.assign({}, state, {
                 [payload.project.address]: {
                     ...previousProject,
@@ -32,7 +35,11 @@ const projectReducer = (state = initialState, action) => {
 
         case 'ADD_TICKET' :
             previousProject = state[payload.project.address]
-            const ticketList = {...previousProject.tickets, [payload.ticket.id]: payload.ticket}
+            const ticketList = {
+                ...previousProject.tickets, 
+                [payload.ticket.id]: payload.ticket
+            }
+
             return Object.assign({}, state, {
                 [payload.project.address]: {
                     ...previousProject, 
@@ -42,15 +49,36 @@ const projectReducer = (state = initialState, action) => {
 
         case 'ADD_DISTRIBUTOR' :
             previousProject = state[payload.project.address]
-            const distributorList = {
-                ...previousProject.distributors, 
-                [payload.distributor.address]: payload.distributor}
+            distributorList = {
+                ...previousProject.distributors,
+                [payload.distributor.id]: {}
+            }
+
             return Object.assign({}, state, {
                 [payload.project.address]: {
                     ...previousProject,
                     distributors: distributorList
                 }
             });
+
+        case 'GIVE_ALLOWANCE' :
+            previousProject = state[payload.project.address]
+            const previousDistributor = previousProject.distributors[payload.distributor.id]
+            distributorList = {
+                ...previousProject.distributors,
+                [payload.distributor.id]: {
+                    ...previousDistributor,
+                    [payload.ticket.id]: [payload.ticket.allowance]
+                }
+            }
+
+            return Object.assign({}, state, {
+                [payload.project.address]: {
+                    ...previousProject,
+                    distributors: distributorList
+                }
+        });
+
         default : 
             return state;
     }

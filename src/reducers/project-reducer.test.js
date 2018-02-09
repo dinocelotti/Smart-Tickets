@@ -159,4 +159,34 @@ describe('project-reducer', () => {
 			}
 		})
 	})
+
+	/*
+	{
+		type: 'ADD_DISTRIBUTOR',
+		payload: {
+			project: {
+				address: '0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de'
+			},
+			distributor: {
+				id: '0x09032155a8be5999a33e426ccc386066dd201d4a_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de'
+			}
+		}
+	}
+
+	{
+		type: "GIVE_ALLOWANCE",
+		payload: {
+			project: {
+				address: "0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
+			},
+			distributor: {
+				id: "0x09032155a8be5999a33e426ccc386066dd201d4a_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
+			},
+			ticket: {
+				id: "General_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de",
+				allowance: 100
+			}
+		}
+	}
+	*/
 })
