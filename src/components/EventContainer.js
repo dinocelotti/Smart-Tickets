@@ -104,7 +104,7 @@ const TicketList = (props) => {
     const tickets = Object.keys(props.tickets).map((address)=>{
         const ticket = props.tickets[address]
         return(
-            <div className="ui four column center aligned row">
+            <div key={address} className="ui four column center aligned row">
                 <div className="ui left aligned column">
                     <div className="ui header">
                         {ticket.ticketType}

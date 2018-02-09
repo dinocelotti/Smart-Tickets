@@ -42,8 +42,8 @@ export class EventListContainer extends React.Component {
             }
             else if(filter=='DISTRIBUTOR_EVENTS'){
                 // This filter will return if any distributor address matches the user's address
-                return projects[address].distributors.some((distributor) => {
-                    return distributor == this.state.userAccount
+                return Object.keys(projects[address].distributors).some((distributor) => {
+                    return projects[address].distributors[distributor] == this.state.userAccount
                 });
             }
             return address
@@ -72,7 +72,7 @@ export class EventListContainer extends React.Component {
 // TODO: Fill in these PropTypes with final shapes
 EventListContainer.propTypes = {
     projects: PropTypes.shape({
-
+        distributors: PropTypes.array
     }),
     userAccount: PropTypes.string
 }
