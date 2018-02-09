@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const filters = [
     {name: 'All Events', filter: 'ALL_EVENTS'},
@@ -101,13 +102,13 @@ const EventList = (props) => {
     });
 }
 EventList.propTypes = {
-    projects: PropTypes.shape({
-
-    }),
+    projects: PropTypes.arrayOf(PropTypes.shape({
+        address: PropTypes.string,
+    }))
 }
 const Event = (props) => {
     return(
-        <a className="item" href="#">
+        <Link className="ui item" to={`/events/${props.address}`}>
             <div className="ui small image statistic">
                 <div className="value">00</div>
                 <div className="label">MONTH</div>
@@ -127,7 +128,7 @@ const Event = (props) => {
                     <div className="ui red basic label">Event</div>
                 </div>
             </div> 
-        </a>
+        </Link>
     )
 }
 /**

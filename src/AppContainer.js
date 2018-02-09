@@ -17,6 +17,7 @@ import EventListContainer from './components/EventListContainer'
 import LoginContainer from './components/Account/LoginContainer'
 import { Wrapper } from './components/Wrapper'
 import { LoadingSplash } from './components/Status/Loaders'
+import EventContainer from './components/EventContainer'
 /**
  * Import Custom CSS
  */
@@ -76,7 +77,8 @@ class AppContainer extends React.Component {
             <Wrapper>
                 <Switch>
                     <Route path='/createEvent' component={CreateEventContainer}/>
-                    <Route path='/events' component={EventListContainer}/>
+                    <Route exact path='/events' component={EventListContainer}/>
+                    <Route path='/events/:address' component ={EventContainer}/> 
                 </Switch>
             </Wrapper>
         )
