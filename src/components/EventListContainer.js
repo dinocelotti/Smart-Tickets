@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 
 const filters = [
     {name: 'All Events', filter: 'ALL_EVENTS'},
@@ -33,11 +34,21 @@ export class EventListContainer extends React.Component {
             userAccount: thatProps.userAccount
         });
     }
-    filterProjects(projects){
+    filterProjects(projects, filter){
         return Object.keys(projects).filter((address) => {
-            return address; // Run the filter here. projects[address].prop == expectedValue
+            // TODO: abstract these events into an object
+            if(filter=='PROMOTER_EVENTS'){
+                return projects[address].promoter == this.state.userAccount
+            }
+            else if(filter=='DISTRIBUTOR_EVENTS'){
+                // This filter will return if any distributor address matches the user's address
+                return projects[address].distributors.some((distributor) => {
+                    return distributor == this.state.userAccount
+                });
+            }
+            return address
         }).map((address) => {
-            return projects[address];
+            return projects[address]
         });
     }
     handleChangeFilter(nextFilter){
@@ -52,7 +63,7 @@ export class EventListContainer extends React.Component {
             <div>
                 <FilterBar onClick={this.handleChangeFilter} filters={filters} activeFilter={this.state.filter}/>
                 <div className="ui divide link items">
-                    <EventList projects={this.filterProjects(this.state.projects)}/>
+                    <EventList projects={this.filterProjects(this.state.projects, this.state.filter)}/>
                 </div>
             </div>
         )
@@ -101,13 +112,13 @@ const EventList = (props) => {
     });
 }
 EventList.propTypes = {
-    projects: PropTypes.shape({
-
-    }),
+    projects: PropTypes.arrayOf(PropTypes.shape({
+        address: PropTypes.string,
+    }))
 }
 const Event = (props) => {
     return(
-        <a className="item" href="#">
+        <Link className="ui item" to={`/events/${props.address}`}>
             <div className="ui small image statistic">
                 <div className="value">00</div>
                 <div className="label">MONTH</div>
@@ -127,7 +138,7 @@ const Event = (props) => {
                     <div className="ui red basic label">Event</div>
                 </div>
             </div> 
-        </a>
+        </Link>
     )
 }
 /**
