@@ -35,14 +35,14 @@ const projectReducer = (state = initialState, action) => {
                 }
             });
 
-        case 'ADD_TICKET' :
+        case 'ADD_TICKET' : {
             previousProject = state[payload.project.address]
             const ticketList = {
                 ...previousProject.tickets, 
                 [payload.ticket.ticketType]: payload.ticket
             }
 
-            const ticketHoldList = {
+            const newTicketHolders = {
                 ...previousProject.ticketHolders,
                 promoter: {
                     [payload.ticket.ticketType]: [payload.ticket.quantity]
@@ -53,9 +53,10 @@ const projectReducer = (state = initialState, action) => {
                 [payload.project.address]: {
                     ...previousProject, 
                     tickets: ticketList,
-                    ticketHolders: ticketHoldList
+                    ticketHolders: newTicketHolders
                 }
             });
+        }
 
         case 'ADD_DISTRIBUTOR' :
             previousProject = state[payload.project.address]
@@ -108,6 +109,42 @@ const projectReducer = (state = initialState, action) => {
                     listings: newListings
                 }
             });
+
+        case 'BUY_TICKET' : 
+            previousProject = state[payload.project.address]
+            let prevBuyerHolding = 0;
+
+            //Check if buyer has an existing balance of this ticketType
+            if ([payload.tradeData.buyer][payload.tradeData.ticketType] in previousProject.ticketHolders) {
+                prevBuyerHolding = previousProject.ticketHolders[payload.tradeData.buyer][payload.tradeData.ticketType]
+            }
+            const prevSellerListing = previousProject.listings[payload.tradeData.ticketType][payload.tradeData.seller]
+
+            const newTicketHolders = {
+                ...previousProject.ticketHolders,
+                [payload.tradeData.buyer]: {
+                    [payload.tradeData.ticketType]: prevBuyerHolding + [payload.tradeData.quantity]*1
+                }
+            }
+
+            const newTicketListings = {
+                ...previousProject.listings,
+                [payload.tradeData.ticketType]: {
+                    [payload.tradeData.seller]: {
+                        ...prevSellerListing,
+                        amount: prevSellerListing.amount - [payload.tradeData.quantity]*1,           
+                    }
+                }
+            }         
+
+            return Object.assign({}, state, {
+                [payload.project.address]: {
+                    ...previousProject,
+                    ticketHolders: newTicketHolders,
+                    listings: newTicketListings
+                }
+            });
+        
 
         default : 
             return state;

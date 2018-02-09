@@ -20,7 +20,6 @@ function projectResolverDeploySuccess(projectResolverDeployed) {
 		projectResolverDeployed
 	}
 }
-
 function Created({ data, address }) {
 	return { type: types.CREATED, 
 		payload: { 

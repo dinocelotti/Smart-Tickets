@@ -162,16 +162,14 @@ describe('project-reducer', () => {
 
 	/*
 	{
-		type: 'ADD_DISTRIBUTOR',
-		payload: {
-			project: {
-				address: '0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de'
-			},
-			distributor: {
-				id: '0x09032155a8be5999a33e426ccc386066dd201d4a_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de'
-			}
-		}
-	}
+        type: 'ADD_DISTRIBUTOR',
+        payload: {
+            project: {
+                address: '0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de'
+            },
+            distributor: '0x09032155a8be5999a33e426ccc386066dd201d4a'
+        }
+    }
 
 	{
 		type: "GIVE_ALLOWANCE",
@@ -179,12 +177,40 @@ describe('project-reducer', () => {
 			project: {
 				address: "0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
 			},
-			distributor: {
-				id: "0x09032155a8be5999a33e426ccc386066dd201d4a_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
-			},
+			distributor: '0x09032155a8be5999a33e426ccc386066dd201d4a',
 			ticket: {
 				id: "General_0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de",
 				allowance: 100
+			}
+		}
+	}
+
+	{
+		type: "TICKET_LISTED",
+		payload: {
+			project: {
+				address: "0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
+			},
+			listingData: {
+				owner:"0x937d7f7e89ee138f426beea064cc6d75a3a4b771",
+				ticketType:"General",
+				amount: "500",
+				price: 50
+			}
+		}
+	}
+
+	{
+		type: "BUY_TICKET",
+		payload: {
+			project: {
+				address: "0xb33c6ca1c67a447b4dee7d813e9a4289fb2873de"
+			},
+			tradeData: {
+				buyer: "0xe9a56a337641854342c6bb4d47c9cdb6de407cff",
+				seller: "0x937d7f7e89ee138f426beea064cc6d75a3a4b771",
+				ticketType: "General",
+				quantity: 4
 			}
 		}
 	}
