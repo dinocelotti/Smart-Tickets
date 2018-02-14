@@ -6,15 +6,14 @@ const initialState = {};
  */
 const projectReducer = (state = initialState, action) => {
     const payload = action.payload;
-    let previousProject = ''
     let distributorList = ''
     switch(action.type) {
         case 'CREATED' :
             return Object.assign({}, state, {
 				[payload.project.address]:{
                     phase: 'Staging',
-                    promoter: [payload.promoter],
-                    consumerMax: [payload.consumerMax],
+                    promoter: payload.promoter,
+                    consumerMax: payload.consumerMax,
                     tickets: {},
                     distributors: {},
                     ticketHolders: {},
@@ -25,8 +24,8 @@ const projectReducer = (state = initialState, action) => {
                 }
             });
 
-        case 'FINISH_STAGING' :
-            previousProject = state[payload.project.address]
+        case 'FINISH_STAGING' : {
+            const previousProject = state[payload.project.address]
 
             return Object.assign({}, state, {
                 [payload.project.address]: {
@@ -34,32 +33,53 @@ const projectReducer = (state = initialState, action) => {
                     phase: 'Public'
                 }
             });
+        }
 
         case 'ADD_TICKET' : {
-            previousProject = state[payload.project.address]
-            const ticketList = {
+            const ticketType = [payload.ticket.ticketType]
+            const previousProject = state[payload.project.address]
+
+            //Add new tickets to this project's state
+            let prevQuantity = 0
+            if (ticketType in previousProject.tickets) {
+                prevQuantity = previousProject.tickets[ticketType].quantity
+            }
+            const newTicketList = {
                 ...previousProject.tickets, 
-                [payload.ticket.ticketType]: payload.ticket
+                [ticketType]: {
+                    ...payload.ticket,
+                    quantity: prevQuantity + payload.ticket.quantity*1
+                }
             }
 
+            //Give new tickets to this promoter
+            const promoAddr = previousProject.promoter
+            let prevBalance = 0
+            if (promoAddr in previousProject.ticketHolders) {
+                if (ticketType in previousProject.ticketHolders[promoAddr]) {
+                    
+                    prevBalance = previousProject.ticketHolders[promoAddr][ticketType]
+                }
+            }
             const newTicketHolders = {
                 ...previousProject.ticketHolders,
-                promoter: {
-                    [payload.ticket.ticketType]: [payload.ticket.quantity]
+                [previousProject.promoter]: {
+                    ...previousProject.ticketHolders[promoAddr],
+                    [ticketType]: prevBalance + payload.ticket.quantity*1
                 }
             }
 
             return Object.assign({}, state, {
                 [payload.project.address]: {
                     ...previousProject, 
-                    tickets: ticketList,
+                    tickets: newTicketList,
                     ticketHolders: newTicketHolders
                 }
             });
         }
 
-        case 'ADD_DISTRIBUTOR' :
-            previousProject = state[payload.project.address]
+        case 'ADD_DISTRIBUTOR' : {
+            const previousProject = state[payload.project.address]
             distributorList = {
                 ...previousProject.distributors,
                 [payload.distributor]: {}
@@ -71,9 +91,10 @@ const projectReducer = (state = initialState, action) => {
                     distributors: distributorList
                 }
             });
+        }
 
-        case 'GIVE_ALLOWANCE' :
-            previousProject = state[payload.project.address]
+        case 'GIVE_ALLOWANCE' : {
+            const previousProject = state[payload.project.address]
             const previousDistributor = previousProject.distributors[payload.distributor]
             distributorList = {
                 ...previousProject.distributors,
@@ -89,48 +110,69 @@ const projectReducer = (state = initialState, action) => {
                     distributors: distributorList
                 }
             });
+        }
 
-        case 'TICKET_LISTED' :
-            previousProject = state[payload.project.address]
+        case 'TICKET_LISTED' : {
+            const previousProject = state[payload.project.address]
+            const ticketType = payload.listingData.ticketType
+            const owner = payload.listingData.owner
 
+            //Create new listing
             const newListings = {
                 ...previousProject.listings,
-                [payload.listingData.ticketType]: {
-                    [payload.listingData.owner]: {
+                [ticketType]: {
+                    [owner]: {
                         amount: [payload.listingData.amount],
                         price: [payload.listingData.price]
                     }
                 }
             }
 
+            //Reduce sellers balance
+            const prevBalance = previousProject.ticketHolders[owner][ticketType]
+            const newTicketHolders = {
+                ...previousProject.ticketHolders,
+                [owner]: {
+                    ...previousProject.ticketHolders[owner],
+                    [ticketType]: prevBalance - payload.listingData.amount*1
+                }
+            } 
+
             return Object.assign({}, state, {
                 [payload.project.address]: {
                     ...previousProject, 
-                    listings: newListings
+                    listings: newListings,
+                    ticketHolders: newTicketHolders
                 }
             });
+        }
 
-        case 'BUY_TICKET' : 
-            previousProject = state[payload.project.address]
+        case 'BUY_TICKET' : {
+            const previousProject = state[payload.project.address]
+            const buyer = payload.tradeData.buyer
+            const seller = payload.tradeData.seller
+            const ticketType = payload.tradeData.ticketType
+
+            //Set buyer's new holdings
             let prevBuyerHolding = 0;
-
-            //Check if buyer has an existing balance of this ticketType
-            if ([payload.tradeData.buyer][payload.tradeData.ticketType] in previousProject.ticketHolders) {
-                prevBuyerHolding = previousProject.ticketHolders[payload.tradeData.buyer][payload.tradeData.ticketType]
+            if (buyer in previousProject.ticketHolders) {
+                if (ticketType in previousProject.ticketHolders[buyer]) {
+                    prevBuyerHolding = previousProject.ticketHolders[buyer][ticketType]
+                }
             }
-            const prevSellerListing = previousProject.listings[payload.tradeData.ticketType][payload.tradeData.seller]
-
             const newTicketHolders = {
                 ...previousProject.ticketHolders,
-                [payload.tradeData.buyer]: {
-                    [payload.tradeData.ticketType]: prevBuyerHolding + [payload.tradeData.quantity]*1
+                [buyer]: {
+                    [ticketType]: prevBuyerHolding + [payload.tradeData.quantity]*1
                 }
             }
 
+            //Set sellers new listings
+            const prevSellerListing = previousProject.listings[ticketType][seller]
             const newTicketListings = {
                 ...previousProject.listings,
-                [payload.tradeData.ticketType]: {
-                    [payload.tradeData.seller]: {
+                [ticketType]: {
+                    [seller]: {
                         ...prevSellerListing,
                         amount: prevSellerListing.amount - [payload.tradeData.quantity]*1,           
                     }
@@ -144,7 +186,7 @@ const projectReducer = (state = initialState, action) => {
                     listings: newTicketListings
                 }
             });
-        
+        }
 
         default : 
             return state;
