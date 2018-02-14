@@ -31,7 +31,9 @@ class EventContainer extends React.Component{
             return <EventView project={this.state.projects[this.state.projectAddress]}/>
         }
         return (
-            <p>We're having a hard time finding that event... are you sure you got the address right?</p>
+            <div className="ui segment">
+                <p>Event not found... If you've just added it, or just reloaded the page, hang tight and you'll see your event in just a moment.</p>
+            </div>
         )
     }
 }
@@ -124,7 +126,7 @@ const TicketList = (props) => {
                     </div>
                 </div>
                 <div className="ui column">
-                    <a className="ui large button primary" href="./ConsumerPurchaseTickets.html">Buy Now</a>
+                    <a className="ui large button primary inactive" href="#">Buy Now</a>
                     <div>Membran Canada</div>
                 </div>
             </div>

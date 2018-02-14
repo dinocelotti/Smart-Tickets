@@ -65,6 +65,9 @@ export class EventListContainer extends React.Component {
                 <div className="ui divide link items">
                     <EventList projects={this.filterProjects(this.state.projects, this.state.filter)}/>
                 </div>
+                <div className="ui segment red">
+                    If you don't see any events, don't panic! It can take up to around a minute to instantiate all of the events when you load the page. We think it's a TestRPC problem, but it could be better or worse on a testnet.
+                </div>
             </div>
         )
     }

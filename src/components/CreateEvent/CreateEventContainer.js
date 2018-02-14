@@ -7,7 +7,7 @@ import PublishEvent from './PublishEvent'
 import CreateEvent from './CreateEvent'
 import CreateTicketController from './CreateTicketController'
 import CreateEventSteps from './CreateEventSteps'
-
+import CreateDistributorController from './CreateDistributorController'
 /**
  * The primary event creation container
  * is responsible for transacting with redux, handling calls to the API
@@ -20,16 +20,17 @@ class CreateEventContainer extends React.Component {
             projectName: '', 
             userAccount: '',
             consumerMaxTickets: 4,
-            tickets: [] // tickets handled by CreateTicketController, this component is source of truth
+            tickets: [], // tickets handled by CreateTicketController, this component is source of truth
+            distributors: [], // distributors handled by CreateDistributorController, this component handles state
         };
-
         // Bound functions
         this.handleChange = this.handleChange.bind(this);
         this.handleChangeView = this.handleChangeView.bind(this);        
         this.handleChangeTickets = this.handleChangeTickets.bind(this);                
         this.handleSubmit = this.handleSubmit.bind(this);
         this.createEvent = this.createEvent.bind(this);
-        this.renderComponent = this.renderComponent.bind(this);        
+        this.renderComponent = this.renderComponent.bind(this);   
+        this.handleChangeDistributors = this.handleChangeDistributors.bind(this);                     
     }
     componentDidMount(){
         this.setState({
@@ -58,6 +59,14 @@ class CreateEventContainer extends React.Component {
         if(this.state.tickets != nextTickets){
             this.setState({
                 tickets: nextTickets
+            });
+        }
+    }
+    // Checks if the ticket state has changed and updates the state if it has
+    handleChangeDistributors(nextDistributors) {
+        if(this.state.distributors != nextDistributors){
+            this.setState({
+                distributors: nextDistributors
             });
         }
     }
@@ -122,6 +131,7 @@ class CreateEventContainer extends React.Component {
                 />
             )
         }
+        //<CreateDistributorController distributors={this.state.distributors} accounts={this.state.accounts} handleChange={this.handleChangeDistributors}/>
         else if(this.state.view == 'ADD_TICKET'){
             ViewComponent = (
                 <CreateTicketController
@@ -165,7 +175,8 @@ const mapStateToProps = ( state ) => {
     console.log('mapStateToProps')
 	return {
 		projects: state.projectState,
-		userAccount: state.userState
+        userAccount: state.userState,
+        accounts: state.accountState.byId,
 	}
 }
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
